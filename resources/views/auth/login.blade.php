@@ -94,21 +94,24 @@
 
             <hr class="my-4">
 
-            <!-- Demo Account Fast Fill (Sangat Membantu Saat Dosen Menguji!) -->
+            <!-- Demo Account 1-Click Login (Sangat Membantu Saat Dosen Menguji!) -->
             <div class="bg-light p-3 rounded-4 border">
                 <div class="fw-bold small text-secondary mb-2 text-center">
-                    <i class="bi bi-lightning-charge-fill text-primary"></i> Akun Demo Uji Dosen (Klik Langsung):
+                    <i class="bi bi-lightning-charge-fill text-primary"></i> Masuk Cepat Sekali Klik (Mode Dosen):
                 </div>
-                <div class="d-grid gap-1">
-                    <button type="button" onclick="fillDemo('owner@stencu.com', 'password123')" class="btn btn-outline-danger btn-sm text-start rounded-pill">
-                        <strong>Owner:</strong> owner@stencu.com <span class="badge bg-danger float-end">Superadmin</span>
-                    </button>
-                    <button type="button" onclick="fillDemo('kasir@stencu.com', 'password123')" class="btn btn-outline-primary btn-sm text-start rounded-pill">
-                        <strong>Staff:</strong> kasir@stencu.com <span class="badge bg-primary float-end" style="background-color: #2563eb !important;">Kasir / Barista</span>
-                    </button>
-                    <button type="button" onclick="fillDemo('pelanggan@gmail.com', 'password123')" class="btn btn-outline-secondary btn-sm text-start rounded-pill">
-                        <strong>Customer:</strong> pelanggan@gmail.com <span class="badge bg-secondary float-end">Pelanggan</span>
-                    </button>
+                <div class="d-grid gap-2">
+                    <a href="{{ route('quick.login', 'owner') }}" class="btn btn-outline-danger btn-sm text-start rounded-pill px-3 py-1.5 d-flex align-items-center justify-content-between text-decoration-none">
+                        <span><i class="bi bi-shield-lock-fill me-1"></i> <strong>Owner:</strong> Bang Teuku</span>
+                        <span class="badge bg-danger">Masuk Langsung &rarr;</span>
+                    </a>
+                    <a href="{{ route('quick.login', 'kasir') }}" class="btn btn-outline-primary btn-sm text-start rounded-pill px-3 py-1.5 d-flex align-items-center justify-content-between text-decoration-none">
+                        <span><i class="bi bi-calculator-fill me-1"></i> <strong>Staff Kasir:</strong> Rian</span>
+                        <span class="badge bg-primary" style="background-color: #2563eb !important;">Masuk Langsung &rarr;</span>
+                    </a>
+                    <a href="{{ route('quick.login', 'pelanggan') }}" class="btn btn-outline-success btn-sm text-start rounded-pill px-3 py-1.5 d-flex align-items-center justify-content-between text-decoration-none">
+                        <span><i class="bi bi-cup-hot-fill me-1"></i> <strong>Pelanggan:</strong> Cut Nabila</span>
+                        <span class="badge bg-success">Masuk Langsung &rarr;</span>
+                    </a>
                 </div>
             </div>
 

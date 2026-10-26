@@ -24,7 +24,10 @@ Route::post('/order', [PublicController::class, 'storeOrder'])->name('public.ord
 Route::get('/order/success/{saleNumber}', [PublicController::class, 'orderSuccess'])->name('public.order.success');
 Route::get('/track-order', [PublicController::class, 'trackOrder'])->name('public.order.track');
 
-// 2. Rute Autentikasi (Guest)
+// 2. Akses Cepat / Switch Peran (1-Click Gateway untuk Evaluasi & Pengujian Dosen)
+Route::get('/masuk/{role}', [AuthController::class, 'quickLogin'])->name('quick.login');
+
+// 3. Rute Autentikasi Manual (Guest)
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');

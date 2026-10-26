@@ -111,7 +111,52 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')
+        return redirect()->route('home')
             ->with('success', 'Anda telah berhasil logout.');
+    }
+
+    /**
+     * Akses Cepat / Switch Peran Langsung Sekali Klik (Mode Pengujian UTS / Dosen).
+     */
+    public function quickLogin(string $role, Request $request)
+    {
+        $allowed = [
+            'owner' => 'owner@stencu.com',
+            'kasir' => 'kasir@stencu.com',
+            'staff' => 'kasir@stencu.com',
+            'pelanggan' => 'pelanggan@gmail.com',
+            'customer' => 'pelanggan@gmail.com',
+        ];
+
+        if (!array_key_exists($role, $allowed)) {
+            return redirect()->route('home')->withErrors(['error' => 'Peran tidak dikenali.']);
+        }
+
+        // Cari user berdasarkan email utama role
+        $email = $allowed[$role];
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            $userRole = in_array($role, ['kasir', 'staff']) ? 'staff' : (in_array($role, ['pelanggan', 'customer']) ? 'customer' : 'owner');
+            $user = User::where('role', $userRole)->first();
+        }
+
+        if ($user) {
+            Auth::login($user);
+            $request->session()->regenerate();
+
+            if ($user->role === 'owner') {
+                return redirect()->route('dashboard')
+                    ->with('success', 'Berhasil masuk sebagai Owner: ' . $user->name . '. Semua modul manajemen aktif.');
+            } elseif ($user->role === 'staff') {
+                return redirect()->route('sales.create')
+                    ->with('success', 'Berhasil masuk sebagai Kasir: ' . $user->name . '. Mesin POS Penjualan aktif.');
+            } else {
+                return redirect()->route('public.menu')
+                    ->with('success', 'Berhasil masuk sebagai Pelanggan: ' . $user->name . '. Selamat memesan kopi & makanan!');
+            }
+        }
+
+        return redirect()->route('login')->withErrors(['error' => 'Akun untuk peran ini belum tersedia di database.']);
     }
 }
