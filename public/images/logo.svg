@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 72" width="320" height="72" fill="none">
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="50%" stop-color="#1d4ed8" />
+      <stop offset="100%" stop-color="#0f2b5c" />
+    </linearGradient>
+    <linearGradient id="goldAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1d4ed8" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <!-- Emblem Icon Mark -->
+  <g transform="translate(6, 6)" filter="url(#glow)">
+    <!-- Rounded Hexagon / Shield Base -->
+    <rect x="0" y="0" width="60" height="60" rx="16" fill="url(#blueGrad)" />
+    <!-- Inner Accent Border -->
+    <rect x="3" y="3" width="54" height="54" rx="13" stroke="#60a5fa" stroke-width="1.5" stroke-opacity="0.4" fill="none" />
+    
+    <!-- Stylized Coffee Cup & Bean Icon -->
+    <!-- Steam Lines -->
+    <path d="M24 16 C22 20, 26 22, 24 25" stroke="#93c5fd" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.85"/>
+    <path d="M30 14 C28 19, 32 21, 30 25" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+    <path d="M36 16 C34 20, 38 22, 36 25" stroke="#93c5fd" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.85"/>
+
+    <!-- Cup Body -->
+    <path d="M19 27 H41 L39 41 C38.5 45, 35 47, 30 47 C25 47, 21.5 45, 21 41 Z" fill="#ffffff"/>
+    <!-- Cup Handle -->
+    <path d="M41 29 H44 C46.5 29, 47.5 31, 47.5 33.5 C47.5 36, 46.5 38, 44 38 H39.5" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <!-- Saucer / Base -->
+    <path d="M17 48 C22 51, 38 51, 43 48" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    
+    <!-- Mini Coffee Bean Accent inside cup -->
+    <path d="M30 32 C28.5 32, 27 34, 27 36.5 C27 39, 28.5 41, 30 41 C31.5 41, 33 39, 33 36.5 C33 34, 31.5 32, 30 32 Z" fill="#1e3a8a"/>
+    <path d="M30 33 C28.5 35, 31.5 38, 30 40" stroke="#60a5fa" stroke-width="1" stroke-linecap="round" fill="none"/>
+  </g>
+
+  <!-- Typography: STENCU COFFEE -->
+  <!-- Brand Name -->
+  <text x="80" y="36" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-weight="900" font-size="25" fill="#0f2b5c" letter-spacing="3.5">STENCU</text>
+  <text x="210" y="36" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-weight="700" font-size="25" fill="#2563eb" letter-spacing="1">COFFEE</text>
+
+  <!-- Subtitle / Tagline -->
+  <g transform="translate(80, 44)">
+    <rect x="0" y="3" width="16" height="2" rx="1" fill="#38bdf8"/>
+    <text x="22" y="10" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-weight="700" font-size="9" fill="#64748b" letter-spacing="2.5">WARKOP &amp; KITCHEN</text>
+    <circle cx="160" cy="7" r="2" fill="#94a3b8"/>
+    <text x="168" y="10" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-weight="600" font-size="9" fill="#0284c7" letter-spacing="1.5">BATUPHAT</text>
+  </g>
+</svg>
