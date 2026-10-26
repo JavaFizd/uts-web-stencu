@@ -147,13 +147,13 @@ class AuthController extends Controller
 
             if ($user->role === 'owner') {
                 return redirect()->route('dashboard')
-                    ->with('success', 'Berhasil masuk sebagai Owner: ' . $user->name . '. Semua modul manajemen aktif.');
+                    ->with('success', 'Berhasil masuk sebagai Owner. Semua modul manajemen aktif.');
             } elseif ($user->role === 'staff') {
                 return redirect()->route('sales.index')
-                    ->with('success', 'Berhasil masuk sebagai Kasir: ' . $user->name . '. Anda dapat melihat pesanan pelanggan dan membuka POS.');
+                    ->with('success', 'Berhasil masuk sebagai Staff Kasir. Anda dapat melihat pesanan pelanggan dan membuka POS.');
             } else {
                 return redirect()->route('public.menu')
-                    ->with('success', 'Berhasil masuk sebagai Pelanggan: ' . $user->name . '. Selamat memesan kopi & makanan!');
+                    ->with('success', 'Berhasil masuk sebagai Pelanggan. Selamat memesan kopi & makanan!');
             }
         }
 

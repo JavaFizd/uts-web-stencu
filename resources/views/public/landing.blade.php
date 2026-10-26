@@ -36,8 +36,7 @@
                         </div>
                     </div>
                     
-                    <h5 class="fw-bold mb-1 text-dark">Pemilik Toko</h5>
-                    <div class="text-muted small mb-3">Akun: <strong>Bang Teuku</strong></div>
+                    <h5 class="fw-bold mb-3 text-dark">Pemilik Toko (Owner)</h5>
 
                     <ul class="list-unstyled small text-secondary mb-4 flex-grow-1">
                         <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i>Dashboard grafik omset &amp; laba</li>
@@ -64,8 +63,7 @@
                         </div>
                     </div>
                     
-                    <h5 class="fw-bold mb-1 text-dark">Kasir / Barista</h5>
-                    <div class="text-muted small mb-3">Akun: <strong>Rian</strong></div>
+                    <h5 class="fw-bold mb-3 text-dark">Kasir / Barista (Staff)</h5>
 
                     <ul class="list-unstyled small text-secondary mb-4 flex-grow-1">
                         <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i>Mesin kasir POS penjualan cepat</li>
@@ -92,8 +90,7 @@
                         </div>
                     </div>
                     
-                    <h5 class="fw-bold mb-1 text-dark">Pelanggan Warkop</h5>
-                    <div class="text-muted small mb-3">Akun: <strong>Cut Nabila / Tamu</strong></div>
+                    <h5 class="fw-bold mb-3 text-dark">Pelanggan Warkop (Customer)</h5>
 
                     <ul class="list-unstyled small text-secondary mb-4 flex-grow-1">
                         <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>Buka katalog lengkap kopi &amp; makanan</li>

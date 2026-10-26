@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
         $owner = User::firstOrCreate(
             ['email' => 'owner@stencu.com'],
             [
-                'name' => 'Bang Teuku (Owner Stencu)',
+                'name' => 'Owner',
                 'phone' => '081269001122',
                 'role' => 'owner',
                 'password' => Hash::make('password123'),

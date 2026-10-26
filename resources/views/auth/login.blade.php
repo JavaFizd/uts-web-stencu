@@ -101,15 +101,15 @@
                 </div>
                 <div class="d-grid gap-2">
                     <a href="{{ route('quick.login', 'owner') }}" class="btn btn-outline-danger btn-sm text-start rounded-pill px-3 py-1.5 d-flex align-items-center justify-content-between text-decoration-none">
-                        <span><i class="bi bi-shield-lock-fill me-1"></i> <strong>Owner:</strong> Bang Teuku</span>
+                        <span><i class="bi bi-shield-lock-fill me-1"></i> <strong>Owner (Pemilik Toko)</strong></span>
                         <span class="badge bg-danger">Masuk Langsung &rarr;</span>
                     </a>
                     <a href="{{ route('quick.login', 'kasir') }}" class="btn btn-outline-primary btn-sm text-start rounded-pill px-3 py-1.5 d-flex align-items-center justify-content-between text-decoration-none">
-                        <span><i class="bi bi-calculator-fill me-1"></i> <strong>Staff Kasir:</strong> Rian</span>
+                        <span><i class="bi bi-calculator-fill me-1"></i> <strong>Staff (Kasir / Barista)</strong></span>
                         <span class="badge bg-primary" style="background-color: #2563eb !important;">Masuk Langsung &rarr;</span>
                     </a>
                     <a href="{{ route('quick.login', 'pelanggan') }}" class="btn btn-outline-success btn-sm text-start rounded-pill px-3 py-1.5 d-flex align-items-center justify-content-between text-decoration-none">
-                        <span><i class="bi bi-cup-hot-fill me-1"></i> <strong>Pelanggan:</strong> Cut Nabila</span>
+                        <span><i class="bi bi-cup-hot-fill me-1"></i> <strong>Pelanggan (Customer)</strong></span>
                         <span class="badge bg-success">Masuk Langsung &rarr;</span>
                     </a>
                 </div>
