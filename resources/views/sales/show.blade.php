@@ -105,8 +105,9 @@
             </div>
 
             @if($sale->notes)
-                <div class="alert alert-light border small text-muted mb-4">
-                    <strong>Catatan:</strong> {{ $sale->notes }}
+                <div class="alert alert-warning border-warning small mb-4 rounded-3 text-dark">
+                    <i class="bi bi-chat-left-text-fill text-warning me-2"></i>
+                    <strong>Catatan Khusus dari Pelanggan:</strong> "{{ $sale->notes }}"
                 </div>
             @endif
 

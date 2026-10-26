@@ -188,15 +188,31 @@
                     </li>
 
                     @auth
-                        <li class="nav-item ms-lg-2">
-                            <a class="btn btn-primary btn-sm px-3 rounded-pill fw-semibold shadow-sm" href="{{ route('dashboard') }}" style="background-color: #2563eb; border: none;">
-                                <i class="bi bi-speedometer2 me-1"></i> Panel {{ ucfirst(Auth::user()->role) }}
-                            </a>
+                        @if(Auth::user()->isOwner())
+                            <li class="nav-item ms-lg-2">
+                                <a class="btn btn-danger btn-sm px-3 rounded-pill fw-semibold shadow-sm" href="{{ route('dashboard') }}">
+                                    <i class="bi bi-speedometer2 me-1"></i> Panel Owner
+                                </a>
+                            </li>
+                        @elseif(Auth::user()->isStaff())
+                            <li class="nav-item ms-lg-2">
+                                <a class="btn btn-primary btn-sm px-3 rounded-pill fw-semibold shadow-sm" href="{{ route('sales.create') }}" style="background-color: #2563eb; border: none;">
+                                    <i class="bi bi-calculator me-1"></i> Panel Kasir
+                                </a>
+                            </li>
+                        @endif
+                        <li class="nav-item ms-lg-1">
+                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-outline-danger btn-sm px-3 rounded-pill fw-semibold text-white border-danger" style="background-color: rgba(220, 38, 38, 0.2);">
+                                    <i class="bi bi-box-arrow-right me-1"></i> Keluar
+                                </button>
+                            </form>
                         </li>
                     @else
                         <li class="nav-item ms-lg-2">
-                            <a class="btn btn-outline-light btn-sm px-3 rounded-pill fw-semibold" href="{{ route('login') }}">
-                                <i class="bi bi-person-fill me-1"></i> Login Staf / Owner
+                            <a class="btn btn-outline-light btn-sm px-3 rounded-pill fw-semibold" href="{{ route('home') }}">
+                                <i class="bi bi-grid-fill me-1"></i> Portal Masuk
                             </a>
                         </li>
                     @endauth

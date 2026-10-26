@@ -103,7 +103,24 @@
                 </div>
             </div>
 
-            <!-- Action Buttons -->
+            <!-- Action & Testing Buttons (Mode Pengujian Alur Staff) -->
+            <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 text-center bg-white" style="border: 1.5px solid #bfdbfe !important;">
+                <h6 class="fw-bold text-dark mb-1">
+                    <i class="bi bi-person-check-fill text-primary me-1"></i> Ingin Cek Pesanan Ini di Layar Kasir?
+                </h6>
+                <p class="text-muted small mb-3">
+                    Klik tombol di bawah untuk langsung beralih ke akun <strong>Kasir (Staff)</strong> dan memeriksa apakah pesanan dan catatan racikan yang baru Anda ketik sudah masuk di daftar pesanan kasir:
+                </p>
+                <div class="d-flex justify-content-center gap-2 flex-wrap">
+                    <a href="{{ route('quick.login', 'kasir') }}" class="btn btn-primary fw-bold rounded-pill px-4 py-2 shadow-sm" style="background-color: #2563eb; border: none;">
+                        <i class="bi bi-calculator me-1"></i> Buka Layar Kasir / Staff Sekarang &rarr;
+                    </a>
+                    <a href="{{ route('home') }}" class="btn btn-outline-danger rounded-pill px-4 py-2 fw-semibold">
+                        <i class="bi bi-box-arrow-left me-1"></i> Keluar ke Portal Utama
+                    </a>
+                </div>
+            </div>
+
             <div class="d-flex justify-content-between align-items-center">
                 <a href="{{ route('public.menu') }}" class="btn btn-outline-secondary rounded-pill px-4">
                     <i class="bi bi-arrow-left me-1"></i> Pesan Menu Lainnya
