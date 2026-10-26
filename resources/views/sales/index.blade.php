@@ -79,7 +79,14 @@
                             </a>
                         </td>
                         <td class="small text-muted">{{ $sale->sold_at->format('d M Y, H:i') }}</td>
-                        <td class="fw-semibold">{{ $sale->customer_name }}</td>
+                        <td>
+                            <div class="fw-semibold text-dark">{{ $sale->customer_name }}</div>
+                            @if($sale->notes)
+                                <div class="small text-muted fst-italic mt-0.5" style="font-size: 0.76rem;">
+                                    <i class="bi bi-chat-left-dots text-primary me-1"></i> "{{ $sale->notes }}"
+                                </div>
+                            @endif
+                        </td>
                         <td class="small text-muted">{{ $sale->user->name ?? 'Kasir' }}</td>
                         <td>
                             <span class="badge bg-light text-dark border text-uppercase">{{ $sale->payment_method }}</span>

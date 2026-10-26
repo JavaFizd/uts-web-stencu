@@ -242,8 +242,21 @@
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label small fw-bold">Catatan Khusus (Opsional)</label>
-                                <input type="text" name="notes" class="form-control form-control-sm" placeholder="Contoh: Sanger manis sedang, Mie Aceh pedas">
+                                <label class="form-label small fw-bold d-flex justify-content-between align-items-center">
+                                    <span>Catatan Khusus Racikan (Opsional)</span>
+                                    <span class="text-muted" style="font-size: 0.72rem;">Bisa klik opsi cepat di bawah</span>
+                                </label>
+                                <input type="text" name="notes" id="orderNotesInput" class="form-control form-control-sm" placeholder="Contoh: Kopi jangan banyak gula, Mie Aceh jangan pedes">
+                                
+                                <!-- Opsi Cepat Permintaan Khas Warkop -->
+                                <div class="d-flex flex-wrap gap-1 mt-2">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 rounded-pill" style="font-size: 0.72rem;" onclick="appendNote('Kurang manis / sedikit gula')">+ Kurang Manis</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 rounded-pill" style="font-size: 0.72rem;" onclick="appendNote('Tanpa gula')">+ Tanpa Gula</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 rounded-pill" style="font-size: 0.72rem;" onclick="appendNote('Es sedikit (less ice)')">+ Es Sedikit</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 rounded-pill" style="font-size: 0.72rem;" onclick="appendNote('Mie jangan pedas')">+ Mie Gak Pedes</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 rounded-pill" style="font-size: 0.72rem;" onclick="appendNote('Mie pedas sedang')">+ Mie Pedas Sedang</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary py-0 px-2 rounded-pill" style="font-size: 0.72rem;" onclick="appendNote('Telur setengah matang')">+ Telur 1/2 Matang</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -371,6 +384,16 @@
 
     function formatRupiah(angka) {
         return new Intl.NumberFormat('id-ID').format(angka);
+    }
+
+    function appendNote(text) {
+        const input = document.getElementById('orderNotesInput');
+        if (!input) return;
+        if (!input.value.trim()) {
+            input.value = text;
+        } else if (!input.value.includes(text)) {
+            input.value += ', ' + text;
+        }
     }
 
     document.addEventListener('DOMContentLoaded', function() {
