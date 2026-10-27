@@ -42,36 +42,56 @@
         </div>
     @endif
 
-    <!-- Category Pills & Search Form (Clean White Card with Blue accents) -->
-    <div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
-        <!-- Search Keyword -->
-        <form action="{{ route('public.menu') }}" method="GET" class="mb-3">
-            <div class="input-group">
-                <span class="input-group-text bg-light border-end-0 text-muted ps-3"><i class="bi bi-search text-primary"></i></span>
-                <input type="text" name="search" class="form-control border-start-0 py-2" placeholder="Cari sanger, nutrisari, mie aceh, indomie..." value="{{ request('search') }}">
-                @if(request('category'))
-                    <input type="hidden" name="category" value="{{ request('category') }}">
-                @endif
-                <button type="submit" class="btn btn-primary fw-bold px-4" style="background-color: #2563eb; border: none;">Cari</button>
-            </div>
-        </form>
-
-        <!-- Category Scrollable Pills -->
-        <div class="d-flex gap-2 overflow-auto pb-1" style="white-space: nowrap;">
-            <a href="{{ route('public.menu', ['search' => request('search')]) }}" 
-               class="btn btn-sm rounded-pill px-3 py-2 {{ !request('category') ? 'btn-primary text-white fw-bold shadow-sm' : 'btn-outline-primary bg-white text-primary border-primary-subtle' }}"
-               style="{{ !request('category') ? 'background-color: #2563eb; border: none;' : '' }}">
-                Semua Kategori
+    <!-- 3 Kategori Utama Pelanggan (Minuman, Makanan, Cemilan) -->
+    <div class="row g-2 g-md-3 mb-4">
+        <!-- Tab 1: Semua Menu -->
+        <div class="col-6 col-md-3">
+            <a href="{{ route('public.menu') }}" class="card text-decoration-none h-100 p-3 rounded-4 border shadow-sm text-center {{ !request('category') ? 'text-white' : 'bg-white text-dark' }}" style="{{ !request('category') ? 'background-color: #0f2b5c !important; border-color: #0f2b5c;' : '' }}">
+                <div class="fs-3 mb-1 {{ !request('category') ? 'text-info' : 'text-primary' }}"><i class="bi bi-grid-fill"></i></div>
+                <div class="fw-bold fs-6">Semua Menu</div>
+                <span class="small {{ !request('category') ? 'text-light opacity-75' : 'text-muted' }}" style="font-size: 0.76rem;">12 Menu Warkop</span>
             </a>
-            @foreach($categories as $cat)
-                <a href="{{ route('public.menu', ['category' => $cat->slug, 'search' => request('search')]) }}" 
-                   class="btn btn-sm rounded-pill px-3 py-2 {{ request('category') == $cat->slug ? 'btn-primary text-white fw-bold shadow-sm' : 'btn-outline-primary bg-white text-primary border-primary-subtle' }}"
-                   style="{{ request('category') == $cat->slug ? 'background-color: #2563eb; border: none;' : '' }}">
-                    {{ $cat->name }}
-                </a>
-            @endforeach
+        </div>
+        <!-- Tab 2: Minuman -->
+        <div class="col-6 col-md-3">
+            <a href="{{ route('public.menu', ['category' => 'minuman']) }}" class="card text-decoration-none h-100 p-3 rounded-4 border shadow-sm text-center {{ request('category') == 'minuman' ? 'text-white' : 'bg-white text-dark' }}" style="{{ request('category') == 'minuman' ? 'background-color: #2563eb !important; border-color: #2563eb;' : '' }}">
+                <div class="fs-3 mb-1 {{ request('category') == 'minuman' ? 'text-warning' : 'text-primary' }}"><i class="bi bi-cup-hot-fill"></i></div>
+                <div class="fw-bold fs-6">Minuman</div>
+                <span class="small {{ request('category') == 'minuman' ? 'text-light opacity-75' : 'text-muted' }}" style="font-size: 0.76rem;">Sanger, Teh Tarik &amp; Milo</span>
+            </a>
+        </div>
+        <!-- Tab 3: Makanan -->
+        <div class="col-6 col-md-3">
+            <a href="{{ route('public.menu', ['category' => 'makanan']) }}" class="card text-decoration-none h-100 p-3 rounded-4 border shadow-sm text-center {{ request('category') == 'makanan' ? 'text-white' : 'bg-white text-dark' }}" style="{{ request('category') == 'makanan' ? 'background-color: #dc2626 !important; border-color: #dc2626;' : '' }}">
+                <div class="fs-3 mb-1 {{ request('category') == 'makanan' ? 'text-warning' : 'text-danger' }}"><i class="bi bi-fire"></i></div>
+                <div class="fw-bold fs-6">Makanan</div>
+                <span class="small {{ request('category') == 'makanan' ? 'text-light opacity-75' : 'text-muted' }}" style="font-size: 0.76rem;">Mie Aceh, Indomie &amp; Nasi</span>
+            </a>
+        </div>
+        <!-- Tab 4: Cemilan -->
+        <div class="col-6 col-md-3">
+            <a href="{{ route('public.menu', ['category' => 'cemilan']) }}" class="card text-decoration-none h-100 p-3 rounded-4 border shadow-sm text-center {{ request('category') == 'cemilan' ? 'text-white' : 'bg-white text-dark' }}" style="{{ request('category') == 'cemilan' ? 'background-color: #059669 !important; border-color: #059669;' : '' }}">
+                <div class="fs-3 mb-1 {{ request('category') == 'cemilan' ? 'text-warning' : 'text-success' }}"><i class="bi bi-basket2-fill"></i></div>
+                <div class="fw-bold fs-6">Cemilan</div>
+                <span class="small {{ request('category') == 'cemilan' ? 'text-light opacity-75' : 'text-muted' }}" style="font-size: 0.76rem;">Pisang Keju, Roti &amp; Bakwan</span>
+            </a>
         </div>
     </div>
+
+    <!-- Search Form Bar -->
+    <form action="{{ route('public.menu') }}" method="GET" class="mb-4">
+        @if(request('category'))
+            <input type="hidden" name="category" value="{{ request('category') }}">
+        @endif
+        <div class="input-group bg-white rounded-pill shadow-sm p-1 border">
+            <span class="input-group-text bg-transparent border-0 text-primary ps-3"><i class="bi bi-search"></i></span>
+            <input type="text" name="search" class="form-control border-0 bg-transparent py-2" placeholder="Cari kopi sanger, mie aceh, pisang goreng, indomie..." value="{{ request('search') }}">
+            @if(request('search'))
+                <a href="{{ route('public.menu', ['category' => request('category')]) }}" class="btn btn-link text-muted pe-2" title="Reset cari"><i class="bi bi-x-circle-fill"></i></a>
+            @endif
+            <button type="submit" class="btn btn-primary fw-bold px-4 rounded-pill" style="background-color: #2563eb; border: none;">Cari</button>
+        </div>
+    </form>
 
     <!-- Product Grid -->
     <div class="row g-3 g-md-4 mb-5">

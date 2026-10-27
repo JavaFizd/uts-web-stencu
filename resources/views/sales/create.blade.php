@@ -23,9 +23,17 @@
                     <input type="text" id="menuSearch" class="form-control form-control-sm w-50" placeholder="Ketik nama menu...">
                 </div>
 
+                <!-- Filter Kategori Cepat POS Kasir -->
+                <div class="d-flex gap-1 mb-3 overflow-auto pb-1">
+                    <button type="button" class="btn btn-sm btn-primary rounded-pill px-3 py-1 pos-cat-filter active fw-semibold" style="background-color: #0f2b5c; border-color: #0f2b5c;" onclick="filterPosCat('all', this)">Semua (12)</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 pos-cat-filter fw-semibold" onclick="filterPosCat('minuman', this)">☕ Minuman</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 pos-cat-filter fw-semibold" onclick="filterPosCat('makanan', this)">🍜 Makanan</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 pos-cat-filter fw-semibold" onclick="filterPosCat('cemilan', this)">🍞 Cemilan</button>
+                </div>
+
                 <div class="row g-3 overflow-auto" style="max-height: 520px;" id="menuContainer">
                     @forelse($products as $product)
-                        <div class="col-sm-6 menuItem" data-name="{{ strtolower($product->name) }}">
+                        <div class="col-sm-6 menuItem" data-name="{{ strtolower($product->name) }}" data-category="{{ strtolower($product->category->slug ?? '') }}">
                             <div class="card p-3 border rounded-3 h-100 {{ $product->stock <= 0 ? 'bg-light opacity-50' : '' }}">
                                 <div class="d-flex justify-content-between align-items-start mb-2">
                                     <span class="badge bg-light text-dark border small">{{ $product->category->name }}</span>
@@ -248,5 +256,28 @@
             el.style.display = name.includes(val) ? '' : 'none';
         });
     });
+
+    // Filter kategori POS
+    function filterPosCat(slug, btn) {
+        document.querySelectorAll('.pos-cat-filter').forEach(b => {
+            b.classList.remove('active', 'btn-primary');
+            b.style.backgroundColor = '';
+            b.style.borderColor = '';
+            b.classList.add('btn-outline-secondary');
+        });
+        btn.classList.remove('btn-outline-secondary');
+        btn.classList.add('btn-primary', 'active');
+        btn.style.backgroundColor = '#0f2b5c';
+        btn.style.borderColor = '#0f2b5c';
+
+        document.querySelectorAll('.menuItem').forEach(el => {
+            const cat = el.getAttribute('data-category');
+            if (slug === 'all' || cat === slug) {
+                el.style.display = '';
+            } else {
+                el.style.display = 'none';
+            }
+        });
+    }
 </script>
 @endsection
