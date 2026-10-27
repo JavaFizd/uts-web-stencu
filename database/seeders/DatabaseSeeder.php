@@ -35,8 +35,18 @@ class DatabaseSeeder extends Seeder
         $staff = User::firstOrCreate(
             ['email' => 'kasir@stencu.com'],
             [
-                'name' => 'Rian (Barista / Kasir)',
+                'name' => 'Rian (Kasir)',
                 'phone' => '085277889900',
+                'role' => 'staff',
+                'password' => Hash::make('password123'),
+            ]
+        );
+
+        $staffDapur = User::firstOrCreate(
+            ['email' => 'dapur@stencu.com'],
+            [
+                'name' => 'Fajar (Barista & Dapur)',
+                'phone' => '085211223344',
                 'role' => 'staff',
                 'password' => Hash::make('password123'),
             ]
