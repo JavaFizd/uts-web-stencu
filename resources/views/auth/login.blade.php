@@ -105,8 +105,12 @@
                         <span class="badge bg-danger">Masuk Langsung &rarr;</span>
                     </a>
                     <a href="{{ route('quick.login', 'kasir') }}" class="btn btn-outline-primary btn-sm text-start rounded-pill px-3 py-1.5 d-flex align-items-center justify-content-between text-decoration-none">
-                        <span><i class="bi bi-calculator-fill me-1"></i> <strong>Staff (Kasir / Barista)</strong></span>
+                        <span><i class="bi bi-calculator-fill me-1"></i> <strong>Staff Kasir (Rian - POS & Penjualan)</strong></span>
                         <span class="badge bg-primary" style="background-color: #2563eb !important;">Masuk Langsung &rarr;</span>
+                    </a>
+                    <a href="{{ route('quick.login', 'dapur') }}" class="btn btn-outline-warning btn-sm text-start rounded-pill px-3 py-1.5 d-flex align-items-center justify-content-between text-decoration-none">
+                        <span><i class="bi bi-fire me-1"></i> <strong>Staff Dapur (Fajar - Stok & Restok)</strong></span>
+                        <span class="badge bg-warning text-dark">Masuk Langsung &rarr;</span>
                     </a>
                     <a href="{{ route('quick.login', 'pelanggan') }}" class="btn btn-outline-success btn-sm text-start rounded-pill px-3 py-1.5 d-flex align-items-center justify-content-between text-decoration-none">
                         <span><i class="bi bi-cup-hot-fill me-1"></i> <strong>Pelanggan (Customer)</strong></span>

@@ -52,6 +52,7 @@ class DashboardController extends Controller
         // 4. Perhitungan Laba Kotor (Gross Profit = Pemasukan - Pengeluaran)
         $profitToday = $salesTodayTotal - $purchasesTodayTotal;
         $profitMonth = $salesMonthTotal - $purchasesMonthTotal;
+        $profitYear = $salesYearTotal - $purchasesYearTotal;
         $profitAllTime = $salesAllTimeTotal - $purchasesAllTimeTotal;
 
         // 5. Produk dengan Stok Menipis (Stok <= Minimum Stock)
@@ -116,6 +117,7 @@ class DashboardController extends Controller
             'purchasesAllTimeTotal',
             'profitToday',
             'profitMonth',
+            'profitYear',
             'profitAllTime',
             'totalSalesCount',
             'lowStockProducts',

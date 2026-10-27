@@ -113,8 +113,12 @@
             </div>
             <span class="small text-light opacity-75">ESTIMASI LABA KOTOR BULAN INI:</span>
             <h3 class="fw-bold text-white mt-1 mb-2">Rp {{ number_format($profitMonth, 0, ',', '.') }}</h3>
-            <p class="small text-light opacity-75 mb-0">
-                Pemasukan (Rp {{ number_format($salesMonthTotal, 0, ',', '.') }}) dikurangi Pengeluaran Belanja Bahan (Rp {{ number_format($purchasesMonthTotal, 0, ',', '.') }}).
+            <div class="pt-2 border-top border-white border-opacity-25 d-flex justify-content-between align-items-center small mt-2">
+                <span class="text-light opacity-75">Akumulasi Laba Tahun {{ date('Y') }}:</span>
+                <strong class="text-warning fs-6">Rp {{ number_format($profitYear, 0, ',', '.') }}</strong>
+            </div>
+            <p class="small text-light opacity-75 mb-0 mt-1" style="font-size: 0.75rem;">
+                Margin laba wajar ~50% (Pemasukan penjualan dikurangi belanja bahan baku).
             </p>
         </div>
     </div>

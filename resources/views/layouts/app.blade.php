@@ -86,8 +86,11 @@
             <a href="{{ route('quick.login', 'owner') }}" class="btn btn-sm py-0 px-2 fw-semibold {{ Auth::user()->isOwner() ? 'btn-danger text-white' : 'btn-outline-light text-light' }}" style="font-size: 0.72rem; border-radius: 6px;">
                 <i class="bi bi-person-fill-gear"></i> Owner
             </a>
-            <a href="{{ route('quick.login', 'kasir') }}" class="btn btn-sm py-0 px-2 fw-semibold {{ Auth::user()->isStaff() ? 'btn-primary text-white' : 'btn-outline-light text-light' }}" style="font-size: 0.72rem; border-radius: 6px; {{ Auth::user()->isStaff() ? 'background-color: #2563eb; border-color: #2563eb;' : '' }}">
+            <a href="{{ route('quick.login', 'kasir') }}" class="btn btn-sm py-0 px-2 fw-semibold {{ (Auth::user()->isStaff() && Auth::user()->email === 'kasir@stencu.com') ? 'btn-primary text-white' : 'btn-outline-light text-light' }}" style="font-size: 0.72rem; border-radius: 6px; {{ (Auth::user()->isStaff() && Auth::user()->email === 'kasir@stencu.com') ? 'background-color: #2563eb; border-color: #2563eb;' : '' }}">
                 <i class="bi bi-calculator"></i> Kasir
+            </a>
+            <a href="{{ route('quick.login', 'dapur') }}" class="btn btn-sm py-0 px-2 fw-semibold {{ (Auth::user()->isStaff() && Auth::user()->email === 'dapur@stencu.com') ? 'btn-warning text-dark' : 'btn-outline-light text-light' }}" style="font-size: 0.72rem; border-radius: 6px; {{ (Auth::user()->isStaff() && Auth::user()->email === 'dapur@stencu.com') ? 'background-color: #f59e0b; border-color: #f59e0b;' : '' }}">
+                <i class="bi bi-fire"></i> Dapur
             </a>
             <a href="{{ route('quick.login', 'pelanggan') }}" class="btn btn-sm py-0 px-2 fw-semibold {{ Auth::user()->role === 'customer' ? 'btn-success text-white' : 'btn-outline-light text-light' }}" style="font-size: 0.72rem; border-radius: 6px;">
                 <i class="bi bi-cup-hot"></i> Pelanggan

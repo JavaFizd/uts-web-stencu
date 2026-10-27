@@ -124,6 +124,8 @@ class AuthController extends Controller
             'owner' => 'owner@stencu.com',
             'kasir' => 'kasir@stencu.com',
             'staff' => 'kasir@stencu.com',
+            'dapur' => 'dapur@stencu.com',
+            'barista' => 'dapur@stencu.com',
             'pelanggan' => 'pelanggan@gmail.com',
             'customer' => 'pelanggan@gmail.com',
         ];
@@ -137,7 +139,7 @@ class AuthController extends Controller
         $user = User::where('email', $email)->first();
 
         if (!$user) {
-            $userRole = in_array($role, ['kasir', 'staff']) ? 'staff' : (in_array($role, ['pelanggan', 'customer']) ? 'customer' : 'owner');
+            $userRole = in_array($role, ['kasir', 'staff', 'dapur', 'barista']) ? 'staff' : (in_array($role, ['pelanggan', 'customer']) ? 'customer' : 'owner');
             $user = User::where('role', $userRole)->first();
         }
 
@@ -148,9 +150,12 @@ class AuthController extends Controller
             if ($user->role === 'owner') {
                 return redirect()->route('dashboard')
                     ->with('success', 'Berhasil masuk sebagai Owner. Semua modul manajemen aktif.');
+            } elseif ($user->email === 'dapur@stencu.com') {
+                return redirect()->route('products.index')
+                    ->with('success', 'Berhasil masuk sebagai Staf Dapur (Fajar). Anda dapat memantau stok bahan dan mencatat pembelian.');
             } elseif ($user->role === 'staff') {
                 return redirect()->route('sales.index')
-                    ->with('success', 'Berhasil masuk sebagai Staff Kasir. Anda dapat melihat pesanan pelanggan dan membuka POS.');
+                    ->with('success', 'Berhasil masuk sebagai Staf Kasir (Rian). Anda dapat melihat pesanan pelanggan dan membuka POS.');
             } else {
                 return redirect()->route('public.menu')
                     ->with('success', 'Berhasil masuk sebagai Pelanggan. Selamat memesan kopi & makanan!');

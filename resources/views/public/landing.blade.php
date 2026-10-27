@@ -51,30 +51,35 @@
                 </div>
             </div>
 
-            <!-- 2. Staff Kasir Card -->
+            <!-- 2. Staff Operasional Card -->
             <div class="col-md-4">
                 <div class="card h-100 border-0 shadow-lg rounded-4 p-4 bg-white d-flex flex-column" style="border-top: 4px solid #2563eb !important;">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2.5 py-1 rounded-pill fw-bold" style="font-size: 0.75rem;">
-                            <i class="bi bi-calculator-fill me-1"></i> Staff Kasir
+                            <i class="bi bi-people-fill me-1"></i> Staff Operasional
                         </span>
                         <div class="p-2 rounded-circle bg-primary-subtle text-primary" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
                             <i class="bi bi-shop fs-5"></i>
                         </div>
                     </div>
                     
-                    <h5 class="fw-bold mb-3 text-dark">Kasir / Barista (Staff)</h5>
+                    <h5 class="fw-bold mb-3 text-dark">Staff (Kasir &amp; Dapur)</h5>
 
                     <ul class="list-unstyled small text-secondary mb-4 flex-grow-1">
-                        <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i>Mesin kasir POS penjualan cepat</li>
-                        <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i>Input pesanan meja &amp; takeaway</li>
-                        <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i>Cetak struk nota pembayaran</li>
-                        <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i>Cek catatan racikan dari pelanggan</li>
+                        <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i><strong>Kasir:</strong> POS penjualan, cetak struk &amp; cek catatan meja</li>
+                        <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i><strong>Dapur / Barista:</strong> Pantau stok menipis &amp; restok belanja</li>
+                        <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i><strong>Akun Masing-masing:</strong> Tercatat di nota &amp; riwayat belanja</li>
+                        <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i>Bisa tambah staf baru kapan saja lewat akun Owner</li>
                     </ul>
 
-                    <a href="{{ route('quick.login', 'kasir') }}" class="btn btn-primary w-100 fw-bold py-2.5 rounded-pill shadow-sm" style="background-color: #2563eb; border: none;">
-                        <i class="bi bi-calculator me-1"></i> Masuk sebagai Kasir
-                    </a>
+                    <div class="d-grid gap-2">
+                        <a href="{{ route('quick.login', 'kasir') }}" class="btn btn-primary fw-bold py-2 rounded-pill shadow-sm" style="background-color: #2563eb; border: none;">
+                            <i class="bi bi-calculator me-1"></i> Masuk Kasir (Rian)
+                        </a>
+                        <a href="{{ route('quick.login', 'dapur') }}" class="btn btn-outline-primary fw-bold py-1.5 rounded-pill" style="border-color: #2563eb; color: #2563eb; font-size: 0.85rem;">
+                            <i class="bi bi-fire me-1"></i> Masuk Dapur &amp; Stok (Fajar)
+                        </a>
+                    </div>
                 </div>
             </div>
 
