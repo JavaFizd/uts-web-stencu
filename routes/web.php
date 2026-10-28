@@ -27,16 +27,17 @@ Route::get('/track-order', [PublicController::class, 'trackOrder'])->name('publi
 // 2. Akses Cepat / Switch Peran (1-Click Gateway untuk Evaluasi & Pengujian Dosen)
 Route::get('/masuk/{role}', [AuthController::class, 'quickLogin'])->name('quick.login');
 
-// 3. Rute Autentikasi Manual (Guest)
+// 3. Rute Autentikasi Manual
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+
 Route::middleware('guest')->group(function () {
-    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login'])->name('login.post');
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 });
 
-// Logout (Harus sudah login)
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+// Logout (Mendukung POST dan GET agar fleksibel)
+Route::match(['get', 'post'], '/logout', [AuthController::class, 'logout'])->name('logout');
 
 // 3. Rute Internal Operasional (Owner & Staff Kasir)
 Route::middleware(['auth', 'role:owner,staff'])->group(function () {

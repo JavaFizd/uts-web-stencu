@@ -10,21 +10,16 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     /**
-     * Tampilkan form login.
+     * Tampilkan form login (Selalu tampilkan form bersih tanpa auto-redirect agar bebas ganti akun).
      */
-    public function showLogin()
+    public function showLogin(Request $request)
     {
+        // Jika pengguna sudah dalam keadaan login tetapi sengaja membuka URL /login,
+        // reset sesi lama agar selalu menampilkan form login bersih untuk memilih akun baru
         if (Auth::check()) {
-            if (Auth::user()->role === 'customer') {
-                return redirect()->route('public.menu');
-            }
-            if (Auth::user()->isStaff()) {
-                if (Auth::user()->email === 'dapur@stencu.com') {
-                    return redirect()->route('sales.index');
-                }
-                return redirect()->route('sales.create');
-            }
-            return redirect()->route('dashboard');
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
         }
 
         return view('auth.login');
@@ -145,7 +140,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('home')
+        return redirect()->route('login')
             ->with('success', 'Anda telah berhasil logout.');
     }
 
