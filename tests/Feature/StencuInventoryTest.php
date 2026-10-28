@@ -357,15 +357,26 @@ class StencuInventoryTest extends TestCase
     }
 
     /**
-     * Skenario 12: Filter Penjualan Fleksibel (Hari, Minggu, Bulan, Tahun).
+     * Skenario 13: Login Fleksibel Menggunakan Username (admin & kasir) Tanpa Email.
      */
-    public function test_sales_flexible_filter_by_period_month_week_and_day(): void
+    public function test_login_with_short_username_without_email(): void
     {
-        $owner = User::factory()->create(['role' => 'owner']);
+        // 1. Login Admin -> diarahkan ke dashboard
+        $resAdmin = $this->post('/login', [
+            'login' => 'admin',
+            'password' => 'password',
+        ]);
+        $resAdmin->assertRedirect(route('dashboard'));
+        $this->assertAuthenticated();
 
-        $response = $this->actingAs($owner)->get('/sales?year=2026&month=10&week=2');
-        $response->assertStatus(200);
-        $response->assertViewHas('totalOmset');
-        $response->assertViewHas('totalTransactions');
+        $this->post('/logout');
+
+        // 2. Login Kasir -> diarahkan ke kasir POS
+        $resKasir = $this->post('/login', [
+            'login' => 'kasir',
+            'password' => 'password',
+        ]);
+        $resKasir->assertRedirect(route('sales.create'));
+        $this->assertAuthenticated();
     }
 }

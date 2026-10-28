@@ -119,7 +119,7 @@
                             @if(Auth::user()->isOwner())
                                 <span class="badge bg-danger badge-role">Owner</span>
                             @elseif(Auth::user()->isStaff())
-                                <span class="badge bg-primary badge-role" style="background-color: #2563eb !important;">Staff</span>
+                                <span class="badge bg-primary badge-role" style="background-color: #2563eb !important;">Kasir</span>
                             @else
                                 <span class="badge bg-secondary badge-role">Customer</span>
                             @endif

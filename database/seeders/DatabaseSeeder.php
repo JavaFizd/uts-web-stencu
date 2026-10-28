@@ -27,9 +27,9 @@ class DatabaseSeeder extends Seeder
     {
         // 1. Akun Pengguna (Sistem Multi-User Stencu Coffee)
         $owner = User::firstOrCreate(
-            ['email' => 'owner@stencu.com'],
+            ['email' => 'admin@stencu.com'],
             [
-                'name' => 'Owner',
+                'name' => 'Owner (Admin)',
                 'phone' => '081269001122',
                 'role' => 'owner',
                 'password' => Hash::make('password'),
@@ -37,30 +37,10 @@ class DatabaseSeeder extends Seeder
         );
 
         $staffKasir = User::firstOrCreate(
-            ['email' => 'staff@stencu.com'],
-            [
-                'name' => 'Rian (Staff Kasir)',
-                'phone' => '085277889900',
-                'role' => 'staff',
-                'password' => Hash::make('password'),
-            ]
-        );
-
-        User::firstOrCreate(
             ['email' => 'kasir@stencu.com'],
             [
-                'name' => 'Rian (Kasir)',
+                'name' => 'Kasir',
                 'phone' => '085277889900',
-                'role' => 'staff',
-                'password' => Hash::make('password'),
-            ]
-        );
-
-        $staffDapur = User::firstOrCreate(
-            ['email' => 'dapur@stencu.com'],
-            [
-                'name' => 'Fajar (Barista & Dapur)',
-                'phone' => '085211223344',
                 'role' => 'staff',
                 'password' => Hash::make('password'),
             ]
@@ -68,6 +48,13 @@ class DatabaseSeeder extends Seeder
 
         $customer = User::firstOrCreate(
             ['email' => 'pelanggan@gmail.com'],
+            [
+                'name' => 'Cut Nabila',
+                'phone' => '082133445566',
+                'role' => 'customer',
+                'password' => Hash::make('password'),
+            ]
+        );
             [
                 'name' => 'Cut Nabila (Pelanggan Warkop)',
                 'phone' => '082133445566',
