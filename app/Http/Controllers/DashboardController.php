@@ -23,8 +23,11 @@ class DashboardController extends Controller
      */
     public function index(Request $request)
     {
-        // Proteksi Hak Akses (Slide 5): Staff kasir langsung diarahkan ke layar POS
+        // Proteksi Hak Akses (Slide 5): Staff diarahkan ke modul operasional masing-masing
         if (Auth::user()->isStaff()) {
+            if (Auth::user()->email === 'dapur@stencu.com') {
+                return redirect()->route('sales.index');
+            }
             return redirect()->route('sales.create');
         }
 

@@ -95,7 +95,7 @@
     <!-- Top Navbar (Deep Navy Blue) -->
     <nav class="navbar navbar-expand-lg navbar-dark navbar-stencu sticky-top py-2 shadow-sm">
         <div class="container-fluid px-3">
-            <a class="navbar-brand d-flex align-items-center" href="{{ Auth::user()->isOwner() ? route('dashboard') : route('sales.create') }}">
+            <a class="navbar-brand d-flex align-items-center" href="{{ Auth::user()->isOwner() ? route('dashboard') : (Auth::user()->email === 'dapur@stencu.com' ? route('sales.index') : route('sales.create')) }}">
                 <img src="{{ asset('images/logo-white.svg') }}" alt="Stencu Coffee" height="38">
             </a>
 
@@ -118,8 +118,10 @@
                             <span>{{ Auth::user()->name }}</span>
                             @if(Auth::user()->isOwner())
                                 <span class="badge bg-danger badge-role">Owner</span>
+                            @elseif(Auth::user()->email === 'dapur@stencu.com')
+                                <span class="badge bg-warning text-dark badge-role fw-bold"><i class="bi bi-fire me-1"></i>Dapur</span>
                             @elseif(Auth::user()->isStaff())
-                                <span class="badge bg-primary badge-role" style="background-color: #2563eb !important;">Kasir</span>
+                                <span class="badge bg-primary badge-role" style="background-color: #2563eb !important;"><i class="bi bi-calculator me-1"></i>Kasir</span>
                             @else
                                 <span class="badge bg-secondary badge-role">Customer</span>
                             @endif

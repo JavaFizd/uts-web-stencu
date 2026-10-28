@@ -46,17 +46,20 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        $staffDapur = User::firstOrCreate(
+            ['email' => 'dapur@stencu.com'],
+            [
+                'name' => 'Dapur & Barista',
+                'phone' => '085211223344',
+                'role' => 'staff',
+                'password' => Hash::make('password'),
+            ]
+        );
+
         $customer = User::firstOrCreate(
             ['email' => 'pelanggan@gmail.com'],
             [
                 'name' => 'Cut Nabila',
-                'phone' => '082133445566',
-                'role' => 'customer',
-                'password' => Hash::make('password'),
-            ]
-        );
-            [
-                'name' => 'Cut Nabila (Pelanggan Warkop)',
                 'phone' => '082133445566',
                 'role' => 'customer',
                 'password' => Hash::make('password'),

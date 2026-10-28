@@ -378,5 +378,15 @@ class StencuInventoryTest extends TestCase
         ]);
         $resKasir->assertRedirect(route('sales.create'));
         $this->assertAuthenticated();
+
+        $this->post('/logout');
+
+        // 3. Login Dapur -> diarahkan ke daftar transaksi/antrean pesanan
+        $resDapur = $this->post('/login', [
+            'login' => 'dapur',
+            'password' => 'password',
+        ]);
+        $resDapur->assertRedirect(route('sales.index'));
+        $this->assertAuthenticated();
     }
 }

@@ -19,6 +19,9 @@ class AuthController extends Controller
                 return redirect()->route('public.menu');
             }
             if (Auth::user()->isStaff()) {
+                if (Auth::user()->email === 'dapur@stencu.com') {
+                    return redirect()->route('sales.index');
+                }
                 return redirect()->route('sales.create');
             }
             return redirect()->route('dashboard');
@@ -28,13 +31,13 @@ class AuthController extends Controller
     }
 
     /**
-     * Proses autentikasi login pengguna (Bisa pakai Username "admin" / "kasir" atau Email).
+     * Proses autentikasi login pengguna (Bisa pakai Username "admin", "kasir", "dapur" atau Email).
      */
     public function login(Request $request)
     {
         $input = $request->input('login') ?? $request->input('email');
         if (empty($input)) {
-            return back()->withErrors(['login' => 'Username atau email wajib diisi.'])->withInput();
+            return back()->withErrors(['login' => 'Username wajib diisi.'])->withInput();
         }
 
         $request->validate([
@@ -46,18 +49,22 @@ class AuthController extends Controller
         $loginInput = strtolower(trim($input));
         $password = $request->password;
 
-        // Cari akun berdasarkan username pendek ("admin", "kasir") atau email
+        // Cari akun berdasarkan username pendek ("admin", "kasir", "dapur") atau email
         $user = null;
         if (in_array($loginInput, ['admin', 'owner'])) {
             $user = User::where('role', 'owner')->first();
-        } elseif (in_array($loginInput, ['kasir', 'staff'])) {
-            $user = User::where('role', 'staff')->first();
+        } elseif (in_array($loginInput, ['kasir', 'cashier'])) {
+            $user = User::where('email', 'kasir@stencu.com')->first() ?? User::where('role', 'staff')->first();
+        } elseif (in_array($loginInput, ['dapur', 'barista', 'kitchen'])) {
+            $user = User::where('email', 'dapur@stencu.com')->first();
+        } elseif ($loginInput === 'staff') {
+            $user = User::where('email', 'kasir@stencu.com')->first() ?? User::where('role', 'staff')->first();
         } else {
             $user = User::where('email', $loginInput)->first();
         }
 
-        // Autentikasi fleksibel: cocokkan hash password
-        if ($user && (Hash::check($password, $user->password) || $password === 'password' || $password === 'admin' || $password === 'kasir' || $password === '123456')) {
+        // Autentikasi fleksibel: cocokkan hash password atau shortcut demo
+        if ($user && (Hash::check($password, $user->password) || in_array($password, ['password', 'admin', 'kasir', 'dapur', 'barista', '123456']))) {
             $remember = $request->boolean('remember');
             Auth::login($user, $remember);
             $request->session()->regenerate();
@@ -70,6 +77,10 @@ class AuthController extends Controller
 
             if ($user->role === 'staff') {
                 $request->session()->forget('url.intended');
+                if ($user->email === 'dapur@stencu.com') {
+                    return redirect()->route('sales.index')
+                        ->with('success', 'Selamat bekerja, Staf Dapur & Barista! Antrean pesanan siap diracik.');
+                }
                 return redirect()->route('sales.create')
                     ->with('success', 'Selamat bekerja, Kasir. Layar Kasir POS aktif.');
             }
@@ -148,8 +159,12 @@ class AuthController extends Controller
 
         if (in_array($role, ['owner', 'admin'])) {
             $user = User::where('role', 'owner')->first();
-        } elseif (in_array($role, ['kasir', 'staff'])) {
-            $user = User::where('role', 'staff')->first();
+        } elseif (in_array($role, ['kasir', 'cashier'])) {
+            $user = User::where('email', 'kasir@stencu.com')->first() ?? User::where('role', 'staff')->first();
+        } elseif (in_array($role, ['dapur', 'barista', 'kitchen'])) {
+            $user = User::where('email', 'dapur@stencu.com')->first();
+        } elseif ($role === 'staff') {
+            $user = User::where('email', 'kasir@stencu.com')->first() ?? User::where('role', 'staff')->first();
         } else {
             $user = User::where('role', 'customer')->first();
         }
@@ -162,6 +177,10 @@ class AuthController extends Controller
                 return redirect()->route('dashboard')
                     ->with('success', 'Berhasil masuk sebagai Owner.');
             } elseif ($user->role === 'staff') {
+                if ($user->email === 'dapur@stencu.com') {
+                    return redirect()->route('sales.index')
+                        ->with('success', 'Berhasil masuk sebagai Staf Dapur & Barista. Antrean pesanan siap diracik.');
+                }
                 return redirect()->route('sales.create')
                     ->with('success', 'Berhasil masuk sebagai Kasir. Layar Kasir POS aktif.');
             } else {
