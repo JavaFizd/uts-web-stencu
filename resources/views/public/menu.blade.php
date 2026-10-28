@@ -279,18 +279,20 @@
 
                             <!-- Input Nomor Meja (Jika Dine-In) -->
                             <div class="mb-3" id="tableInputGroup">
-                                <label class="form-label small fw-bold">Pilih Nomor Meja Anda <span class="text-danger">*</span></label>
+                                <label class="form-label small fw-bold">Pilih Nomor Meja <span class="text-danger">*</span></label>
                                 <select name="table_number" id="tableNumber" class="form-select fw-semibold text-dark">
-                                    <option value="01">Meja 01 (Area Utama)</option>
-                                    <option value="02">Meja 02 (Area Utama)</option>
-                                    <option value="03" selected>Meja 03 (Dekat Barista)</option>
-                                    <option value="04">Meja 04 (Area Tengah)</option>
-                                    <option value="05">Meja 05 (Samping Colokan)</option>
-                                    <option value="06">Meja 06 (Lesehan / Santai)</option>
-                                    <option value="07">Meja 07 (Area Luar / Smoking)</option>
-                                    <option value="08">Meja 08 (Area Luar / Smoking)</option>
+                                    <option value="01">Meja 01</option>
+                                    <option value="02">Meja 02</option>
+                                    <option value="03" selected>Meja 03</option>
+                                    <option value="04">Meja 04</option>
+                                    <option value="05">Meja 05</option>
+                                    <option value="06">Meja 06</option>
+                                    <option value="07">Meja 07</option>
+                                    <option value="08">Meja 08</option>
+                                    <option value="09">Meja 09</option>
+                                    <option value="10">Meja 10</option>
                                 </select>
-                                <div class="form-text small text-muted" style="font-size: 0.75rem;">Barista akan mengantar pesanan langsung ke meja yang Anda pilih.</div>
+                                <div class="form-text small text-muted" style="font-size: 0.75rem;">Pesanan akan diantar barista langsung ke nomor meja ini.</div>
                             </div>
 
                             <div class="mb-3">
