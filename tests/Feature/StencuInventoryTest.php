@@ -355,4 +355,17 @@ class StencuInventoryTest extends TestCase
             'status' => 'completed',
         ]);
     }
+
+    /**
+     * Skenario 12: Filter Penjualan Fleksibel (Hari, Minggu, Bulan, Tahun).
+     */
+    public function test_sales_flexible_filter_by_period_month_week_and_day(): void
+    {
+        $owner = User::factory()->create(['role' => 'owner']);
+
+        $response = $this->actingAs($owner)->get('/sales?year=2026&month=10&week=2');
+        $response->assertStatus(200);
+        $response->assertViewHas('totalOmset');
+        $response->assertViewHas('totalTransactions');
+    }
 }

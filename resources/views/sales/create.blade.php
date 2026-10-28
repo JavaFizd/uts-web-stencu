@@ -97,6 +97,12 @@
                     </select>
                 </div>
 
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Waktu / Tanggal Transaksi</label>
+                    <input type="datetime-local" name="sold_at" class="form-control" value="{{ old('sold_at', date('Y-m-d\TH:i')) }}">
+                    <div class="form-text small text-muted" style="font-size: 0.72rem;">Otomatis waktu saat ini, bisa diganti jika ingin mencatat tanggal/jam tertentu.</div>
+                </div>
+
                 <!-- Tabel Item Keranjang -->
                 <div class="table-responsive mb-3" style="min-height: 180px;">
                     <table class="table table-sm align-middle mb-0" id="cartTable">

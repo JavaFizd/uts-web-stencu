@@ -14,13 +14,72 @@ use Illuminate\Validation\ValidationException;
 class SaleController extends Controller
 {
     /**
-     * Tampilkan riwayat transaksi penjualan (Stock-out) dengan filter & search.
+     * Tampilkan riwayat transaksi penjualan (Stock-out) dengan filter & search lengkap.
+     * Mendukung filter: Hari, Minggu ke-n, Bulan, Tahun, Rentang Tanggal, & Status.
      */
     public function index(Request $request)
     {
         $query = Sale::with(['user', 'items.product']);
 
-        // 1. Filter Pencarian Nomor Nota / Nama Pelanggan
+        // 1. Filter Preset Cepat (today, yesterday, this_week, this_month, this_year)
+        if ($request->filled('preset')) {
+            $today = Carbon::today();
+            switch ($request->preset) {
+                case 'today':
+                    $query->whereDate('sold_at', $today);
+                    break;
+                case 'yesterday':
+                    $query->whereDate('sold_at', Carbon::yesterday());
+                    break;
+                case 'this_week':
+                    $query->whereBetween('sold_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]);
+                    break;
+                case 'this_month':
+                    $query->whereMonth('sold_at', $today->month)->whereYear('sold_at', $today->year);
+                    break;
+                case 'this_year':
+                    $query->whereYear('sold_at', $today->year);
+                    break;
+            }
+        }
+
+        // 2. Filter Tahun
+        if ($request->filled('year')) {
+            $query->whereYear('sold_at', $request->year);
+        }
+
+        // 3. Filter Bulan (1 - 12)
+        if ($request->filled('month')) {
+            $query->whereMonth('sold_at', $request->month);
+        }
+
+        // 4. Filter Minggu ke- (1: tgl 1-7, 2: tgl 8-14, 3: tgl 15-21, 4: tgl 22-28, 5: tgl 29-31)
+        if ($request->filled('week')) {
+            $week = (int) $request->week;
+            $startDay = (($week - 1) * 7) + 1;
+            $endDay = min($week * 7, 31);
+            $query->whereBetween(DB::raw('DAY(sold_at)'), [$startDay, $endDay]);
+        }
+
+        // 5. Filter Hari dalam Seminggu (0: Senin, 1: Selasa, ..., 6: Minggu)
+        if ($request->filled('day_of_week')) {
+            $query->where(DB::raw('WEEKDAY(sold_at)'), (int) $request->day_of_week);
+        }
+
+        // 6. Filter Tanggal Tertentu (Hari tgl 1 - 31)
+        if ($request->filled('day')) {
+            $query->whereDay('sold_at', (int) $request->day);
+        }
+
+        // 7. Filter Rentang Tanggal Manual (Dari - Sampai)
+        if ($request->filled('date_from')) {
+            $query->whereDate('sold_at', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('sold_at', '<=', $request->date_to);
+        }
+
+        // 8. Filter Pencarian Keyword (Nomor Nota / Nama Pelanggan)
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -29,22 +88,32 @@ class SaleController extends Controller
             });
         }
 
-        // 2. Filter Tanggal Transaksi
-        if ($request->filled('date_from')) {
-            $query->whereDate('sold_at', '>=', $request->date_from);
-        }
-        if ($request->filled('date_to')) {
-            $query->whereDate('sold_at', '<=', $request->date_to);
-        }
-
-        // 3. Filter Status (completed, cancelled)
+        // 9. Filter Status (completed, cancelled)
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        $sales = $query->latest('sold_at')->paginate(10)->withQueryString();
+        // Hitung agregat hasil filter sebelum paginasi
+        $aggregateQuery = clone $query;
+        $totalOmset = (clone $aggregateQuery)->where('status', 'completed')->sum('total');
+        $totalTransactions = (clone $aggregateQuery)->where('status', 'completed')->count();
+        $totalCancelled = (clone $aggregateQuery)->where('status', 'cancelled')->count();
 
-        return view('sales.index', compact('sales'));
+        // Ambil daftar tahun yang ada di database untuk opsi dropdown
+        $availableYears = Sale::selectRaw('YEAR(sold_at) as year')
+            ->distinct()
+            ->orderByDesc('year')
+            ->pluck('year');
+
+        $sales = $query->latest('sold_at')->paginate(15)->withQueryString();
+
+        return view('sales.index', compact(
+            'sales',
+            'totalOmset',
+            'totalTransactions',
+            'totalCancelled',
+            'availableYears'
+        ));
     }
 
     /**
@@ -75,6 +144,7 @@ class SaleController extends Controller
         $request->validate([
             'customer_name' => ['required', 'string', 'max:100'],
             'payment_method' => ['required', 'in:cash,qris,transfer'],
+            'sold_at' => ['nullable', 'date'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.product_id' => ['required', 'exists:products,id'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
@@ -96,7 +166,7 @@ class SaleController extends Controller
                     'total' => 0, // Akan dihitung dan diakumulasikan di bawah
                     'status' => 'completed',
                     'notes' => $request->notes,
-                    'sold_at' => now(),
+                    'sold_at' => $request->filled('sold_at') ? Carbon::parse($request->sold_at) : now(),
                 ]);
 
                 $grandTotal = 0;
