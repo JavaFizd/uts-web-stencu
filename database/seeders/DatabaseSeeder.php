@@ -417,7 +417,7 @@ class DatabaseSeeder extends Seeder
                     // Jam buka warkop antara 08.00 s.d. 23.30
                     $soldAt = $currentDate->copy()->setHour(rand(8, 23))->setMinute(rand(0, 59))->setSecond(rand(0, 59));
 
-                    $saleNumber = sprintf('INV-%s-%05d', $currentDate->format('Ym'), $saleIndex++);
+                    $saleNumber = sprintf('NOTA-%04d', $saleIndex++);
 
                     $sale = Sale::create([
                         'sale_number' => $saleNumber,
@@ -459,7 +459,7 @@ class DatabaseSeeder extends Seeder
                     $isKopi = ($purchaseIndex % 2 === 0);
                     $supplier = $isKopi ? $supKopi : $supGrosir;
                     $purchasedAt = $currentDate->copy()->setHour(rand(7, 10))->setMinute(rand(10, 50));
-                    $poNumber = sprintf('PO-%s-%04d', $currentDate->format('Ym'), $purchaseIndex++);
+                    $poNumber = sprintf('PO-%03d', $purchaseIndex++);
 
                     $purchase = Purchase::create([
                         'purchase_number' => $poNumber,
@@ -581,7 +581,7 @@ class DatabaseSeeder extends Seeder
             foreach ($todaySales as $ts) {
                 [$hour, $minute] = explode(':', $ts['time']);
                 $soldAt = $today->copy()->setHour((int)$hour)->setMinute((int)$minute)->setSecond(0);
-                $saleNumber = sprintf('INV-%s-%05d', $today->format('Ym'), $saleIndex++);
+                $saleNumber = sprintf('NOTA-%04d', $saleIndex++);
 
                 $sale = Sale::create([
                     'sale_number' => $saleNumber,
@@ -619,7 +619,7 @@ class DatabaseSeeder extends Seeder
             // 1 Pembelian Restok Hari Ini (Pagi Jam 07:15)
             $purchasedAt = $today->copy()->setHour(7)->setMinute(15)->setSecond(0);
             $poToday = Purchase::create([
-                'purchase_number' => sprintf('PO-%s-%04d', $today->format('Ym'), $purchaseIndex++),
+                'purchase_number' => sprintf('PO-%03d', $purchaseIndex++),
                 'supplier_id' => $supGrosir->id,
                 'user_id' => $staffDapur->id,
                 'total' => 0,

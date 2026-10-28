@@ -164,12 +164,11 @@ class PurchaseController extends Controller
     }
 
     /**
-     * Generator nomor pembelian otomatis (Contoh: PO-20261024-0005)
+     * Generator nomor pembelian otomatis simpel (Contoh: PO-001)
      */
     private function generatePurchaseNumber(): string
     {
-        $prefix = 'PO-' . date('Ymd') . '-';
-        $todayCount = Purchase::whereDate('created_at', today())->count() + 1;
-        return $prefix . str_pad($todayCount, 4, '0', STR_PAD_LEFT);
+        $nextId = (Purchase::max('id') ?? 0) + 1;
+        return sprintf('PO-%03d', $nextId);
     }
 }

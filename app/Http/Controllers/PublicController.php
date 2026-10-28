@@ -181,12 +181,11 @@ class PublicController extends Controller
     }
 
     /**
-     * Generator nomor nota unik
+     * Generator nomor nota unik simpel (Format: NOTA-0001)
      */
     private function generateSaleNumber(): string
     {
-        $prefix = 'INV-' . date('Ymd') . '-';
-        $todayCount = Sale::whereDate('created_at', today())->count() + 1;
-        return $prefix . str_pad($todayCount, 4, '0', STR_PAD_LEFT);
+        $nextId = (Sale::max('id') ?? 0) + 1;
+        return sprintf('NOTA-%04d', $nextId);
     }
 }

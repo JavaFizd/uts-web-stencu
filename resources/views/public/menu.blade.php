@@ -97,7 +97,7 @@
     <div class="row g-3 g-md-4 mb-5">
         @forelse($products as $product)
             <div class="col-sm-6 col-lg-4">
-                <div class="card card-product h-100 p-3 d-flex flex-column">
+                <div class="card card-product h-100 p-3 d-flex flex-column" id="card-product-{{ $product->id }}" style="transition: all 0.2s ease-in-out;">
                     <!-- Foto Menu Real JPG -->
                     <div class="position-relative overflow-hidden rounded-3 mb-3" style="height: 180px; background-color: #f1f5f9;">
                         @php
@@ -137,11 +137,13 @@
                         </div>
 
                         @if($product->stock > 0)
-                            <button type="button" class="btn btn-primary btn-sm fw-bold px-3 py-2 text-white rounded-pill shadow-sm"
-                                    style="background-color: #2563eb; border: none;"
-                                    onclick="addToCart({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->selling_price }}, {{ $product->stock }})">
-                                <i class="bi bi-plus-lg me-1"></i> Tambah
-                            </button>
+                            <div id="btn-container-{{ $product->id }}">
+                                <button type="button" class="btn btn-primary btn-sm fw-bold px-3 py-2 text-white rounded-pill shadow-sm"
+                                        style="background-color: #2563eb; border: none;"
+                                        onclick="addToCart({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->selling_price }}, {{ $product->stock }})">
+                                    <i class="bi bi-plus-lg me-1"></i> Pesan
+                                </button>
+                            </div>
                         @else
                             <button class="btn btn-secondary btn-sm rounded-pill px-3 py-2 disabled" disabled>
                                 Habis
@@ -247,9 +249,18 @@
 
                             <!-- Input Nomor Meja (Jika Dine-In) -->
                             <div class="mb-3" id="tableInputGroup">
-                                <label class="form-label small fw-bold">Nomor Meja Anda <span class="text-danger">*</span></label>
-                                <input type="text" name="table_number" id="tableNumber" class="form-control" placeholder="Contoh: 04 (Lihat stiker di meja Anda)" value="{{ old('table_number') }}">
-                                <div class="form-text small text-muted" style="font-size: 0.75rem;">Barista akan mengantar pesanan langsung ke meja ini.</div>
+                                <label class="form-label small fw-bold">Pilih Nomor Meja Anda <span class="text-danger">*</span></label>
+                                <select name="table_number" id="tableNumber" class="form-select fw-semibold text-dark">
+                                    <option value="01">Meja 01 (Area Utama)</option>
+                                    <option value="02">Meja 02 (Area Utama)</option>
+                                    <option value="03" selected>Meja 03 (Dekat Barista)</option>
+                                    <option value="04">Meja 04 (Area Tengah)</option>
+                                    <option value="05">Meja 05 (Samping Colokan)</option>
+                                    <option value="06">Meja 06 (Lesehan / Santai)</option>
+                                    <option value="07">Meja 07 (Area Luar / Smoking)</option>
+                                    <option value="08">Meja 08 (Area Luar / Smoking)</option>
+                                </select>
+                                <div class="form-text small text-muted" style="font-size: 0.75rem;">Barista akan mengantar pesanan langsung ke meja yang Anda pilih.</div>
                             </div>
 
                             <div class="mb-3">
@@ -284,6 +295,17 @@
 
 @section('scripts')
 <script>
+    const productsData = {
+        @foreach($products as $prod)
+            {{ $prod->id }}: {
+                id: {{ $prod->id }},
+                name: "{{ addslashes($prod->name) }}",
+                price: {{ (int)$prod->selling_price }},
+                stock: {{ (int)$prod->stock }}
+            },
+        @endforeach
+    };
+
     let cart = {};
 
     function addToCart(id, name, price, maxStock) {
@@ -300,7 +322,12 @@
     }
 
     function changeQty(id, delta) {
-        if (!cart[id]) return;
+        if (!cart[id]) {
+            if (delta > 0 && productsData[id]) {
+                addToCart(id, productsData[id].name, productsData[id].price, productsData[id].stock);
+            }
+            return;
+        }
         
         let newQty = cart[id].qty + delta;
         if (newQty <= 0) {
@@ -327,7 +354,7 @@
         const keys = Object.keys(cart);
 
         if (keys.length === 0) {
-            listHtml = '<div class="text-center py-4 text-muted small"><i class="bi bi-cart3 fs-3 d-block mb-1 text-muted"></i>Keranjang Anda masih kosong.</div>';
+            listHtml = '<div class="text-center py-4 text-muted small"><i class="bi bi-cart3 fs-3 d-block mb-1 text-muted"></i>Keranjang Anda masih kosong. Silakan pilih menu di atas.</div>';
             document.getElementById('floatingCart').classList.add('d-none');
             document.getElementById('floatingCart').classList.remove('d-flex');
             document.getElementById('btnSubmitCustomerOrder').disabled = true;
@@ -348,7 +375,7 @@
                             <button type="button" class="btn btn-outline-secondary btn-sm p-0 px-2 rounded-circle" onclick="changeQty(${item.id}, -1)">&minus;</button>
                             <span class="fw-bold px-1 small">${item.qty}</span>
                             <button type="button" class="btn btn-outline-primary btn-sm p-0 px-2 rounded-circle" onclick="changeQty(${item.id}, 1)">&plus;</button>
-                            <button type="button" class="btn btn-link text-danger btn-sm p-0 ms-1" onclick="removeItem(${item.id})"><i class="bi bi-trash"></i></button>
+                            <button type="button" class="btn btn-link text-danger btn-sm p-0 ms-1" onclick="removeItem(${item.id})" title="Hapus"><i class="bi bi-trash"></i></button>
                         </div>
                     </div>
                 `;
@@ -365,11 +392,56 @@
         }
 
         document.getElementById('cartModalList').innerHTML = listHtml + hiddenInputsHtml;
-        document.getElementById('modalItemsCount').innerText = totalItems + ' Item';
+        document.getElementById('modalItemsCount').innerText = keys.length + ' Menu (' + totalItems + ' Porsi)';
         document.getElementById('modalGrandTotal').innerText = 'Rp ' + formatRupiah(grandTotal);
         document.getElementById('navCartCount').innerText = totalItems;
-        document.getElementById('floatItemCount').innerText = totalItems + ' Menu Dipilih';
+        document.getElementById('floatItemCount').innerText = keys.length + ' Menu Dipilih (' + totalItems + ' Porsi)';
         document.getElementById('floatTotalAmount').innerText = 'Rp ' + formatRupiah(grandTotal);
+
+        updateProductCardButtons();
+    }
+
+    function updateProductCardButtons() {
+        document.querySelectorAll('[id^="btn-container-"]').forEach(container => {
+            const id = container.id.replace('btn-container-', '');
+            const card = document.getElementById('card-product-' + id);
+            const item = cart[id];
+
+            if (item && item.qty > 0) {
+                container.innerHTML = `
+                    <div class="d-flex align-items-center bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-pill p-1 shadow-sm">
+                        <button type="button" class="btn btn-primary btn-sm rounded-circle p-0 d-flex align-items-center justify-content-center" style="width: 28px; height: 28px; background-color: #2563eb; border: none;" onclick="changeQty(${id}, -1)">
+                            <i class="bi bi-dash fw-bold text-white"></i>
+                        </button>
+                        <span class="fw-bold px-2 text-primary small" style="min-width: 24px; text-align: center;">${item.qty}</span>
+                        <button type="button" class="btn btn-primary btn-sm rounded-circle p-0 d-flex align-items-center justify-content-center" style="width: 28px; height: 28px; background-color: #2563eb; border: none;" onclick="changeQty(${id}, 1)">
+                            <i class="bi bi-plus fw-bold text-white"></i>
+                        </button>
+                    </div>
+                `;
+                if (card) {
+                    card.style.borderColor = '#2563eb';
+                    card.style.backgroundColor = '#f8faff';
+                    card.style.boxShadow = '0 4px 14px rgba(37, 99, 235, 0.15)';
+                }
+            } else {
+                if (productsData[id]) {
+                    const p = productsData[id];
+                    container.innerHTML = `
+                        <button type="button" class="btn btn-primary btn-sm fw-bold px-3 py-2 text-white rounded-pill shadow-sm"
+                                style="background-color: #2563eb; border: none;"
+                                onclick="addToCart(${p.id}, '${escapeJs(p.name)}', ${p.price}, ${p.stock})">
+                            <i class="bi bi-plus-lg me-1"></i> Pesan
+                        </button>
+                    `;
+                }
+                if (card) {
+                    card.style.borderColor = '';
+                    card.style.backgroundColor = '#ffffff';
+                    card.style.boxShadow = '';
+                }
+            }
+        });
     }
 
     function openCartModal() {
@@ -379,19 +451,22 @@
 
     function toggleTableInput(isDineIn) {
         let group = document.getElementById('tableInputGroup');
-        let input = document.getElementById('tableNumber');
+        let select = document.getElementById('tableNumber');
         if (isDineIn) {
             group.style.display = 'block';
-            input.required = true;
+            select.disabled = false;
         } else {
             group.style.display = 'none';
-            input.required = false;
-            input.value = '';
+            select.disabled = true;
         }
     }
 
     function formatRupiah(angka) {
         return new Intl.NumberFormat('id-ID').format(angka);
+    }
+
+    function escapeJs(str) {
+        return str.replace(/'/g, "\\'");
     }
 
     document.addEventListener('DOMContentLoaded', function() {
