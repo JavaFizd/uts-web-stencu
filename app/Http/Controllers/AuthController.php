@@ -51,8 +51,14 @@ class AuthController extends Controller
                     ->with('success', 'Selamat datang di Stencu Coffee, ' . $user->name . '!');
             }
 
+            if ($user->role === 'staff') {
+                $request->session()->forget('url.intended');
+                return redirect()->route('sales.create')
+                    ->with('success', 'Selamat bekerja, ' . $user->name . ' (Staff Kasir). Layar Kasir POS aktif.');
+            }
+
             return redirect()->intended(route('dashboard'))
-                ->with('success', 'Selamat datang kembali, ' . $user->name . ' (' . ucfirst($user->role) . ')!');
+                ->with('success', 'Selamat datang kembali, ' . $user->name . ' (Owner)!');
         }
 
         // 3. Jika gagal, kembalikan dengan pesan error
@@ -122,8 +128,8 @@ class AuthController extends Controller
     {
         $allowed = [
             'owner' => 'owner@stencu.com',
-            'kasir' => 'kasir@stencu.com',
-            'staff' => 'kasir@stencu.com',
+            'kasir' => 'staff@stencu.com',
+            'staff' => 'staff@stencu.com',
             'dapur' => 'dapur@stencu.com',
             'barista' => 'dapur@stencu.com',
             'pelanggan' => 'pelanggan@gmail.com',
@@ -149,16 +155,13 @@ class AuthController extends Controller
 
             if ($user->role === 'owner') {
                 return redirect()->route('dashboard')
-                    ->with('success', 'Berhasil masuk sebagai Owner. Semua modul manajemen aktif.');
-            } elseif ($user->email === 'dapur@stencu.com') {
-                return redirect()->route('products.index')
-                    ->with('success', 'Berhasil masuk sebagai Staf Dapur (Fajar). Anda dapat memantau stok bahan dan mencatat pembelian.');
+                    ->with('success', 'Berhasil masuk sebagai Owner.');
             } elseif ($user->role === 'staff') {
-                return redirect()->route('sales.index')
-                    ->with('success', 'Berhasil masuk sebagai Staf Kasir (Rian). Anda dapat melihat pesanan pelanggan dan membuka POS.');
+                return redirect()->route('sales.create')
+                    ->with('success', 'Berhasil masuk sebagai Staff Kasir. Layar Kasir POS aktif.');
             } else {
                 return redirect()->route('public.menu')
-                    ->with('success', 'Berhasil masuk sebagai Pelanggan. Selamat memesan kopi & makanan!');
+                    ->with('success', 'Berhasil masuk sebagai Pelanggan.');
             }
         }
 

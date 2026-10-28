@@ -95,7 +95,7 @@
     <!-- Top Navbar (Deep Navy Blue) -->
     <nav class="navbar navbar-expand-lg navbar-dark navbar-stencu sticky-top py-2 shadow-sm">
         <div class="container-fluid px-3">
-            <a class="navbar-brand d-flex align-items-center" href="{{ route('dashboard') }}">
+            <a class="navbar-brand d-flex align-items-center" href="{{ Auth::user()->isOwner() ? route('dashboard') : route('sales.create') }}">
                 <img src="{{ asset('images/logo-white.svg') }}" alt="Stencu Coffee" height="38">
             </a>
 
@@ -152,11 +152,13 @@
                         Menu Utama
                     </div>
                     <ul class="nav flex-column mb-3">
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('dashboard') ? 'active-menu' : '' }}" href="{{ route('dashboard') }}">
-                                <i class="bi bi-speedometer2 me-2"></i> Dashboard
-                            </a>
-                        </li>
+                        @if(Auth::user()->isOwner())
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('dashboard') ? 'active-menu' : '' }}" href="{{ route('dashboard') }}">
+                                    <i class="bi bi-speedometer2 me-2"></i> Dashboard Owner
+                                </a>
+                            </li>
+                        @endif
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('sales.create') ? 'active-menu' : '' }}" href="{{ route('sales.create') }}">
                                 <i class="bi bi-cart-plus me-2 text-primary"></i> Kasir POS (Jual)
@@ -180,7 +182,7 @@
                     </ul>
 
                     <div class="small fw-bold text-uppercase px-2 mb-2" style="font-size: 0.72rem; color: #1e40af; letter-spacing: 0.8px;">
-                        Master Inventaris
+                        Inventaris
                     </div>
                     <ul class="nav flex-column mb-3">
                         <li class="nav-item">
@@ -188,16 +190,18 @@
                                 <i class="bi bi-box-seam me-2"></i> Katalog Produk
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('categories.*') ? 'active-menu' : '' }}" href="{{ route('categories.index') }}">
-                                <i class="bi bi-tags me-2"></i> Kategori Produk
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('suppliers.*') ? 'active-menu' : '' }}" href="{{ route('suppliers.index') }}">
-                                <i class="bi bi-people me-2"></i> Mitra Supplier
-                            </a>
-                        </li>
+                        @if(Auth::user()->isOwner())
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('categories.*') ? 'active-menu' : '' }}" href="{{ route('categories.index') }}">
+                                    <i class="bi bi-tags me-2"></i> Kategori Produk
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('suppliers.*') ? 'active-menu' : '' }}" href="{{ route('suppliers.index') }}">
+                                    <i class="bi bi-people me-2"></i> Mitra Supplier
+                                </a>
+                            </li>
+                        @endif
                     </ul>
 
                     @if(Auth::user()->isOwner())

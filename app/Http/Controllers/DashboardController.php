@@ -11,6 +11,7 @@ use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -22,6 +23,11 @@ class DashboardController extends Controller
      */
     public function index(Request $request)
     {
+        // Proteksi Hak Akses (Slide 5): Staff kasir langsung diarahkan ke layar POS
+        if (Auth::user()->isStaff()) {
+            return redirect()->route('sales.create');
+        }
+
         $today = Carbon::today();
         $startOfWeek = Carbon::now()->startOfWeek();
         $startOfMonth = Carbon::now()->startOfMonth();

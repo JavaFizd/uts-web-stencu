@@ -32,17 +32,27 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Owner',
                 'phone' => '081269001122',
                 'role' => 'owner',
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('password'),
             ]
         );
 
         $staffKasir = User::firstOrCreate(
+            ['email' => 'staff@stencu.com'],
+            [
+                'name' => 'Rian (Staff Kasir)',
+                'phone' => '085277889900',
+                'role' => 'staff',
+                'password' => Hash::make('password'),
+            ]
+        );
+
+        User::firstOrCreate(
             ['email' => 'kasir@stencu.com'],
             [
                 'name' => 'Rian (Kasir)',
                 'phone' => '085277889900',
                 'role' => 'staff',
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('password'),
             ]
         );
 
@@ -52,7 +62,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Fajar (Barista & Dapur)',
                 'phone' => '085211223344',
                 'role' => 'staff',
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('password'),
             ]
         );
 
@@ -62,7 +72,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Cut Nabila (Pelanggan Warkop)',
                 'phone' => '082133445566',
                 'role' => 'customer',
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('password'),
             ]
         );
 
