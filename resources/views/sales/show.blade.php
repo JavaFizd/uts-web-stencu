@@ -119,3 +119,40 @@
     </div>
 </div>
 @endsection
+
+@section('styles')
+<style>
+    @media print {
+        body {
+            background: #ffffff !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        .btn, .sidebar, .navbar, .no-print, a, form {
+            display: none !important;
+        }
+        .col-lg-8, .row {
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        .card-custom {
+            width: 320px !important;
+            margin: 0 auto !important;
+            padding: 14px !important;
+            border: 1px dashed #000000 !important;
+            box-shadow: none !important;
+            font-size: 11px !important;
+            color: #000000 !important;
+            page-break-inside: avoid !important;
+        }
+        .card-custom h4 {
+            font-size: 15px !important;
+            color: #000000 !important;
+        }
+        .table {
+            font-size: 11px !important;
+        }
+    }
+</style>
+@endsection

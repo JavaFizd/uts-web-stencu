@@ -4,14 +4,14 @@
 
 @section('content')
 <div class="container py-4">
-    <!-- Header Title -->
+    <!-- Header Title & Cart Button -->
     <div class="row align-items-center mb-4">
         <div class="col-md-7">
             <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 rounded-pill fw-bold small mb-2">
                 <i class="bi bi-cart-check me-1"></i> Pemesanan Langsung di Web
             </span>
             <h2 class="fw-bold mb-1" style="color: #0f2b5c;">Daftar Menu Stencu Coffee</h2>
-            <p class="text-muted mb-0">Pilih menu favorit Anda, masukkan ke keranjang, dan pesan langsung dari meja tanpa perlu antre!</p>
+            <p class="text-muted mb-0">Pilih menu favorit Anda, tambahkan ke keranjang, dan pesan langsung dari meja tanpa perlu antre!</p>
         </div>
         <div class="col-md-5 mt-3 mt-md-0 text-md-end">
             <button type="button" class="btn btn-primary rounded-pill px-4 py-2 position-relative shadow-sm" onclick="openCartModal()" style="background-color: #2563eb; border: none;">
@@ -42,61 +42,58 @@
         </div>
     @endif
 
-    <!-- 3 Kategori Utama Pelanggan (Minuman, Makanan, Cemilan) -->
+    <!-- 4 Kategori Tab Filter Instan (Tanpa Reload Halaman, Keranjang Aman 100%) -->
     <div class="row g-2 g-md-3 mb-4">
         <!-- Tab 1: Semua Menu -->
         <div class="col-6 col-md-3">
-            <a href="{{ route('public.menu') }}" class="card text-decoration-none h-100 p-3 rounded-4 border shadow-sm text-center {{ !request('category') ? 'text-white' : 'bg-white text-dark' }}" style="{{ !request('category') ? 'background-color: #0f2b5c !important; border-color: #0f2b5c;' : '' }}">
-                <div class="fs-3 mb-1 {{ !request('category') ? 'text-info' : 'text-primary' }}"><i class="bi bi-grid-fill"></i></div>
-                <div class="fw-bold fs-6">Semua Menu</div>
-                <span class="small {{ !request('category') ? 'text-light opacity-75' : 'text-muted' }}" style="font-size: 0.76rem;">12 Menu Warkop</span>
-            </a>
+            <button type="button" class="card category-tab-btn active-tab w-100 p-3 rounded-4 border shadow-sm text-center" onclick="filterCategory('all', this)" id="tab-all">
+                <div class="fs-3 mb-1 tab-icon"><i class="bi bi-grid-fill"></i></div>
+                <div class="fw-bold fs-6 tab-title">Semua Menu</div>
+                <span class="small tab-sub" style="font-size: 0.76rem;">12 Menu Warkop</span>
+            </button>
         </div>
         <!-- Tab 2: Minuman -->
         <div class="col-6 col-md-3">
-            <a href="{{ route('public.menu', ['category' => 'minuman']) }}" class="card text-decoration-none h-100 p-3 rounded-4 border shadow-sm text-center {{ request('category') == 'minuman' ? 'text-white' : 'bg-white text-dark' }}" style="{{ request('category') == 'minuman' ? 'background-color: #2563eb !important; border-color: #2563eb;' : '' }}">
-                <div class="fs-3 mb-1 {{ request('category') == 'minuman' ? 'text-warning' : 'text-primary' }}"><i class="bi bi-cup-hot-fill"></i></div>
-                <div class="fw-bold fs-6">Minuman</div>
-                <span class="small {{ request('category') == 'minuman' ? 'text-light opacity-75' : 'text-muted' }}" style="font-size: 0.76rem;">Sanger, Teh Tarik &amp; Milo</span>
-            </a>
+            <button type="button" class="card category-tab-btn w-100 p-3 rounded-4 border shadow-sm text-center bg-white text-dark" onclick="filterCategory('minuman', this)" id="tab-minuman">
+                <div class="fs-3 mb-1 text-primary tab-icon"><i class="bi bi-cup-hot-fill"></i></div>
+                <div class="fw-bold fs-6 tab-title">Minuman</div>
+                <span class="small text-muted tab-sub" style="font-size: 0.76rem;">Sanger, Teh Tarik &amp; Milo</span>
+            </button>
         </div>
         <!-- Tab 3: Makanan -->
         <div class="col-6 col-md-3">
-            <a href="{{ route('public.menu', ['category' => 'makanan']) }}" class="card text-decoration-none h-100 p-3 rounded-4 border shadow-sm text-center {{ request('category') == 'makanan' ? 'text-white' : 'bg-white text-dark' }}" style="{{ request('category') == 'makanan' ? 'background-color: #dc2626 !important; border-color: #dc2626;' : '' }}">
-                <div class="fs-3 mb-1 {{ request('category') == 'makanan' ? 'text-warning' : 'text-danger' }}"><i class="bi bi-fire"></i></div>
-                <div class="fw-bold fs-6">Makanan</div>
-                <span class="small {{ request('category') == 'makanan' ? 'text-light opacity-75' : 'text-muted' }}" style="font-size: 0.76rem;">Mie Aceh, Indomie &amp; Nasi</span>
-            </a>
+            <button type="button" class="card category-tab-btn w-100 p-3 rounded-4 border shadow-sm text-center bg-white text-dark" onclick="filterCategory('makanan', this)" id="tab-makanan">
+                <div class="fs-3 mb-1 text-danger tab-icon"><i class="bi bi-fire"></i></div>
+                <div class="fw-bold fs-6 tab-title">Makanan</div>
+                <span class="small text-muted tab-sub" style="font-size: 0.76rem;">Mie Aceh, Indomie &amp; Nasi</span>
+            </button>
         </div>
         <!-- Tab 4: Cemilan -->
         <div class="col-6 col-md-3">
-            <a href="{{ route('public.menu', ['category' => 'cemilan']) }}" class="card text-decoration-none h-100 p-3 rounded-4 border shadow-sm text-center {{ request('category') == 'cemilan' ? 'text-white' : 'bg-white text-dark' }}" style="{{ request('category') == 'cemilan' ? 'background-color: #059669 !important; border-color: #059669;' : '' }}">
-                <div class="fs-3 mb-1 {{ request('category') == 'cemilan' ? 'text-warning' : 'text-success' }}"><i class="bi bi-basket2-fill"></i></div>
-                <div class="fw-bold fs-6">Cemilan</div>
-                <span class="small {{ request('category') == 'cemilan' ? 'text-light opacity-75' : 'text-muted' }}" style="font-size: 0.76rem;">Pisang Keju, Roti &amp; Bakwan</span>
-            </a>
+            <button type="button" class="card category-tab-btn w-100 p-3 rounded-4 border shadow-sm text-center bg-white text-dark" onclick="filterCategory('cemilan', this)" id="tab-cemilan">
+                <div class="fs-3 mb-1 text-success tab-icon"><i class="bi bi-basket2-fill"></i></div>
+                <div class="fw-bold fs-6 tab-title">Cemilan</div>
+                <span class="small text-muted tab-sub" style="font-size: 0.76rem;">Pisang Keju, Roti &amp; Bakwan</span>
+            </button>
         </div>
     </div>
 
-    <!-- Search Form Bar -->
-    <form action="{{ route('public.menu') }}" method="GET" class="mb-4">
-        @if(request('category'))
-            <input type="hidden" name="category" value="{{ request('category') }}">
-        @endif
+    <!-- Search Form Bar (Live Search Instan) -->
+    <div class="mb-4">
         <div class="input-group bg-white rounded-pill shadow-sm p-1 border">
             <span class="input-group-text bg-transparent border-0 text-primary ps-3"><i class="bi bi-search"></i></span>
-            <input type="text" name="search" class="form-control border-0 bg-transparent py-2" placeholder="Cari kopi sanger, mie aceh, pisang goreng, indomie..." value="{{ request('search') }}">
-            @if(request('search'))
-                <a href="{{ route('public.menu', ['category' => request('category')]) }}" class="btn btn-link text-muted pe-2" title="Reset cari"><i class="bi bi-x-circle-fill"></i></a>
-            @endif
-            <button type="submit" class="btn btn-primary fw-bold px-4 rounded-pill" style="background-color: #2563eb; border: none;">Cari</button>
+            <input type="text" id="liveSearchInput" class="form-control border-0 bg-transparent py-2" placeholder="Cari kopi sanger, mie aceh, pisang goreng, roti bakar..." oninput="filterLiveSearch(this.value)">
+            <button type="button" class="btn btn-link text-muted pe-3 text-decoration-none d-none" id="clearSearchBtn" onclick="clearLiveSearch()"><i class="bi bi-x-circle-fill"></i></button>
         </div>
-    </form>
+    </div>
 
-    <!-- Product Grid -->
-    <div class="row g-3 g-md-4 mb-5">
-        @forelse($products as $product)
-            <div class="col-sm-6 col-lg-4">
+    <!-- Product Grid (12 Menu Warkop) -->
+    <div class="row g-3 g-md-4 mb-5" id="productGrid">
+        @foreach($products as $product)
+            <div class="col-sm-6 col-lg-4 product-card-col" 
+                 data-category="{{ $product->category->slug }}" 
+                 data-name="{{ strtolower($product->name) }}"
+                 data-id="{{ $product->id }}">
                 <div class="card card-product h-100 p-3 d-flex flex-column" id="card-product-{{ $product->id }}" style="transition: all 0.2s ease-in-out;">
                     <!-- Foto Menu Real JPG -->
                     <div class="position-relative overflow-hidden rounded-3 mb-3" style="height: 180px; background-color: #f1f5f9;">
@@ -152,39 +149,69 @@
                     </div>
                 </div>
             </div>
-        @empty
-            <div class="col-12 text-center py-5">
-                <i class="bi bi-inbox fs-1 text-muted d-block mb-2"></i>
-                <h5 class="fw-bold text-dark">Menu Tidak Ditemukan</h5>
-                <p class="text-muted small">Coba cari dengan kata kunci lain atau pilih kategori lain.</p>
-                <a href="{{ route('public.menu') }}" class="btn btn-primary btn-sm rounded-pill fw-bold text-white px-3" style="background-color: #2563eb; border: none;">Tampilkan Semua Menu</a>
+        @endforeach
+    </div>
+
+    <!-- Info Tentang Stencu Coffee di Bagian Bawah (Bersih & Rapi, Tanpa Keranjang Melayang) -->
+    <div class="card border-0 rounded-4 shadow-sm p-4 bg-white mt-4 mb-4">
+        <div class="row g-4 align-items-center">
+            <div class="col-md-5 border-end">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <img src="{{ asset('images/logo.svg') }}" alt="Stencu Coffee" height="38">
+                </div>
+                <p class="text-muted small mb-2">
+                    Warung kopi legendaris khas Aceh di Batuphat Barat, menyajikan seduhan kopi saring, Sanger dingin pekat, Mie Aceh rempah asli, dan aneka cemilan hangat.
+                </p>
+                <div class="text-muted small">
+                    <i class="bi bi-geo-alt-fill text-danger me-1"></i>
+                    Jl. Medan - Banda Aceh Km. 260, Batuphat Barat, Kec. Muara Satu, Kota Lhokseumawe, Aceh
+                </div>
             </div>
-        @endforelse
-    </div>
-
-    <!-- Pagination -->
-    <div class="d-flex justify-content-center mb-5">
-        {{ $products->links() }}
+            <div class="col-md-7">
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div class="d-flex gap-2 align-items-start">
+                            <i class="bi bi-clock-history text-primary fs-5 mt-1"></i>
+                            <div>
+                                <strong class="small d-block text-dark">Jam Operasional</strong>
+                                <span class="text-muted small">Buka Setiap Hari: 07.30 - 00.30 WIB</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="d-flex gap-2 align-items-start">
+                            <i class="bi bi-wifi text-primary fs-5 mt-1"></i>
+                            <div>
+                                <strong class="small d-block text-dark">Fasilitas Warkop</strong>
+                                <span class="text-muted small">Free Wi-Fi Kencang &amp; Colokan Tiap Meja</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="d-flex gap-2 align-items-start">
+                            <i class="bi bi-qr-code-scan text-success fs-5 mt-1"></i>
+                            <div>
+                                <strong class="small d-block text-dark">Pembayaran Praktis</strong>
+                                <span class="text-muted small">Menerima Tunai &amp; QRIS Semua Bank / E-Wallet</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="d-flex gap-2 align-items-start">
+                            <i class="bi bi-telephone-inbound text-primary fs-5 mt-1"></i>
+                            <div>
+                                <strong class="small d-block text-dark">Kontak &amp; Reservasi</strong>
+                                <span class="text-muted small">WhatsApp: 0812-6900-1122</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<!-- Floating Bottom Cart Bar (Deep Navy & Blue) -->
-<div class="floating-cart-bar p-3 d-none align-items-center justify-content-between" id="floatingCart">
-    <div class="d-flex align-items-center gap-3">
-        <div class="p-2 bg-primary text-white rounded-circle fs-5 d-flex align-items-center justify-content-center shadow-sm" style="width: 44px; height: 44px; background-color: #2563eb !important;">
-            <i class="bi bi-bag-check-fill"></i>
-        </div>
-        <div>
-            <div class="fw-bold fs-6 text-white" id="floatTotalAmount">Rp 0</div>
-            <div class="small text-light opacity-75" id="floatItemCount">0 Menu Dipilih</div>
-        </div>
-    </div>
-    <button type="button" class="btn btn-primary fw-bold text-white px-4 py-2 rounded-pill shadow-sm" style="background-color: #2563eb; border: 1px solid #60a5fa;" onclick="openCartModal()">
-        Pesan Sekarang <i class="bi bi-arrow-right ms-1"></i>
-    </button>
-</div>
-
-<!-- Modal Checkout Pesanan Online (Clean White & Navy) -->
+<!-- Modal Checkout Pesanan Online -->
 <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
@@ -192,12 +219,12 @@
             <div class="modal-header text-white p-3 px-4" style="background-color: #0f2b5c;">
                 <div class="d-flex align-items-center gap-2">
                     <i class="bi bi-receipt text-info fs-4"></i>
-                    <h5 class="modal-title fw-bold text-white mb-0" id="cartModalLabel">Keranjang &amp; Form Pemesanan</h5>
+                    <h5 class="modal-title fw-bold text-white mb-0" id="cartModalLabel">Keranjang &amp; Konfirmasi Pesanan</h5>
                 </div>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
 
-            <form action="{{ route('public.order.store') }}" method="POST" id="customerOrderForm">
+            <form action="{{ route('public.order.store') }}" method="POST" id="customerOrderForm" onsubmit="handleOrderSubmit()">
                 @csrf
                 <div class="modal-body p-4">
                     <div class="row g-4">
@@ -220,7 +247,7 @@
                             </div>
                         </div>
 
-                        <!-- Kolom Kanan: Identitas Pemesan & Meja -->
+                        <!-- Kolom Kanan: Identitas Pemesan, Meja, & Metode Bayar -->
                         <div class="col-md-6">
                             <h6 class="fw-bold mb-3"><i class="bi bi-person-badge me-1 text-primary"></i> Data Pemesan</h6>
 
@@ -265,16 +292,22 @@
 
                             <div class="mb-3">
                                 <label class="form-label small fw-bold">Metode Pembayaran <span class="text-danger">*</span></label>
-                                <select name="payment_method" class="form-select" required>
+                                <select name="payment_method" id="paymentMethodSelect" class="form-select" onchange="checkPaymentMethod(this.value)" required>
                                     <option value="cash">Bayar Tunai di Kasir</option>
-                                    <option value="qris">QRIS (BSI / Mandiri / GoPay)</option>
+                                    <option value="qris" selected>QRIS (Scan Barcode &amp; Bayar Langsung)</option>
                                     <option value="transfer">Transfer Bank (BSI)</option>
                                 </select>
                             </div>
 
+                            <!-- QRIS Info Notice Box -->
+                            <div class="alert alert-info py-2 px-3 small rounded-3 mb-3" id="qrisNoticeBox">
+                                <i class="bi bi-qr-code text-danger me-1"></i>
+                                <strong>Info QRIS:</strong> Barcode QRIS resmi Stencu Coffee akan langsung muncul di layar setelah Anda kirim pesanan, sehingga Anda bisa langsung scan via m-Banking atau e-Wallet dan tinggal menunjukkan bukti transfer ke kasir.
+                            </div>
+
                             <div class="mb-3">
-                                <label class="form-label small fw-bold">Catatan Tambahan Pesanan (Opsional)</label>
-                                <textarea name="notes" rows="2" class="form-control form-control-sm" placeholder="Ketik catatan di sini (misal: kopinya jangan banyak gula, mienya jangan pedas ya bang)"></textarea>
+                                <label class="form-label small fw-bold">Catatan Racikan Khusus (Opsional)</label>
+                                <textarea name="notes" rows="2" class="form-control form-control-sm" placeholder="Ketik catatan di sini (misal: sanger jangan terlalu manis, mie jangan pedes ya bang)"></textarea>
                                 <div class="form-text text-muted" style="font-size: 0.74rem;">Catatan ini akan langsung dibaca oleh kasir dan barista saat meracik pesanan Anda.</div>
                             </div>
                         </div>
@@ -293,8 +326,38 @@
 </div>
 @endsection
 
+@section('styles')
+<style>
+    .category-tab-btn {
+        background-color: #ffffff;
+        color: #0f172a;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+    }
+    .category-tab-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(15, 43, 92, 0.08) !important;
+    }
+    .category-tab-btn.active-tab {
+        background-color: #0f2b5c !important;
+        border-color: #0f2b5c !important;
+        color: #ffffff !important;
+    }
+    .category-tab-btn.active-tab .tab-icon {
+        color: #38bdf8 !important;
+    }
+    .category-tab-btn.active-tab .tab-title {
+        color: #ffffff !important;
+    }
+    .category-tab-btn.active-tab .tab-sub {
+        color: rgba(255, 255, 255, 0.75) !important;
+    }
+</style>
+@endsection
+
 @section('scripts')
 <script>
+    // Master data produk untuk sinkronisasi tombol
     const productsData = {
         @foreach($products as $prod)
             {{ $prod->id }}: {
@@ -306,7 +369,25 @@
         @endforeach
     };
 
+    // Keranjang tersimpan di LocalStorage agar TIDAK HILANG saat ganti kategori makanan/minuman!
     let cart = {};
+
+    function loadCartFromStorage() {
+        try {
+            const saved = localStorage.getItem('stencu_cart');
+            if (saved) {
+                cart = JSON.parse(saved);
+            }
+        } catch (e) {
+            cart = {};
+        }
+    }
+
+    function saveCartToStorage() {
+        try {
+            localStorage.setItem('stencu_cart', JSON.stringify(cart));
+        } catch (e) {}
+    }
 
     function addToCart(id, name, price, maxStock) {
         if (!cart[id]) {
@@ -315,6 +396,7 @@
 
         if (cart[id].qty < maxStock) {
             cart[id].qty++;
+            saveCartToStorage();
             renderCartUI();
         } else {
             alert('Jumlah pesanan mencapai batas stok yang tersedia (' + maxStock + ')');
@@ -337,11 +419,13 @@
         } else {
             cart[id].qty = newQty;
         }
+        saveCartToStorage();
         renderCartUI();
     }
 
     function removeItem(id) {
         delete cart[id];
+        saveCartToStorage();
         renderCartUI();
     }
 
@@ -354,9 +438,7 @@
         const keys = Object.keys(cart);
 
         if (keys.length === 0) {
-            listHtml = '<div class="text-center py-4 text-muted small"><i class="bi bi-cart3 fs-3 d-block mb-1 text-muted"></i>Keranjang Anda masih kosong. Silakan pilih menu di atas.</div>';
-            document.getElementById('floatingCart').classList.add('d-none');
-            document.getElementById('floatingCart').classList.remove('d-flex');
+            listHtml = '<div class="text-center py-4 text-muted small"><i class="bi bi-cart3 fs-3 d-block mb-1 text-muted"></i>Keranjang Anda masih kosong. Silakan pilih menu kopi atau makanan.</div>';
             document.getElementById('btnSubmitCustomerOrder').disabled = true;
         } else {
             keys.forEach((id, index) => {
@@ -386,8 +468,6 @@
                 `;
             });
 
-            document.getElementById('floatingCart').classList.remove('d-none');
-            document.getElementById('floatingCart').classList.add('d-flex');
             document.getElementById('btnSubmitCustomerOrder').disabled = false;
         }
 
@@ -395,8 +475,6 @@
         document.getElementById('modalItemsCount').innerText = keys.length + ' Menu (' + totalItems + ' Porsi)';
         document.getElementById('modalGrandTotal').innerText = 'Rp ' + formatRupiah(grandTotal);
         document.getElementById('navCartCount').innerText = totalItems;
-        document.getElementById('floatItemCount').innerText = keys.length + ' Menu Dipilih (' + totalItems + ' Porsi)';
-        document.getElementById('floatTotalAmount').innerText = 'Rp ' + formatRupiah(grandTotal);
 
         updateProductCardButtons();
     }
@@ -444,6 +522,59 @@
         });
     }
 
+    // Filter Kategori Instan di Browser (Tanpa reload, item keranjang tetap utuh!)
+    let activeCategory = 'all';
+
+    function filterCategory(category, btnElement) {
+        activeCategory = category;
+
+        // Update styling tombol tab
+        document.querySelectorAll('.category-tab-btn').forEach(btn => {
+            btn.classList.remove('active-tab');
+            btn.classList.add('bg-white', 'text-dark');
+        });
+        if (btnElement) {
+            btnElement.classList.add('active-tab');
+            btnElement.classList.remove('bg-white', 'text-dark');
+        }
+
+        applyFilters();
+    }
+
+    function filterLiveSearch(query) {
+        const clearBtn = document.getElementById('clearSearchBtn');
+        if (query.trim().length > 0) {
+            clearBtn.classList.remove('d-none');
+        } else {
+            clearBtn.classList.add('d-none');
+        }
+        applyFilters();
+    }
+
+    function clearLiveSearch() {
+        document.getElementById('liveSearchInput').value = '';
+        document.getElementById('clearSearchBtn').classList.add('d-none');
+        applyFilters();
+    }
+
+    function applyFilters() {
+        const query = (document.getElementById('liveSearchInput').value || '').toLowerCase().trim();
+
+        document.querySelectorAll('.product-card-col').forEach(col => {
+            const cat = col.getAttribute('data-category');
+            const name = col.getAttribute('data-name') || '';
+
+            const matchCat = (activeCategory === 'all' || cat === activeCategory);
+            const matchSearch = (query === '' || name.includes(query));
+
+            if (matchCat && matchSearch) {
+                col.style.display = 'block';
+            } else {
+                col.style.display = 'none';
+            }
+        });
+    }
+
     function openCartModal() {
         let myModal = new bootstrap.Modal(document.getElementById('cartModal'));
         myModal.show();
@@ -461,6 +592,22 @@
         }
     }
 
+    function checkPaymentMethod(val) {
+        const qrisBox = document.getElementById('qrisNoticeBox');
+        if (val === 'qris') {
+            qrisBox.style.display = 'block';
+        } else {
+            qrisBox.style.display = 'none';
+        }
+    }
+
+    function handleOrderSubmit() {
+        // Hapus cart dari localStorage saat pesanan berhasil dikirim
+        try {
+            localStorage.removeItem('stencu_cart');
+        } catch (e) {}
+    }
+
     function formatRupiah(angka) {
         return new Intl.NumberFormat('id-ID').format(angka);
     }
@@ -470,6 +617,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+        loadCartFromStorage();
         renderCartUI();
     });
 </script>

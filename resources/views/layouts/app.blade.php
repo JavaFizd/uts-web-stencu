@@ -92,37 +92,27 @@
     @yield('styles')
 </head>
 <body>
-    <!-- Top Evaluator / Switcher Bar (Mode Uji Coba Multi-Peran) -->
-    <div class="py-1 px-3 text-white d-flex justify-content-between align-items-center flex-wrap gap-2" style="background-color: #061224; border-bottom: 1px solid rgba(56, 189, 248, 0.2); font-size: 0.8rem;">
+    <!-- Top Bar (Clean & Professional) -->
+    <div class="py-1.5 px-3 text-white d-flex justify-content-between align-items-center flex-wrap gap-2 no-print" style="background-color: #061224; border-bottom: 1px solid rgba(56, 189, 248, 0.2); font-size: 0.8rem;">
         <div class="d-flex align-items-center gap-2">
-            <span class="badge px-2 py-0.5 rounded-pill" style="background-color: #2563eb; font-size: 0.72rem;">
-                <i class="bi bi-shield-check me-1"></i> Mode Evaluasi UTS
+            <span class="badge px-2.5 py-1 rounded-pill {{ Auth::user()->isOwner() ? 'bg-danger' : 'bg-primary' }}" style="font-size: 0.72rem;">
+                <i class="bi bi-shield-lock-fill me-1"></i> {{ ucfirst(Auth::user()->role) }}
             </span>
-            <span class="text-light opacity-75 d-none d-sm-inline">
-                Login Sebagai: <strong class="text-white">{{ Auth::user()->name }} ({{ ucfirst(Auth::user()->role) }})</strong>
+            <span class="text-light opacity-90">
+                Login Sebagai: <strong class="text-white">{{ Auth::user()->name }}</strong>
             </span>
         </div>
-        <div class="d-flex align-items-center gap-1">
-            <span class="text-light opacity-75 small me-1 d-none d-md-inline" style="font-size: 0.75rem;">Ganti Peran:</span>
-            <a href="{{ route('quick.login', 'owner') }}" class="btn btn-sm py-0 px-2 fw-semibold {{ Auth::user()->isOwner() ? 'btn-danger text-white' : 'btn-outline-light text-light' }}" style="font-size: 0.72rem; border-radius: 6px;">
-                <i class="bi bi-person-fill-gear"></i> Owner
+        <div class="d-flex align-items-center gap-2">
+            <a href="{{ route('public.menu') }}" class="btn btn-sm py-0.5 px-3 btn-outline-info rounded-pill fw-semibold" style="font-size: 0.75rem;" title="Lihat Katalog Publik">
+                <i class="bi bi-shop me-1"></i> Buka Katalog Menu
             </a>
-            <a href="{{ route('quick.login', 'kasir') }}" class="btn btn-sm py-0 px-2 fw-semibold {{ (Auth::user()->isStaff() && Auth::user()->email === 'kasir@stencu.com') ? 'btn-primary text-white' : 'btn-outline-light text-light' }}" style="font-size: 0.72rem; border-radius: 6px; {{ (Auth::user()->isStaff() && Auth::user()->email === 'kasir@stencu.com') ? 'background-color: #2563eb; border-color: #2563eb;' : '' }}">
-                <i class="bi bi-calculator"></i> Kasir
-            </a>
-            <a href="{{ route('quick.login', 'dapur') }}" class="btn btn-sm py-0 px-2 fw-semibold {{ (Auth::user()->isStaff() && Auth::user()->email === 'dapur@stencu.com') ? 'btn-warning text-dark' : 'btn-outline-light text-light' }}" style="font-size: 0.72rem; border-radius: 6px; {{ (Auth::user()->isStaff() && Auth::user()->email === 'dapur@stencu.com') ? 'background-color: #f59e0b; border-color: #f59e0b;' : '' }}">
-                <i class="bi bi-fire"></i> Dapur
-            </a>
-            <a href="{{ route('quick.login', 'pelanggan') }}" class="btn btn-sm py-0 px-2 fw-semibold {{ Auth::user()->role === 'customer' ? 'btn-success text-white' : 'btn-outline-light text-light' }}" style="font-size: 0.72rem; border-radius: 6px;">
-                <i class="bi bi-cup-hot"></i> Pelanggan
-            </a>
-            <a href="{{ route('home') }}" class="btn btn-sm py-0 px-2 btn-outline-info" style="font-size: 0.72rem; border-radius: 6px;" title="Kembali ke Beranda Utama">
-                <i class="bi bi-house"></i> Portal Depan
+            <a href="{{ route('dashboard') }}" class="btn btn-sm py-0.5 px-3 btn-outline-light rounded-pill fw-semibold" style="font-size: 0.75rem;">
+                <i class="bi bi-speedometer2 me-1"></i> Keluar ke Dashboard
             </a>
             <form action="{{ route('logout') }}" method="POST" class="d-inline ms-1">
                 @csrf
-                <button type="submit" class="btn btn-sm py-0 px-2 btn-outline-danger" style="font-size: 0.72rem; border-radius: 6px;" title="Logout">
-                    <i class="bi bi-box-arrow-right"></i> Keluar
+                <button type="submit" class="btn btn-sm py-0.5 px-2.5 btn-outline-danger rounded-pill" style="font-size: 0.75rem;" title="Logout">
+                    <i class="bi bi-box-arrow-right me-1"></i> Keluar
                 </button>
             </form>
         </div>

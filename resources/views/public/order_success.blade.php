@@ -3,133 +3,179 @@
 @section('title', 'Pesanan Berhasil - ' . $sale->sale_number)
 
 @section('content')
-<div class="container py-5">
+<div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-lg-7">
-            <!-- Success Notification Card -->
-            <div class="text-center mb-4">
+            <!-- Success Notification Card (Hidden on Print) -->
+            <div class="text-center mb-4 no-print">
                 <div class="d-inline-flex p-3 bg-success-subtle text-success rounded-circle mb-3 shadow-sm">
                     <i class="bi bi-check2-circle fs-1"></i>
                 </div>
-                <h3 class="fw-bold mb-1">Pesanan Anda Berhasil Dikirim!</h3>
-                <p class="text-muted">Barista Stencu Coffee telah menerima pesanan Anda dan segera meraciknya.</p>
+                <h3 class="fw-bold mb-1 text-dark">Pesanan Anda Berhasil Dikirim!</h3>
+                <p class="text-muted small">Pesanan telah masuk ke sistem Stencu Coffee dan langsung diracik oleh barista.</p>
             </div>
 
-            <!-- Digital Receipt Card -->
-            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
-                <div class="text-center mb-3 pb-3 border-bottom">
-                    <img src="{{ asset('images/logo.svg') }}" alt="Stencu Coffee" height="42">
-                </div>
-                <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-3">
-                    <div>
-                        <span class="small text-muted d-block">Nomor Nota Pesanan:</span>
-                        <h5 class="fw-bold text-primary font-monospace mb-0">{{ $sale->sale_number }}</h5>
-                    </div>
-                    <div class="text-end">
-                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-3 py-2 rounded-pill fw-bold">
-                            <i class="bi bi-hourglass-split me-1"></i> Sedang Diracik Barista
+            <!-- TAMPILAN KHUSUS PEMBAYARAN QRIS (Langsung Scan Barcode di Web) -->
+            @if($sale->payment_method === 'qris')
+                <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 text-center bg-white no-print" style="border: 2px dashed #b91c1c !important;">
+                    <div class="d-flex justify-content-center mb-2">
+                        <span class="badge bg-danger text-white rounded-pill px-3 py-1 fw-bold">
+                            <i class="bi bi-qr-code me-1"></i> Pembayaran QRIS Langsung
                         </span>
                     </div>
+                    <h5 class="fw-bold text-dark mb-1">Scan Barcode QRIS untuk Bayar Sekarang</h5>
+                    <p class="text-muted small mb-3">
+                        Total yang harus ditransfer: <strong class="text-danger fs-5">Rp {{ number_format($sale->total, 0, ',', '.') }}</strong>
+                    </p>
+
+                    <!-- Gambar QRIS Resmi Stencu Coffee -->
+                    <div class="d-flex justify-content-center mb-3">
+                        <div class="p-2 bg-white rounded-4 shadow-sm border text-center" style="max-width: 260px;">
+                            <img src="{{ asset('images/qris_stencu.svg') }}" alt="QRIS Stencu Coffee" class="img-fluid rounded" style="max-height: 310px;">
+                        </div>
+                    </div>
+
+                    <!-- Petunjuk Pembayaran Singkat -->
+                    <div class="alert alert-light border small text-muted text-start mb-0 rounded-3">
+                        <div class="fw-bold text-dark mb-1"><i class="bi bi-phone-fill text-danger me-1"></i> Cara Bayar:</div>
+                        <ol class="ps-3 mb-0" style="line-height: 1.6;">
+                            <li>Buka aplikasi m-Banking (BSI, BCA, Mandiri) atau e-Wallet (GoPay, OVO, Dana).</li>
+                            <li>Pilih menu <strong>Scan QR / Bayar</strong> &rarr; arahkan kamera ke barcode di atas.</li>
+                            <li>Masukkan nominal <strong>Rp {{ number_format($sale->total, 0, ',', '.') }}</strong> lalu konfirmasi bayar.</li>
+                            <li>Saat ke kasir atau pesanan tiba, tinggal tunjukkan bukti transaksi sukses kepada barista.</li>
+                        </ol>
+                    </div>
+                </div>
+            @endif
+
+            <!-- STRUK NOTA FISIK / THERMAL SLIP (Ini yang dicetak saat Print) -->
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4" id="receiptPrintSlip">
+                <!-- Struk Header -->
+                <div class="text-center pb-3 border-bottom mb-3">
+                    <h4 class="fw-bold mb-0 text-dark" style="letter-spacing: 1px;">STENCU COFFEE</h4>
+                    <div class="small text-muted" style="font-size: 0.76rem;">Batuphat Barat, Muara Satu, Kota Lhokseumawe</div>
+                    <div class="small text-muted" style="font-size: 0.74rem;">Telp/WA: 0812-6900-1122</div>
+                    <div class="text-muted font-monospace small mt-1">----------------------------------------</div>
                 </div>
 
-                <div class="row g-2 small mb-4">
-                    <div class="col-6">
-                        <span class="text-muted d-block">Pemesan / Lokasi:</span>
-                        <span class="fw-bold text-dark">{{ $sale->customer_name }}</span>
-                    </div>
-                    <div class="col-6 text-end">
-                        <span class="text-muted d-block">Waktu Pesan:</span>
-                        <span class="fw-semibold text-dark">{{ $sale->sold_at->format('d/m/Y H:i') }} WIB</span>
-                    </div>
-                    <div class="col-6 mt-2">
-                        <span class="text-muted d-block">Metode Pembayaran:</span>
-                        <span class="badge bg-light text-dark border text-uppercase">{{ $sale->payment_method }}</span>
-                    </div>
-                    <div class="col-6 mt-2 text-end">
-                        <span class="text-muted d-block">Status Pembayaran:</span>
-                        <span class="text-success fw-bold">Menunggu Konfirmasi Kasir</span>
-                    </div>
+                <!-- Meta Transaksi -->
+                <div class="d-flex justify-content-between align-items-center small mb-1">
+                    <span class="text-muted">No. Nota :</span>
+                    <strong class="font-monospace text-primary fs-6">{{ $sale->sale_number }}</strong>
+                </div>
+                <div class="d-flex justify-content-between align-items-center small mb-1">
+                    <span class="text-muted">Waktu :</span>
+                    <span class="text-dark">{{ $sale->sold_at->format('d/m/Y H:i') }} WIB</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center small mb-1">
+                    <span class="text-muted">Pelanggan :</span>
+                    <strong class="text-dark">{{ $sale->customer_name }}</strong>
+                </div>
+                <div class="d-flex justify-content-between align-items-center small mb-2">
+                    <span class="text-muted">Metode Bayar :</span>
+                    <span class="badge bg-light text-dark border text-uppercase">{{ $sale->payment_method }}</span>
                 </div>
 
-                <!-- Daftar Menu yang Dipesan -->
-                <div class="table-responsive mb-3">
-                    <table class="table table-bordered align-middle mb-0">
-                        <thead class="table-light small">
-                            <tr>
-                                <th>Menu Pesanan</th>
-                                <th class="text-center" style="width: 80px;">Qty</th>
-                                <th class="text-end" style="width: 120px;">Harga Satuan</th>
-                                <th class="text-end" style="width: 130px;">Subtotal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($sale->items as $item)
-                                <tr>
-                                    <td>
-                                        <div class="fw-bold text-dark small">{{ $item->product->name ?? 'Menu' }}</div>
-                                        <span class="text-muted" style="font-size: 0.75rem;">{{ $item->product->category->name ?? '' }}</span>
-                                    </td>
-                                    <td class="text-center fw-bold">{{ $item->quantity }}</td>
-                                    <td class="text-end text-muted small">Rp {{ number_format($item->unit_price, 0, ',', '.') }}</td>
-                                    <td class="text-end fw-bold text-dark">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                        <tfoot class="table-light">
-                            <tr>
-                                <td colspan="3" class="text-end fw-bold fs-6">TOTAL TAGIHAN:</td>
-                                <td class="text-end fw-bold fs-5 text-success">Rp {{ number_format($sale->total, 0, ',', '.') }}</td>
-                            </tr>
-                        </tfoot>
-                    </table>
+                <div class="text-muted font-monospace small text-center mb-2">----------------------------------------</div>
+
+                <!-- Rincian Menu Pesanan -->
+                <div class="mb-2">
+                    @foreach($sale->items as $item)
+                        <div class="d-flex justify-content-between align-items-start small mb-1.5">
+                            <div style="max-width: 65%;">
+                                <div class="fw-bold text-dark">{{ $item->product->name ?? 'Menu' }}</div>
+                                <span class="text-muted" style="font-size: 0.74rem;">{{ $item->quantity }} &times; Rp {{ number_format($item->unit_price, 0, ',', '.') }}</span>
+                            </div>
+                            <div class="text-end fw-bold text-dark">
+                                Rp {{ number_format($item->subtotal, 0, ',', '.') }}
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <div class="text-muted font-monospace small text-center my-2">----------------------------------------</div>
+
+                <!-- Total -->
+                <div class="d-flex justify-content-between align-items-center fw-bold fs-6 mb-1">
+                    <span>TOTAL BAYAR :</span>
+                    <span class="text-primary fs-5" style="color: #1d4ed8 !important;">Rp {{ number_format($sale->total, 0, ',', '.') }}</span>
                 </div>
 
                 @if($sale->notes)
-                    <div class="p-3 bg-light rounded-3 small text-muted mb-4 border">
-                        <strong>Catatan Khusus:</strong> {{ $sale->notes }}
+                    <div class="p-2 bg-light rounded-2 small text-muted mt-2 border">
+                        <strong class="text-dark">Catatan:</strong> {{ $sale->notes }}
                     </div>
                 @endif
 
-                <!-- Petunjuk Pembayaran -->
-                <div class="alert alert-warning border-warning small mb-0 rounded-3">
-                    <div class="fw-bold mb-1"><i class="bi bi-info-circle-fill me-1"></i> Informasi Pembayaran:</div>
-                    @if($sale->payment_method === 'cash')
-                        Silakan lakukan pembayaran tunai sebesar <strong>Rp {{ number_format($sale->total, 0, ',', '.') }}</strong> langsung ke meja kasir barista dengan menyebutkan nomor nota <strong>{{ $sale->sale_number }}</strong>.
-                    @elseif($sale->payment_method === 'qris')
-                        Silakan scan kode QRIS Stencu Coffee di meja kasir sebesar <strong>Rp {{ number_format($sale->total, 0, ',', '.') }}</strong> saat mengambil pesanan atau saat barista mengantar ke meja.
-                    @else
-                        Silakan transfer ke Rekening BSI Stencu Coffee: <strong>7123-4567-89</strong> a.n. Teuku Stencu Coffee, lalu tunjukkan bukti bayar ke barista.
+                <!-- Struk Footer -->
+                <div class="text-center pt-3 mt-3 border-top text-muted small" style="font-size: 0.74rem;">
+                    <div>Terima Kasih Atas Kunjungan Anda!</div>
+                    <div class="fst-italic text-secondary">Racikan Kopi Saring &amp; Rempah Asli Aceh</div>
+                </div>
+            </div>
+
+            <!-- Tombol Aksi Bawah (Bersih, Realistis, & Bebas Tulisan Fake) -->
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 no-print">
+                <div class="d-flex gap-2">
+                    <a href="{{ route('public.menu') }}" class="btn btn-outline-secondary rounded-pill px-3 py-2 fw-semibold">
+                        <i class="bi bi-arrow-left me-1"></i> Pesan Menu Lain
+                    </a>
+                    @if(Auth::check() && (Auth::user()->isOwner() || Auth::user()->isStaff()))
+                        <a href="{{ route('dashboard') }}" class="btn btn-outline-primary rounded-pill px-3 py-2 fw-semibold">
+                            <i class="bi bi-speedometer2 me-1"></i> Keluar ke Dashboard
+                        </a>
                     @endif
                 </div>
-            </div>
 
-            <!-- Action & Testing Buttons (Mode Pengujian Alur Staff) -->
-            <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 text-center bg-white" style="border: 1.5px solid #bfdbfe !important;">
-                <h6 class="fw-bold text-dark mb-1">
-                    <i class="bi bi-person-check-fill text-primary me-1"></i> Ingin Cek Pesanan Ini di Layar Kasir?
-                </h6>
-                <p class="text-muted small mb-3">
-                    Klik tombol di bawah untuk langsung beralih ke akun <strong>Kasir (Staff)</strong> dan memeriksa apakah pesanan dan catatan racikan yang baru Anda ketik sudah masuk di daftar pesanan kasir:
-                </p>
-                <div class="d-flex justify-content-center gap-2 flex-wrap">
-                    <a href="{{ route('quick.login', 'kasir') }}" class="btn btn-primary fw-bold rounded-pill px-4 py-2 shadow-sm" style="background-color: #2563eb; border: none;">
-                        <i class="bi bi-calculator me-1"></i> Buka Layar Kasir / Staff Sekarang &rarr;
-                    </a>
-                    <a href="{{ route('home') }}" class="btn btn-outline-danger rounded-pill px-4 py-2 fw-semibold">
-                        <i class="bi bi-box-arrow-left me-1"></i> Keluar ke Portal Utama
-                    </a>
-                </div>
-            </div>
-
-            <div class="d-flex justify-content-between align-items-center">
-                <a href="{{ route('public.menu') }}" class="btn btn-outline-secondary rounded-pill px-4">
-                    <i class="bi bi-arrow-left me-1"></i> Pesan Menu Lainnya
-                </a>
-                <button type="button" class="btn btn-dark rounded-pill px-4" onclick="window.print()">
-                    <i class="bi bi-printer me-1"></i> Cetak Bukti Nota
+                <button type="button" class="btn btn-dark rounded-pill px-4 py-2 fw-bold shadow-sm" onclick="window.print()">
+                    <i class="bi bi-printer me-1"></i> Cetak Struk Bon
                 </button>
             </div>
         </div>
     </div>
 </div>
+@endsection
+
+@section('styles')
+<style>
+    /* Styling Cetakan Struk Bon Kompak & Ringkas (Thermal Slip Style) */
+    @media print {
+        body {
+            background: #ffffff !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        .no-print, header, nav, footer, .navbar, .alert {
+            display: none !important;
+        }
+        .container {
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        #receiptPrintSlip {
+            width: 300px !important;
+            margin: 0 auto !important;
+            padding: 12px !important;
+            border: 1px dashed #000000 !important;
+            box-shadow: none !important;
+            font-size: 11px !important;
+            color: #000000 !important;
+            page-break-inside: avoid !important;
+        }
+        #receiptPrintSlip h4 {
+            font-size: 15px !important;
+            color: #000000 !important;
+        }
+        #receiptPrintSlip .text-primary {
+            color: #000000 !important;
+        }
+        #receiptPrintSlip .badge {
+            border: 1px solid #000 !important;
+            color: #000 !important;
+            background: transparent !important;
+        }
+    }
+</style>
 @endsection
