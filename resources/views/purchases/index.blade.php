@@ -3,14 +3,19 @@
 @section('title', 'Riwayat Pembelian Stok')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
         <h3 class="fw-bold mb-1">Riwayat Pembelian Stok (Stock-In)</h3>
         <p class="text-muted mb-0">Catatan pasokan biji kopi, packaging, dan bahan baku dari supplier mitra.</p>
     </div>
-    <a href="{{ route('purchases.create') }}" class="btn btn-primary fw-bold">
-        <i class="bi bi-cart-plus me-1"></i> Catat Pembelian Baru
-    </a>
+    <div class="d-flex gap-2">
+        <button type="button" class="btn btn-outline-primary fw-semibold rounded-pill px-3 shadow-sm no-print" onclick="window.print()">
+            <i class="bi bi-printer me-1"></i> Cetak Rekap Belanja
+        </button>
+        <a href="{{ route('purchases.create') }}" class="btn btn-primary fw-bold rounded-pill px-3 shadow-sm no-print" style="background-color: #2563eb; border: none;">
+            <i class="bi bi-cart-plus me-1"></i> Catat Pembelian Baru
+        </a>
+    </div>
 </div>
 
 <!-- Search & Filter Bar -->

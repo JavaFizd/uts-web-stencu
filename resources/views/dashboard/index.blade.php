@@ -10,6 +10,9 @@
         <p class="text-muted mb-0">Pusat kendali omset, arus kas pengeluaran, pergerakan stok, dan performa warkop.</p>
     </div>
     <div class="d-flex gap-2 flex-wrap">
+        <button type="button" class="btn btn-outline-primary fw-bold rounded-pill px-3 shadow-sm no-print" onclick="window.print()">
+            <i class="bi bi-printer me-1"></i> Cetak Laporan
+        </button>
         <a href="{{ route('sales.create') }}" class="btn btn-success fw-bold rounded-pill px-3 shadow-sm">
             <i class="bi bi-cart-plus me-1"></i> Buka Kasir POS
         </a>

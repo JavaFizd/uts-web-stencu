@@ -67,6 +67,27 @@
             box-shadow: 0 2px 8px rgba(15, 43, 92, 0.04);
             background: #ffffff;
         }
+        @media print {
+            .navbar, .navbar-stencu, .sidebar, .btn, .no-print, [style*="border-bottom: 1px solid rgba(56, 189, 248"], .pagination, .alert {
+                display: none !important;
+            }
+            body {
+                background: #ffffff !important;
+                color: #000000 !important;
+            }
+            .card-custom, .card {
+                border: 1px solid #ddd !important;
+                box-shadow: none !important;
+                break-inside: avoid;
+            }
+            .col-md-9, .col-lg-10, main, .container-fluid {
+                width: 100% !important;
+                max-width: 100% !important;
+                flex: 0 0 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+        }
     </style>
     @yield('styles')
 </head>
