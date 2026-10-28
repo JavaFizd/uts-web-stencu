@@ -92,32 +92,6 @@
     @yield('styles')
 </head>
 <body>
-    <!-- Top Bar (Clean & Professional) -->
-    <div class="py-1.5 px-3 text-white d-flex justify-content-between align-items-center flex-wrap gap-2 no-print" style="background-color: #061224; border-bottom: 1px solid rgba(56, 189, 248, 0.2); font-size: 0.8rem;">
-        <div class="d-flex align-items-center gap-2">
-            <span class="badge px-2.5 py-1 rounded-pill {{ Auth::user()->isOwner() ? 'bg-danger' : 'bg-primary' }}" style="font-size: 0.72rem;">
-                <i class="bi bi-shield-lock-fill me-1"></i> {{ ucfirst(Auth::user()->role) }}
-            </span>
-            <span class="text-light opacity-90">
-                Login Sebagai: <strong class="text-white">{{ Auth::user()->name }}</strong>
-            </span>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-            <a href="{{ route('public.menu') }}" class="btn btn-sm py-0.5 px-3 btn-outline-info rounded-pill fw-semibold" style="font-size: 0.75rem;" title="Lihat Katalog Publik">
-                <i class="bi bi-shop me-1"></i> Buka Katalog Menu
-            </a>
-            <a href="{{ route('dashboard') }}" class="btn btn-sm py-0.5 px-3 btn-outline-light rounded-pill fw-semibold" style="font-size: 0.75rem;">
-                <i class="bi bi-speedometer2 me-1"></i> Keluar ke Dashboard
-            </a>
-            <form action="{{ route('logout') }}" method="POST" class="d-inline ms-1">
-                @csrf
-                <button type="submit" class="btn btn-sm py-0.5 px-2.5 btn-outline-danger rounded-pill" style="font-size: 0.75rem;" title="Logout">
-                    <i class="bi bi-box-arrow-right me-1"></i> Keluar
-                </button>
-            </form>
-        </div>
-    </div>
-
     <!-- Top Navbar (Deep Navy Blue) -->
     <nav class="navbar navbar-expand-lg navbar-dark navbar-stencu sticky-top py-2 shadow-sm">
         <div class="container-fluid px-3">
@@ -239,9 +213,16 @@
                         </ul>
                     @endif
 
-                    <div class="px-2 mt-4 pt-3 border-top small text-muted">
-                        <div class="fw-bold text-dark">Stencu Coffee v2.0</div>
-                        <span style="font-size: 0.75rem;">Batuphat Barat, Lhokseumawe</span>
+                    <div class="px-2 mt-4 pt-3 border-top">
+                        <form action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-outline-danger w-100 rounded-pill fw-semibold py-1.5 shadow-sm" style="font-size: 0.8rem;">
+                                <i class="bi bi-box-arrow-right me-1"></i> Keluar / Logout
+                            </button>
+                        </form>
+                        <div class="small text-muted mt-2 text-center" style="font-size: 0.72rem;">
+                            Stencu Coffee &bull; Lhokseumawe
+                        </div>
                     </div>
                 </div>
             </nav>

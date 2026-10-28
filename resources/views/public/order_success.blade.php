@@ -122,7 +122,7 @@
                     </a>
                     @if(Auth::check() && (Auth::user()->isOwner() || Auth::user()->isStaff()))
                         <a href="{{ route('dashboard') }}" class="btn btn-outline-primary rounded-pill px-3 py-2 fw-semibold">
-                            <i class="bi bi-speedometer2 me-1"></i> Keluar ke Dashboard
+                            <i class="bi bi-speedometer2 me-1"></i> Kembali ke Dashboard
                         </a>
                     @endif
                 </div>

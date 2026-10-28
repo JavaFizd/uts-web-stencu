@@ -1,27 +1,27 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard Eksekutif')
+@section('title', 'Dashboard')
 
 @section('content')
 <!-- Header & Quick Actions -->
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
-        <h3 class="fw-bold mb-1" style="color: #0f2b5c;">Dashboard Eksekutif Stencu Coffee</h3>
-        <p class="text-muted mb-0">Pusat kendali omset, arus kas pengeluaran, pergerakan stok, dan performa warkop.</p>
+        <h3 class="fw-bold mb-1" style="color: #0f2b5c;">Dashboard Stencu Coffee</h3>
+        <p class="text-muted mb-0 small">Ringkasan penjualan, pergerakan stok, dan estimasi laba warkop.</p>
     </div>
-    <div class="d-flex gap-2 flex-wrap">
-        <button type="button" class="btn btn-outline-primary fw-bold rounded-pill px-3 shadow-sm no-print" onclick="window.print()">
+    <div class="d-flex gap-2 flex-wrap no-print">
+        <button type="button" class="btn btn-outline-secondary btn-sm fw-semibold rounded-pill px-3 shadow-sm" onclick="window.print()">
             <i class="bi bi-printer me-1"></i> Cetak Laporan
         </button>
-        <a href="{{ route('sales.create') }}" class="btn btn-success fw-bold rounded-pill px-3 shadow-sm">
-            <i class="bi bi-cart-plus me-1"></i> Buka Kasir POS
+        <a href="{{ route('sales.create') }}" class="btn btn-success btn-sm fw-semibold rounded-pill px-3 shadow-sm">
+            <i class="bi bi-cart-plus me-1"></i> Kasir POS
         </a>
-        <a href="{{ route('purchases.create') }}" class="btn btn-primary fw-bold rounded-pill px-3 shadow-sm" style="background-color: #2563eb; border: none;">
-            <i class="bi bi-box-arrow-in-down me-1"></i> Input Beli Stok
+        <a href="{{ route('purchases.create') }}" class="btn btn-primary btn-sm fw-semibold rounded-pill px-3 shadow-sm" style="background-color: #2563eb; border: none;">
+            <i class="bi bi-box-arrow-in-down me-1"></i> Beli Stok
         </a>
         @if(Auth::user()->isOwner())
-            <a href="{{ route('users.index') }}" class="btn btn-outline-dark fw-bold rounded-pill px-3 shadow-sm">
-                <i class="bi bi-people-fill me-1"></i> Kelola Staf
+            <a href="{{ route('users.index') }}" class="btn btn-outline-dark btn-sm fw-semibold rounded-pill px-3 shadow-sm">
+                <i class="bi bi-people me-1"></i> Kelola Staf
             </a>
         @endif
     </div>
@@ -31,152 +31,82 @@
 @if($lowStockProducts->count() > 0)
     <div class="alert alert-warning border-warning d-flex align-items-center gap-3 p-3 rounded-4 mb-4 shadow-sm" role="alert">
         <div class="p-2 bg-warning-subtle text-warning rounded-circle">
-            <i class="bi bi-exclamation-octagon-fill fs-3"></i>
+            <i class="bi bi-exclamation-triangle-fill fs-4"></i>
         </div>
         <div class="flex-grow-1">
-            <h6 class="fw-bold mb-1 text-dark">Peringatan: Terdapat {{ $lowStockProducts->count() }} Bahan/Menu yang Mencapai Batas Minimum!</h6>
-            <div class="small text-muted mb-1">
-                Bahan berikut segera habis dan perlu di-restok dari supplier:
-            </div>
+            <div class="fw-bold text-dark mb-1">Peringatan: {{ $lowStockProducts->count() }} Bahan / Menu Mendekati Batas Minimum</div>
             <div class="d-flex flex-wrap gap-1">
                 @foreach($lowStockProducts as $low)
-                    <span class="badge bg-danger text-white rounded-pill px-2.5 py-1">
+                    <span class="badge bg-danger text-white rounded-pill px-2.5 py-1" style="font-size: 0.75rem;">
                         {{ $low->name }} (Sisa: {{ $low->stock }} {{ $low->unit }})
                     </span>
                 @endforeach
             </div>
         </div>
-        <a href="{{ route('purchases.create') }}" class="btn btn-sm btn-danger fw-bold rounded-pill px-3">
-            <i class="bi bi-cart-plus me-1"></i> Belanja Stok Sekarang
+        <a href="{{ route('purchases.create') }}" class="btn btn-sm btn-danger fw-semibold rounded-pill px-3">
+            <i class="bi bi-box-arrow-in-down me-1"></i> Restok Sekarang
         </a>
     </div>
 @endif
 
-<!-- Baris 1: Ringkasan Periode Pemasukan Penjualan -->
+<!-- Ringkasan 4 Kartu Utama (Simpel & Mudah Dijelaskan ke Dosen) -->
 <div class="row g-3 mb-4">
-    <!-- 1. Hari Ini -->
+    <!-- 1. Penjualan Hari Ini -->
     <div class="col-sm-6 col-lg-3">
         <div class="card card-custom p-3 bg-white h-100 border-0 shadow-sm" style="border-left: 4px solid #10b981 !important;">
-            <span class="text-muted small fw-semibold">PEMASUKAN HARI INI</span>
-            <h4 class="fw-bold text-success mt-2 mb-1">Rp {{ number_format($salesTodayTotal, 0, ',', '.') }}</h4>
-            <div class="d-flex justify-content-between align-items-center mt-2">
-                <span class="badge bg-success-subtle text-success small">{{ $salesTodayCount }} Transaksi</span>
-                <span class="small text-muted">{{ date('d M Y') }}</span>
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="text-muted small fw-bold">PENJUALAN HARI INI</span>
+                <span class="badge bg-success-subtle text-success small">{{ $salesTodayCount }} Nota</span>
+            </div>
+            <h4 class="fw-bold text-success mt-1 mb-1">Rp {{ number_format($salesTodayTotal, 0, ',', '.') }}</h4>
+            <div class="small text-muted" style="font-size: 0.75rem;">
+                Tanggal: {{ date('d M Y') }}
             </div>
         </div>
     </div>
 
-    <!-- 2. Minggu Ini -->
+    <!-- 2. Penjualan Bulan Ini -->
     <div class="col-sm-6 col-lg-3">
-        <div class="card card-custom p-3 bg-white h-100 border-0 shadow-sm" style="border-left: 4px solid #3b82f6 !important;">
-            <span class="text-muted small fw-semibold">PEMASUKAN MINGGU INI</span>
-            <h4 class="fw-bold text-primary mt-2 mb-1">Rp {{ number_format($salesWeekTotal, 0, ',', '.') }}</h4>
-            <div class="d-flex justify-content-between align-items-center mt-2">
-                <span class="badge bg-primary-subtle text-primary small">7 Hari Berjalan</span>
-                <span class="small text-muted">Sen - Min</span>
+        <div class="card card-custom p-3 bg-white h-100 border-0 shadow-sm" style="border-left: 4px solid #2563eb !important;">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="text-muted small fw-bold">PENJUALAN BULAN INI</span>
+                <span class="badge bg-primary-subtle text-primary small">{{ date('M Y') }}</span>
+            </div>
+            <h4 class="fw-bold text-primary mt-1 mb-1">Rp {{ number_format($salesMonthTotal, 0, ',', '.') }}</h4>
+            <div class="small text-muted" style="font-size: 0.75rem;">
+                Total 1 Tahun: <strong>Rp {{ number_format($salesYearTotal, 0, ',', '.') }}</strong>
             </div>
         </div>
     </div>
 
-    <!-- 3. Bulan Ini -->
+    <!-- 3. Belanja Bahan & Laba -->
     <div class="col-sm-6 col-lg-3">
         <div class="card card-custom p-3 bg-white h-100 border-0 shadow-sm" style="border-left: 4px solid #8b5cf6 !important;">
-            <span class="text-muted small fw-semibold">PEMASUKAN BULAN INI</span>
-            <h4 class="fw-bold mt-2 mb-1" style="color: #6d28d9;">Rp {{ number_format($salesMonthTotal, 0, ',', '.') }}</h4>
-            <div class="d-flex justify-content-between align-items-center mt-2">
-                <span class="badge bg-purple-subtle text-purple small" style="background-color: #ede9fe; color: #6d28d9;">Bulan {{ date('F Y') }}</span>
-                <span class="small text-muted">Akumulasi</span>
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="text-muted small fw-bold">ESTIMASI LABA KOTOR</span>
+                <span class="badge bg-purple-subtle text-purple small" style="background-color: #ede9fe; color: #6d28d9;">Bulan Ini</span>
+            </div>
+            <h4 class="fw-bold mt-1 mb-1" style="color: #6d28d9;">Rp {{ number_format($profitMonth, 0, ',', '.') }}</h4>
+            <div class="small text-muted" style="font-size: 0.75rem;">
+                Belanja Bahan: <strong class="text-danger">Rp {{ number_format($purchasesMonthTotal, 0, ',', '.') }}</strong>
             </div>
         </div>
     </div>
 
-    <!-- 4. Tahun Ini -->
+    <!-- 4. Inventaris & Stok -->
     <div class="col-sm-6 col-lg-3">
         <div class="card card-custom p-3 bg-white h-100 border-0 shadow-sm" style="border-left: 4px solid #0f2b5c !important;">
-            <span class="text-muted small fw-semibold">PEMASUKAN TAHUN INI</span>
-            <h4 class="fw-bold mt-2 mb-1" style="color: #0f2b5c;">Rp {{ number_format($salesYearTotal, 0, ',', '.') }}</h4>
-            <div class="d-flex justify-content-between align-items-center mt-2">
-                <span class="badge bg-dark-subtle text-dark small">Tahun {{ date('Y') }}</span>
-                <span class="small text-muted">Tahun Buku</span>
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="text-muted small fw-bold">INVENTARIS STOK</span>
+                @if($lowStockProducts->count() > 0)
+                    <span class="badge bg-danger-subtle text-danger small">{{ $lowStockProducts->count() }} Menipis</span>
+                @else
+                    <span class="badge bg-success-subtle text-success small">Stok Aman</span>
+                @endif
             </div>
-        </div>
-    </div>
-</div>
-
-<!-- Baris 2: Neraca Laba Kotor & Efisiensi Arus Kas -->
-<div class="row g-3 mb-4">
-    <!-- Card Laba Kotor -->
-    <div class="col-md-4">
-        <div class="card card-custom p-4 text-white h-100 shadow-sm" style="background: linear-gradient(135deg, #091a36 0%, #0f2b5c 60%, #1e40af 100%);">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="badge bg-white bg-opacity-25 text-white rounded-pill px-3 py-1 fw-bold">
-                    <i class="bi bi-wallet2 me-1"></i> Neraca Laba Kotor
-                </span>
-                <i class="bi bi-graph-up-arrow fs-4 text-info"></i>
-            </div>
-            <span class="small text-light opacity-75">ESTIMASI LABA KOTOR BULAN INI:</span>
-            <h3 class="fw-bold text-white mt-1 mb-2">Rp {{ number_format($profitMonth, 0, ',', '.') }}</h3>
-            <div class="pt-2 border-top border-white border-opacity-25 d-flex justify-content-between align-items-center small mt-2">
-                <span class="text-light opacity-75">Akumulasi Laba Tahun {{ date('Y') }}:</span>
-                <strong class="text-warning fs-6">Rp {{ number_format($profitYear, 0, ',', '.') }}</strong>
-            </div>
-            <p class="small text-light opacity-75 mb-0 mt-1" style="font-size: 0.75rem;">
-                Margin laba wajar ~50% (Pemasukan penjualan dikurangi belanja bahan baku).
-            </p>
-        </div>
-    </div>
-
-    <!-- Card Total Pengeluaran Belanja Bahan -->
-    <div class="col-md-4">
-        <div class="card card-custom p-4 bg-white h-100 shadow-sm border">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="text-muted small fw-bold">TOTAL PENGELUARAN BELANJA BAHAN</span>
-                <div class="p-2 bg-danger-subtle text-danger rounded-circle">
-                    <i class="bi bi-cart-dash-fill fs-5"></i>
-                </div>
-            </div>
-            <h3 class="fw-bold text-danger mb-1">Rp {{ number_format($purchasesMonthTotal, 0, ',', '.') }}</h3>
-            <div class="small text-muted">Belanja stok ke Toko Grosir &amp; Penggilingan Kopi bulan ini.</div>
-            <div class="mt-3 pt-2 border-top d-flex justify-content-between small">
-                <span class="text-muted">Total Keseluruhan:</span>
-                <strong class="text-dark">Rp {{ number_format($purchasesAllTimeTotal, 0, ',', '.') }}</strong>
-            </div>
-        </div>
-    </div>
-
-    <!-- Card Tim & Operasional -->
-    <div class="col-md-4">
-        <div class="card card-custom p-4 bg-white h-100 shadow-sm border">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="text-muted small fw-bold">KARYAWAN &amp; MITRA USAHA</span>
-                <div class="p-2 bg-info-subtle text-primary rounded-circle">
-                    <i class="bi bi-people-fill fs-5"></i>
-                </div>
-            </div>
-            <div class="row g-2 text-center mt-1">
-                <div class="col-4">
-                    <div class="p-2 bg-light rounded-3">
-                        <div class="h5 fw-bold text-primary mb-0">{{ $totalStaff }}</div>
-                        <span class="text-muted" style="font-size: 0.72rem;">Staf Aktif</span>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <div class="p-2 bg-light rounded-3">
-                        <div class="h5 fw-bold text-dark mb-0">{{ $totalSuppliers }}</div>
-                        <span class="text-muted" style="font-size: 0.72rem;">Supplier</span>
-                    </div>
-                </div>
-                <div class="col-4">
-                    <div class="p-2 bg-light rounded-3">
-                        <div class="h5 fw-bold text-success mb-0">{{ $totalProducts }}</div>
-                        <span class="text-muted" style="font-size: 0.72rem;">Menu Aktif</span>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-3 pt-2 border-top text-center">
-                <a href="{{ route('users.index') }}" class="small fw-bold text-decoration-none text-primary">
-                    Kelola Akun Karyawan &rarr;
-                </a>
+            <h4 class="fw-bold mt-1 mb-1" style="color: #0f2b5c;">{{ $totalProducts }} <span class="fs-6 fw-normal text-muted">Menu Aktif</span></h4>
+            <div class="small text-muted" style="font-size: 0.75rem;">
+                {{ $totalSuppliers }} Supplier &bull; {{ $totalStaff }} Staf Kasir
             </div>
         </div>
     </div>

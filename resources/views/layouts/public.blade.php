@@ -126,33 +126,6 @@
     @yield('styles')
 </head>
 <body>
-    @auth
-        <!-- Clean User Status Bar (Only if Logged In) -->
-        <div class="py-1.5 px-3 text-white d-flex justify-content-between align-items-center flex-wrap gap-2 no-print" style="background-color: #061224; border-bottom: 1px solid rgba(56, 189, 248, 0.2); font-size: 0.8rem;">
-            <div class="d-flex align-items-center gap-2">
-                <span class="badge px-2 py-0.5 rounded-pill" style="background-color: #2563eb; font-size: 0.72rem;">
-                    <i class="bi bi-person-check me-1"></i> {{ ucfirst(Auth::user()->role) }}
-                </span>
-                <span class="text-light opacity-90">
-                    Masuk Sebagai: <strong class="text-white">{{ Auth::user()->name }}</strong>
-                </span>
-            </div>
-            <div class="d-flex align-items-center gap-2">
-                @if(Auth::user()->isOwner() || Auth::user()->isStaff())
-                    <a href="{{ route('dashboard') }}" class="btn btn-sm btn-outline-info py-0 px-3 fw-semibold text-decoration-none rounded-pill" style="font-size: 0.75rem;">
-                        <i class="bi bi-speedometer2 me-1"></i> Keluar ke Dashboard
-                    </a>
-                @endif
-                <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                    @csrf
-                    <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2 rounded-pill" style="font-size: 0.72rem;" title="Logout">
-                        <i class="bi bi-box-arrow-right me-1"></i> Keluar
-                    </button>
-                </form>
-            </div>
-        </div>
-    @endauth
-
     <!-- Top Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark navbar-stencu sticky-top py-2 shadow-sm">
         <div class="container">
