@@ -252,8 +252,11 @@
                             <h6 class="fw-bold mb-3"><i class="bi bi-person-badge me-1 text-primary"></i> Data Pemesan</h6>
 
                             <div class="mb-3">
-                                <label class="form-label small fw-bold">Nama Pemesan <span class="text-danger">*</span></label>
-                                <input type="text" name="customer_name" class="form-control" placeholder="Contoh: Cut Nabila / Bang Fajar" required value="{{ Auth::check() ? Auth::user()->name : old('customer_name') }}">
+                                <label class="form-label small fw-bold">Nama Anda (Pemesan) <span class="text-danger">*</span></label>
+                                <input type="text" name="customer_name" class="form-control fw-semibold" placeholder="Tulis nama Anda (Contoh: Cut Nabila / Fajar)" required value="{{ Auth::check() ? Auth::user()->name : old('customer_name') }}">
+                                <div class="form-text text-muted" style="font-size: 0.74rem;">
+                                    Nama ini akan tercetak di nota &amp; bisa dipakai untuk cek status pesanan Anda.
+                                </div>
                             </div>
 
                             <div class="mb-3">

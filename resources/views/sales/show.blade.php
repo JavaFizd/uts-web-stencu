@@ -43,7 +43,7 @@
             <div class="row g-2 small mb-4">
                 <div class="col-6">
                     <div class="text-muted">Nomor Nota:</div>
-                    <div class="fw-bold font-monospace fs-6 text-primary">{{ $sale->sale_number }}</div>
+                    <div class="fw-bold font-monospace fs-6 text-primary">{{ $sale->sale_number }} <span class="badge bg-light text-muted border fw-normal">#{{ $sale->id }}</span></div>
                 </div>
                 <div class="col-6 text-end">
                     <div class="text-muted">Status Transaksi:</div>

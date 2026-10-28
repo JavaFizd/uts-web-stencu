@@ -166,18 +166,41 @@ class PublicController extends Controller
     }
 
     /**
-     * Pelacakan pesanan pelanggan berdasarkan Nomor Nota.
+     * Pelacakan pesanan pelanggan berdasarkan Nomor Nota atau Nama Pemesan.
+     * Pelanggan cukup mengetik nama mereka (misal: "Cut Nabila") atau nomor nota (misal: "2916" / "NOTA-2916").
      */
     public function trackOrder(Request $request)
     {
-        $sale = null;
-        if ($request->filled('sale_number')) {
-            $sale = Sale::with(['items.product.category'])
-                ->where('sale_number', trim($request->sale_number))
-                ->first();
+        $keyword = trim($request->input('keyword') ?? $request->input('sale_number') ?? '');
+        $sales = collect();
+
+        if (!empty($keyword)) {
+            // Jika pencarian berupa angka murni (contoh: "2916" atau "15")
+            if (is_numeric($keyword)) {
+                $formattedNumber = sprintf('NOTA-%04d', (int) $keyword);
+                $sales = Sale::with(['items.product.category'])
+                    ->where('sale_number', $formattedNumber)
+                    ->orWhere('sale_number', 'like', "%{$keyword}%")
+                    ->orWhere('id', (int) $keyword)
+                    ->latest('sold_at')
+                    ->take(20)
+                    ->get();
+            } else {
+                // Pencarian berdasarkan nama pemesan atau nomor nota
+                $sales = Sale::with(['items.product.category'])
+                    ->where('sale_number', 'like', "%{$keyword}%")
+                    ->orWhere('customer_name', 'like', "%{$keyword}%")
+                    ->latest('sold_at')
+                    ->take(20)
+                    ->get();
+            }
         }
 
-        return view('public.track_order', compact('sale'));
+        return view('public.track_order', [
+            'sales' => $sales,
+            'keyword' => $keyword,
+            'sale' => $sales->count() === 1 ? $sales->first() : null,
+        ]);
     }
 
     /**

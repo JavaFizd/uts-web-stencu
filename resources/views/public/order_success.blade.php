@@ -61,15 +61,18 @@
                 <!-- Meta Transaksi -->
                 <div class="d-flex justify-content-between align-items-center small mb-1">
                     <span class="text-muted">No. Nota :</span>
-                    <strong class="font-monospace text-primary fs-6">{{ $sale->sale_number }}</strong>
+                    <div>
+                        <strong class="font-monospace text-primary fs-6">{{ $sale->sale_number }}</strong>
+                        <span class="badge bg-light text-muted border ms-1">#{{ $sale->id }}</span>
+                    </div>
                 </div>
                 <div class="d-flex justify-content-between align-items-center small mb-1">
                     <span class="text-muted">Waktu :</span>
                     <span class="text-dark">{{ $sale->sold_at->format('d/m/Y H:i') }} WIB</span>
                 </div>
                 <div class="d-flex justify-content-between align-items-center small mb-1">
-                    <span class="text-muted">Pelanggan :</span>
-                    <strong class="text-dark">{{ $sale->customer_name }}</strong>
+                    <span class="text-muted">Nama Pemesan :</span>
+                    <strong class="text-dark fs-6">{{ $sale->customer_name }}</strong>
                 </div>
                 <div class="d-flex justify-content-between align-items-center small mb-2">
                     <span class="text-muted">Metode Bayar :</span>
