@@ -98,7 +98,7 @@
                     <!-- Foto Menu Real JPG -->
                     <div class="position-relative overflow-hidden rounded-3 mb-3" style="height: 180px; background-color: #f1f5f9;">
                         @php
-                            $imgSrc = $product->image ? (Str::startsWith($product->image, 'http') ? $product->image : asset($product->image)) : asset('images/products/sanger_dingin.jpg');
+                            $imgSrc = $product->image ? (Str::startsWith($product->image, 'http') ? $product->image : asset($product->image) . '?v=3') : asset('images/products/sanger_dingin.jpg?v=3');
                         @endphp
                         <img src="{{ $imgSrc }}" 
                              alt="{{ $product->name }}" 

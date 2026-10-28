@@ -82,7 +82,7 @@
                         <td>
                             <div class="d-flex align-items-center gap-2">
                                 @php
-                                    $imgTable = $product->image ? (Str::startsWith($product->image, 'http') ? $product->image : asset($product->image)) : asset('images/products/sanger_dingin.jpg');
+                                    $imgTable = $product->image ? (Str::startsWith($product->image, 'http') ? $product->image : asset($product->image) . '?v=3') : asset('images/products/sanger_dingin.jpg?v=3');
                                 @endphp
                                 <img src="{{ $imgTable }}" 
                                      alt="{{ $product->name }}" 

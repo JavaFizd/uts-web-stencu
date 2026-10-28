@@ -45,7 +45,7 @@
                                 </div>
                                 <div class="d-flex gap-2 align-items-center mb-2">
                                     @php
-                                        $imgPos = $product->image ? (Str::startsWith($product->image, 'http') ? $product->image : asset($product->image)) : asset('images/products/sanger_dingin.jpg');
+                                        $imgPos = $product->image ? (Str::startsWith($product->image, 'http') ? $product->image : asset($product->image) . '?v=3') : asset('images/products/sanger_dingin.jpg?v=3');
                                     @endphp
                                     <img src="{{ $imgPos }}" 
                                          alt="{{ $product->name }}" 

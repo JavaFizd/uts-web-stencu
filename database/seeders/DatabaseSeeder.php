@@ -194,7 +194,7 @@ class DatabaseSeeder extends Seeder
                 'selling_price' => 15000, // Rp 15.000 Sesuai spesifikasi!
                 'stock' => 30,
                 'minimum_stock' => 10,
-                'image' => 'images/products/mie_aceh_goreng.jpg',
+                'image' => 'images/products/mie_aceh_goreng_telur.jpg',
                 'is_active' => true,
             ],
             [
@@ -274,7 +274,7 @@ class DatabaseSeeder extends Seeder
                 'selling_price' => 6000,
                 'stock' => 30,
                 'minimum_stock' => 5,
-                'image' => 'images/products/gorengan.jpg',
+                'image' => 'images/products/bakwan_tahu_goreng.jpg',
                 'is_active' => true,
             ],
         ];
