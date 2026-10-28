@@ -92,8 +92,7 @@
                     <label class="form-label small fw-bold">Metode Pembayaran <span class="text-danger">*</span></label>
                     <select name="payment_method" class="form-select" required>
                         <option value="cash" {{ old('payment_method') == 'cash' ? 'selected' : '' }}>Tunai / Cash</option>
-                        <option value="qris" {{ old('payment_method') == 'qris' ? 'selected' : '' }}>QRIS (BSI / Mandiri)</option>
-                        <option value="transfer" {{ old('payment_method') == 'transfer' ? 'selected' : '' }}>Transfer Bank</option>
+                        <option value="qris" {{ old('payment_method') == 'qris' ? 'selected' : '' }}>QRIS (Scan Barcode)</option>
                     </select>
                 </div>
 

@@ -300,7 +300,6 @@
                                 <select name="payment_method" id="paymentMethodSelect" class="form-select" onchange="checkPaymentMethod(this.value)" required>
                                     <option value="cash">Bayar Tunai di Kasir</option>
                                     <option value="qris" selected>QRIS (Scan Barcode &amp; Bayar Langsung)</option>
-                                    <option value="transfer">Transfer Bank (BSI)</option>
                                 </select>
                             </div>
 

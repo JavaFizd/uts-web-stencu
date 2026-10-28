@@ -67,8 +67,12 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-between align-items-center small mb-1">
-                    <span class="text-muted">Waktu :</span>
-                    <span class="text-dark">{{ $sale->sold_at->format('d/m/Y H:i') }} WIB</span>
+                    <span class="text-muted">Waktu Transaksi :</span>
+                    <span class="text-dark">{{ $sale->sold_at ? $sale->sold_at->timezone('Asia/Jakarta')->format('d/m/Y H:i') : date('d/m/Y H:i') }} WIB</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center small mb-1">
+                    <span class="text-muted">Waktu Cetak :</span>
+                    <strong class="font-monospace text-dark realtime-clock">Memuat waktu...</strong>
                 </div>
                 <div class="d-flex justify-content-between align-items-center small mb-1">
                     <span class="text-muted">Nama Pemesan :</span>
@@ -181,4 +185,28 @@
         }
     }
 </style>
+@endsection
+
+@section('scripts')
+<script>
+    function updateRealtimeClock() {
+        const now = new Date();
+        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const year = now.getFullYear();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        
+        const formatted = `${day}/${month}/${year} ${hours}:${minutes}:${seconds} WIB`;
+        document.querySelectorAll('.realtime-clock').forEach(el => el.textContent = formatted);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        updateRealtimeClock();
+        setInterval(updateRealtimeClock, 1000);
+    });
+
+    window.addEventListener('beforeprint', updateRealtimeClock);
+</script>
 @endsection

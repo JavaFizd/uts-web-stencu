@@ -220,7 +220,7 @@ class DatabaseSeeder extends Seeder
                 'selling_price' => 10000, // Rp 10.000 Sesuai spesifikasi!
                 'stock' => 3, // Di bawah minimum_stock (10) -> Warning Stok Menipis!
                 'minimum_stock' => 10,
-                'image' => 'images/products/indomie_goreng.jpg',
+                'image' => 'images/products/mie_aceh_kosong.jpg',
                 'is_active' => true,
             ],
             [
