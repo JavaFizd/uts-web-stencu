@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Sale;
 use App\Models\SaleItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;

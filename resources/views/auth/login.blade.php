@@ -3,135 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Stencu Coffee Management System</title>
+    <title>Login - Stencu Coffee</title>
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         body {
-            background: linear-gradient(135deg, #091a36 0%, #0f2b5c 50%, #1e40af 100%);
+            background: linear-gradient(145deg, #061224 0%, #0b1f3f 50%, #173877 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            padding: 20px;
         }
-        .login-card {
+
+        /* Tampilan Bingkai Menyerupai Layar Smartphone */
+        .phone-frame {
             background: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 24px 48px rgba(9, 26, 54, 0.35);
-            max-width: 440px;
+            border-radius: 36px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4), 0 0 0 10px #091a36;
+            max-width: 380px;
             width: 100%;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            position: relative;
         }
-        .login-header {
-            background-color: #0f2b5c;
-            color: #ffffff;
-            padding: 30px 24px 24px 24px;
+
+        /* Speaker / Notch Hiasan HP */
+        .phone-notch {
+            width: 110px;
+            height: 14px;
+            background-color: #061224;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            margin: 0 auto;
+        }
+
+        .phone-header {
+            padding: 24px 20px 16px 20px;
             text-align: center;
-            border-bottom: 3px solid #2563eb;
+        }
+
+        .phone-body {
+            padding: 0 24px 28px 24px;
+        }
+
+        .form-control {
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            border: 1.5px solid #e2e8f0;
+        }
+
+        .form-control:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .btn-stencu-login {
+            background-color: #2563eb;
+            border: none;
+            color: #ffffff;
+            font-weight: 700;
+            border-radius: 12px;
+            padding: 11px;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .btn-stencu-login:hover {
+            background-color: #1d4ed8;
+            color: #ffffff;
+        }
+
+        .btn-customer-guest {
+            background-color: #ecfdf5;
+            color: #059669;
+            border: 1.5px solid #a7f3d0;
+            font-weight: 700;
+            border-radius: 12px;
+            padding: 11px;
+            font-size: 0.92rem;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .btn-customer-guest:hover {
+            background-color: #059669;
+            color: #ffffff;
+            border-color: #059669;
         }
     </style>
 </head>
 <body>
-    <div class="login-card mx-3 my-4">
-        <div class="login-header">
-            <div class="mb-2">
-                <img src="{{ asset('images/logo-badge.svg') }}" alt="Stencu Coffee Logo" height="85">
-            </div>
-            <h4 class="fw-bold mb-1 mt-1 text-white" style="letter-spacing: 1px;">STENCU COFFEE</h4>
-            <div class="text-light opacity-75 small">Sistem Inventaris &amp; Penjualan (UTS Web 2)</div>
+    <div class="phone-frame">
+        <!-- Hiasan Notch HP -->
+        <div class="phone-notch"></div>
+
+        <!-- Header Simpel -->
+        <div class="phone-header">
+            <img src="{{ asset('images/logo-badge.svg') }}" alt="Stencu Coffee" height="70" class="mb-2">
+            <h5 class="fw-bold mb-0 text-dark">Stencu Coffee</h5>
+            <div class="text-muted small" style="font-size: 0.78rem;">Masuk ke Akun Anda</div>
         </div>
 
-        <div class="p-4">
-            <!-- Flash Message -->
+        <div class="phone-body">
+            <!-- Flash Message / Error -->
             @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show small rounded-3" role="alert">
+                <div class="alert alert-success py-2 px-3 small rounded-3 mb-3" style="font-size: 0.78rem;">
                     {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             @endif
 
             @if($errors->any())
-                <div class="alert alert-danger alert-dismissible fade show small rounded-3" role="alert">
+                <div class="alert alert-danger py-2 px-3 small rounded-3 mb-3" style="font-size: 0.78rem;">
                     {{ $errors->first() }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             @endif
 
+            <!-- Form Login Staff & Owner -->
             <form action="{{ route('login.post') }}" method="POST">
                 @csrf
-                <div class="mb-3">
-                    <label class="form-label small fw-bold text-secondary">Alamat Email</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-light text-muted"><i class="bi bi-envelope text-primary"></i></span>
-                        <input type="email" id="emailInput" name="email" class="form-control" placeholder="nama@stencu.com" value="{{ old('email') }}" required autofocus>
-                    </div>
+                <div class="mb-2.5">
+                    <label class="form-label small fw-semibold text-secondary mb-1">Email</label>
+                    <input type="email" id="emailInput" name="email" class="form-control" placeholder="nama@stencu.com" value="{{ old('email') }}" required autofocus>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label small fw-bold text-secondary">Kata Sandi</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-light text-muted"><i class="bi bi-lock text-primary"></i></span>
-                        <input type="password" id="passwordInput" name="password" class="form-control" placeholder="••••••••" required>
-                    </div>
+                    <label class="form-label small fw-semibold text-secondary mb-1">Password</label>
+                    <input type="password" id="passwordInput" name="password" class="form-control" placeholder="••••••••" required>
                 </div>
 
-                <div class="mb-3 form-check">
-                    <input type="checkbox" name="remember" class="form-check-input" id="remember">
-                    <label class="form-check-label small text-muted" for="remember">Ingat Saya di Perangkat Ini</label>
-                </div>
-
-                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold text-white shadow-sm rounded-pill" style="background-color: #2563eb; border: none;">
-                    <i class="bi bi-box-arrow-in-right me-1"></i> Masuk ke Sistem
+                <button type="submit" class="btn btn-stencu-login w-100 shadow-sm mb-3">
+                    Masuk ke Sistem &rarr;
                 </button>
             </form>
 
-            <hr class="my-4">
+            <div class="d-flex align-items-center my-3 text-muted">
+                <hr class="flex-grow-1 my-0">
+                <span class="px-2 small text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">Atau</span>
+                <hr class="flex-grow-1 my-0">
+            </div>
 
-            <!-- Demo Account 1-Click Login (Sangat Membantu Saat Dosen Menguji!) -->
-            <div class="bg-light p-3 rounded-4 border">
-                <div class="fw-bold small text-secondary mb-2 text-center">
-                    <i class="bi bi-lightning-charge-fill text-primary"></i> Masuk Cepat Sekali Klik (Mode Dosen):
-                </div>
-                <div class="d-grid gap-2">
-                    <a href="{{ route('quick.login', 'owner') }}" class="btn btn-outline-danger btn-sm text-start rounded-pill px-3 py-1.5 d-flex align-items-center justify-content-between text-decoration-none">
-                        <span><i class="bi bi-shield-lock-fill me-1"></i> <strong>Owner (Pemilik Toko)</strong></span>
-                        <span class="badge bg-danger">Masuk Langsung &rarr;</span>
+            <!-- Bagian Pelanggan (Tanpa Password - Masuk Langsung) -->
+            <div class="mb-3">
+                <a href="{{ route('public.menu') }}" class="btn-customer-guest shadow-sm">
+                    <i class="bi bi-cup-straw me-1"></i> Masuk Sebagai Pelanggan <br>
+                    <span class="small fw-normal" style="font-size: 0.75rem;">(Tanpa Password &bull; Pesan Mandiri)</span>
+                </a>
+            </div>
+
+            <!-- Tombol Cepat Demo untuk Dosen / Pengujian (Rapi & Bersih) -->
+            <div class="pt-2 text-center">
+                <div class="text-muted small mb-2" style="font-size: 0.72rem;">Opsi Cepat Demo:</div>
+                <div class="d-flex justify-content-center gap-1.5 flex-wrap">
+                    <a href="{{ route('quick.login', 'owner') }}" class="btn btn-sm btn-outline-danger rounded-pill px-2.5 py-0.5 fw-semibold" style="font-size: 0.72rem;">
+                        <i class="bi bi-shield-lock-fill me-0.5"></i> Owner
                     </a>
-                    <a href="{{ route('quick.login', 'kasir') }}" class="btn btn-outline-primary btn-sm text-start rounded-pill px-3 py-1.5 d-flex align-items-center justify-content-between text-decoration-none">
-                        <span><i class="bi bi-calculator-fill me-1"></i> <strong>Staff Kasir (Rian - POS & Penjualan)</strong></span>
-                        <span class="badge bg-primary" style="background-color: #2563eb !important;">Masuk Langsung &rarr;</span>
-                    </a>
-                    <a href="{{ route('quick.login', 'dapur') }}" class="btn btn-outline-warning btn-sm text-start rounded-pill px-3 py-1.5 d-flex align-items-center justify-content-between text-decoration-none">
-                        <span><i class="bi bi-fire me-1"></i> <strong>Staff Dapur (Fajar - Stok & Restok)</strong></span>
-                        <span class="badge bg-warning text-dark">Masuk Langsung &rarr;</span>
-                    </a>
-                    <a href="{{ route('quick.login', 'pelanggan') }}" class="btn btn-outline-success btn-sm text-start rounded-pill px-3 py-1.5 d-flex align-items-center justify-content-between text-decoration-none">
-                        <span><i class="bi bi-cup-hot-fill me-1"></i> <strong>Pelanggan (Customer)</strong></span>
-                        <span class="badge bg-success">Masuk Langsung &rarr;</span>
+                    <a href="{{ route('quick.login', 'kasir') }}" class="btn btn-sm btn-outline-primary rounded-pill px-2.5 py-0.5 fw-semibold" style="font-size: 0.72rem;">
+                        <i class="bi bi-calculator-fill me-0.5"></i> Staff Kasir
                     </a>
                 </div>
             </div>
 
-            <div class="text-center mt-3">
-                <a href="{{ route('home') }}" class="text-decoration-none small text-muted">
-                    <i class="bi bi-arrow-left me-1"></i> Kembali ke Halaman Depan
+            <div class="text-center mt-3 pt-2 border-top">
+                <a href="{{ route('home') }}" class="text-decoration-none small text-muted" style="font-size: 0.75rem;">
+                    &larr; Kembali ke Beranda
                 </a>
             </div>
         </div>
     </div>
-
-    <script>
-        function fillDemo(email, pass) {
-            document.getElementById('emailInput').value = email;
-            document.getElementById('passwordInput').value = pass;
-        }
-    </script>
 </body>
 </html>

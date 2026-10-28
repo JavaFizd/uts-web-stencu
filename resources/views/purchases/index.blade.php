@@ -54,6 +54,29 @@
     </form>
 </div>
 
+<!-- Ringkasan Belanja Hasil Filter (KPI Strip) -->
+<div class="card card-custom p-3 bg-white mb-4 shadow-sm border" style="border-left: 4px solid #10b981 !important;">
+    <div class="row align-items-center g-3">
+        <div class="col-md-6">
+            <span class="text-muted small fw-bold d-block" style="font-size: 0.72rem;">TOTAL PENGELUARAN BELANJA BAHAN (PO)</span>
+            <h4 class="fw-bold text-success mb-0 mt-1">
+                Rp {{ number_format($totalPurchasesAmount, 0, ',', '.') }}
+            </h4>
+            <div class="small text-muted mt-1" style="font-size: 0.75rem;">
+                Total belanja stok masuk dari seluruh supplier mitra
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="d-flex justify-content-md-end gap-3 flex-wrap">
+                <div class="px-3 py-2 bg-light rounded-3 text-center border">
+                    <div class="h5 fw-bold text-dark mb-0">{{ number_format($totalPurchasesCount) }}</div>
+                    <span class="text-muted" style="font-size: 0.72rem;">Nota PO Selesai</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Purchases Table -->
 <div class="card card-custom bg-white">
     <div class="table-responsive">

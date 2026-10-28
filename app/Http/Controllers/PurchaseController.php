@@ -7,6 +7,7 @@ use App\Models\Purchase;
 use App\Models\PurchaseItem;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -33,10 +34,14 @@ class PurchaseController extends Controller
             $query->whereDate('purchased_at', '>=', $request->date_from);
         }
 
-        $purchases = $query->latest('purchased_at')->paginate(10)->withQueryString();
+        $aggregateQuery = clone $query;
+        $totalPurchasesAmount = (clone $aggregateQuery)->where('status', 'completed')->sum('total');
+        $totalPurchasesCount = (clone $aggregateQuery)->where('status', 'completed')->count();
+
+        $purchases = $query->latest('purchased_at')->paginate(15)->withQueryString();
         $suppliers = Supplier::all();
 
-        return view('purchases.index', compact('purchases', 'suppliers'));
+        return view('purchases.index', compact('purchases', 'suppliers', 'totalPurchasesAmount', 'totalPurchasesCount'));
     }
 
     /**

@@ -1,122 +1,82 @@
 @extends('layouts.public')
 
-@section('title', 'Portal Sistem Inventaris & Penjualan')
+@section('title', 'Selamat Datang di Stencu Coffee')
 
 @section('content')
-<!-- Hero & Single Portal Gateway (Clean Deep Navy & White) -->
-<div class="py-5" style="background: linear-gradient(150deg, #091a36 0%, #0f2b5c 50%, #1e40af 100%); min-height: 85vh; display: flex; align-items: center;">
+<div class="py-5" style="background: linear-gradient(150deg, #061224 0%, #0b1f3f 50%, #173877 100%); min-height: 82vh; display: flex; align-items: center;">
     <div class="container py-3">
-        <!-- Logo & Brand Header -->
+        <!-- Logo & Header -->
         <div class="text-center mb-4">
-            <img src="{{ asset('images/logo-badge.svg') }}" alt="Stencu Coffee Logo" height="95" class="mb-3 shadow-sm">
-            
-            <div class="d-flex justify-content-center mb-2">
-                <span class="badge bg-primary bg-opacity-25 text-info border border-info border-opacity-25 px-3 py-1.5 rounded-pill fw-semibold small">
-                    <i class="bi bi-geo-alt-fill me-1"></i> Batuphat Barat, Muara Satu, Lhokseumawe
-                </span>
-            </div>
-
-            <h1 class="h2 fw-bold text-white mb-2" style="letter-spacing: 0.5px;">Stencu Coffee Management System</h1>
-            <p class="text-light opacity-75 mx-auto mb-0" style="max-width: 620px; font-size: 1rem; line-height: 1.5;">
-                Sistem Terpadu Inventaris &amp; Penjualan Warkop Stencu Coffee. Silakan pilih peran di bawah ini untuk mengakses sistem sesuai kebutuhan Anda:
+            <img src="{{ asset('images/logo-badge.svg') }}" alt="Stencu Coffee Logo" height="90" class="mb-3">
+            <h2 class="fw-bold text-white mb-2" style="letter-spacing: 0.5px;">Stencu Coffee Batuphat</h2>
+            <p class="text-light opacity-75 mx-auto mb-0" style="max-width: 500px; font-size: 0.95rem;">
+                Warung kopi santai khas Aceh. Silakan pilih menu di bawah ini untuk memesan atau mengelola warkop:
             </p>
         </div>
 
-        <!-- 3 Role Access Cards (Clean, Simple, & Focused) -->
-        <div class="row g-3 justify-content-center max-w-5xl mx-auto">
-            <!-- 1. Owner Card -->
+        <!-- 3 Pilihan Masuk (Simpel, Jelas, & Elegan) -->
+        <div class="row g-3 justify-content-center" style="max-width: 900px; margin: 0 auto;">
+            <!-- 1. Pelanggan (Paling Utama) -->
             <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-lg rounded-4 p-4 bg-white d-flex flex-column" style="border-top: 4px solid #0f2b5c !important;">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2.5 py-1 rounded-pill fw-bold" style="font-size: 0.75rem;">
-                            <i class="bi bi-shield-lock-fill me-1"></i> Owner
-                        </span>
-                        <div class="p-2 rounded-circle bg-danger-subtle text-danger" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                            <i class="bi bi-person-fill-gear fs-5"></i>
+                <div class="card h-100 border-0 shadow-lg rounded-4 p-4 bg-white text-center d-flex flex-column" style="border-top: 4px solid #059669 !important;">
+                    <div class="mb-3">
+                        <div class="p-3 rounded-circle bg-success-subtle text-success mx-auto" style="width: 56px; height: 56px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-cup-hot-fill fs-4"></i>
                         </div>
                     </div>
-                    
-                    <h5 class="fw-bold mb-3 text-dark">Pemilik Toko (Owner)</h5>
-
-                    <ul class="list-unstyled small text-secondary mb-4 flex-grow-1">
-                        <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i>Dashboard grafik omset &amp; laba</li>
-                        <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i>Laporan penjualan (Export PDF/Excel)</li>
-                        <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i>Kontrol stok bahan &amp; data supplier</li>
-                        <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i>Manajemen menu produk &amp; user staf</li>
-                    </ul>
-
-                    <a href="{{ route('quick.login', 'owner') }}" class="btn btn-primary w-100 fw-bold py-2.5 rounded-pill shadow-sm" style="background-color: #0f2b5c; border: none;">
-                        <i class="bi bi-box-arrow-in-right me-1"></i> Masuk sebagai Owner
+                    <h5 class="fw-bold text-dark mb-1">Pelanggan Warkop</h5>
+                    <p class="text-muted small mb-4 flex-grow-1">
+                        Pesan kopi, mie aceh, dan cemilan langsung dari meja Anda tanpa perlu login/password.
+                    </p>
+                    <a href="{{ route('public.menu') }}" class="btn btn-success fw-bold py-2 rounded-pill shadow-sm" style="background-color: #059669; border: none;">
+                        <i class="bi bi-cup-straw me-1"></i> Buka Menu &amp; Pesan
                     </a>
                 </div>
             </div>
 
-            <!-- 2. Staff Operasional Card -->
+            <!-- 2. Staff Kasir -->
             <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-lg rounded-4 p-4 bg-white d-flex flex-column" style="border-top: 4px solid #2563eb !important;">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2.5 py-1 rounded-pill fw-bold" style="font-size: 0.75rem;">
-                            <i class="bi bi-people-fill me-1"></i> Staff Operasional
-                        </span>
-                        <div class="p-2 rounded-circle bg-primary-subtle text-primary" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                            <i class="bi bi-shop fs-5"></i>
+                <div class="card h-100 border-0 shadow-lg rounded-4 p-4 bg-white text-center d-flex flex-column" style="border-top: 4px solid #2563eb !important;">
+                    <div class="mb-3">
+                        <div class="p-3 rounded-circle bg-primary-subtle text-primary mx-auto" style="width: 56px; height: 56px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-calculator fs-4"></i>
                         </div>
                     </div>
-                    
-                    <h5 class="fw-bold mb-3 text-dark">Staff (Kasir &amp; Dapur)</h5>
-
-                    <ul class="list-unstyled small text-secondary mb-4 flex-grow-1">
-                        <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i><strong>Kasir:</strong> POS penjualan, cetak struk &amp; cek catatan meja</li>
-                        <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i><strong>Dapur / Barista:</strong> Pantau stok menipis &amp; restok belanja</li>
-                        <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i><strong>Akun Masing-masing:</strong> Tercatat di nota &amp; riwayat belanja</li>
-                        <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i>Bisa tambah staf baru kapan saja lewat akun Owner</li>
-                    </ul>
-
-                    <div class="d-grid gap-2">
-                        <a href="{{ route('quick.login', 'kasir') }}" class="btn btn-primary fw-bold py-2 rounded-pill shadow-sm" style="background-color: #2563eb; border: none;">
-                            <i class="bi bi-calculator me-1"></i> Masuk Kasir (Rian)
-                        </a>
-                        <a href="{{ route('quick.login', 'dapur') }}" class="btn btn-outline-primary fw-bold py-1.5 rounded-pill" style="border-color: #2563eb; color: #2563eb; font-size: 0.85rem;">
-                            <i class="bi bi-fire me-1"></i> Masuk Dapur &amp; Stok (Fajar)
-                        </a>
-                    </div>
+                    <h5 class="fw-bold text-dark mb-1">Staff Kasir</h5>
+                    <p class="text-muted small mb-4 flex-grow-1">
+                        Input pesanan transaksi kasir POS, cetak struk bon, dan catat belanja stok bahan.
+                    </p>
+                    <a href="{{ route('quick.login', 'kasir') }}" class="btn btn-primary fw-bold py-2 rounded-pill shadow-sm" style="background-color: #2563eb; border: none;">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Masuk Kasir (POS)
+                    </a>
                 </div>
             </div>
 
-            <!-- 3. Pelanggan Card -->
+            <!-- 3. Owner -->
             <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-lg rounded-4 p-4 bg-white d-flex flex-column" style="border-top: 4px solid #059669 !important;">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2.5 py-1 rounded-pill fw-bold" style="font-size: 0.75rem;">
-                            <i class="bi bi-cup-hot-fill me-1"></i> Pelanggan
-                        </span>
-                        <div class="p-2 rounded-circle bg-success-subtle text-success" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                            <i class="bi bi-bag-check fs-5"></i>
+                <div class="card h-100 border-0 shadow-lg rounded-4 p-4 bg-white text-center d-flex flex-column" style="border-top: 4px solid #0f2b5c !important;">
+                    <div class="mb-3">
+                        <div class="p-3 rounded-circle bg-danger-subtle text-danger mx-auto" style="width: 56px; height: 56px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-shield-lock-fill fs-4"></i>
                         </div>
                     </div>
-                    
-                    <h5 class="fw-bold mb-3 text-dark">Pelanggan Warkop (Customer)</h5>
-
-                    <ul class="list-unstyled small text-secondary mb-4 flex-grow-1">
-                        <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>Buka katalog lengkap kopi &amp; makanan</li>
-                        <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>Pesan langsung ke kasir dari nomor meja</li>
-                        <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>Bisa ketik catatan racikan khusus</li>
-                        <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i>Pantau status nota pesanan realtime</li>
-                    </ul>
-
-                    <a href="{{ route('quick.login', 'pelanggan') }}" class="btn btn-success w-100 fw-bold py-2.5 rounded-pill shadow-sm" style="background-color: #059669; border: none;">
-                        <i class="bi bi-cup-straw me-1"></i> Masuk &amp; Pesan Menu
+                    <h5 class="fw-bold text-dark mb-1">Owner (Pemilik)</h5>
+                    <p class="text-muted small mb-4 flex-grow-1">
+                        Pusat kendali laporan omset, laba warkop, grafik keuangan, dan kelola akun staf.
+                    </p>
+                    <a href="{{ route('quick.login', 'owner') }}" class="btn btn-dark fw-bold py-2 rounded-pill shadow-sm" style="background-color: #0f2b5c; border: none;">
+                        <i class="bi bi-speedometer2 me-1"></i> Masuk Dashboard
                     </a>
                 </div>
             </div>
         </div>
 
-        <!-- Footer Info Highlights -->
+        <!-- Info Ringkas Fasilitas -->
         <div class="d-flex justify-content-center gap-4 mt-5 flex-wrap small text-light opacity-75">
+            <div><i class="bi bi-geo-alt-fill text-info me-1"></i> Batuphat Barat, Lhokseumawe</div>
             <div><i class="bi bi-clock text-info me-1"></i> Buka 07.30 - 00.30 WIB</div>
-            <div><i class="bi bi-wifi text-info me-1"></i> Free Wi-Fi Kencang</div>
-            <div><i class="bi bi-plug text-info me-1"></i> Colokan Tiap Meja</div>
-            <div><i class="bi bi-qr-code text-info me-1"></i> Bayar Tunai / QRIS</div>
+            <div><i class="bi bi-wifi text-info me-1"></i> Free Wi-Fi</div>
+            <div><i class="bi bi-qr-code text-info me-1"></i> Tunai &bull; QRIS</div>
         </div>
     </div>
 </div>
