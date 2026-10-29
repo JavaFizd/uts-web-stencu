@@ -388,5 +388,25 @@ class StencuInventoryTest extends TestCase
         ]);
         $resDapur->assertRedirect(route('sales.index'));
         $this->assertAuthenticated();
+
+        $this->post('/logout');
+
+        // 4. Login dengan Email Resmi Owner (admin@stencu.com)
+        $resEmailAdmin = $this->post('/login', [
+            'login' => 'admin@stencu.com',
+            'password' => 'password',
+        ]);
+        $resEmailAdmin->assertRedirect(route('dashboard'));
+        $this->assertAuthenticated();
+
+        $this->post('/logout');
+
+        // 5. Login dengan Email Resmi Kasir (kasir@stencu.com)
+        $resEmailKasir = $this->post('/login', [
+            'login' => 'kasir@stencu.com',
+            'password' => 'password',
+        ]);
+        $resEmailKasir->assertRedirect(route('sales.create'));
+        $this->assertAuthenticated();
     }
 }

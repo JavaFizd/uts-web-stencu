@@ -308,17 +308,17 @@
             <!-- Keterangan Tugas Role Aktif -->
             <div class="role-info-pill" id="roleInfoPill">
                 <i class="bi bi-info-circle-fill"></i>
-                <span id="roleInfoText">Layar Kasir POS (Cetak Nota & Transaksi)</span>
+                <span id="roleInfoText">Email: kasir@stencu.com &bull; Layar Kasir POS</span>
             </div>
 
-            <!-- 2. Form Login Fleksibel -->
+            <!-- 2. Form Login Akun Staf & Owner (Sesuai Email di Panduan) -->
             <form action="{{ route('login.post') }}" method="POST" id="loginForm">
                 @csrf
                 <div class="mb-2.5">
-                    <label class="form-label" id="labelUsername">Username</label>
+                    <label class="form-label" id="labelEmail">Alamat Email</label>
                     <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-                        <input type="text" id="loginInput" name="login" class="form-control" placeholder="kasir / dapur / admin" value="{{ old('login', 'kasir') }}" required autofocus autocomplete="username">
+                        <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+                        <input type="text" id="loginInput" name="login" class="form-control" placeholder="kasir@stencu.com / admin@stencu.com" value="{{ old('login', 'kasir@stencu.com') }}" required autofocus autocomplete="username">
                     </div>
                 </div>
 
@@ -394,30 +394,30 @@
 
             if (role === 'kasir') {
                 btnKasir.className = 'role-btn active-kasir';
-                loginInput.value = 'kasir';
+                loginInput.value = 'kasir@stencu.com';
                 passwordInput.value = 'password';
                 roleInfoPill.style.backgroundColor = '#eff6ff';
                 roleInfoPill.style.color = '#1d4ed8';
                 roleInfoPill.style.borderColor = '#bfdbfe';
-                roleInfoText.innerText = 'Layar Kasir POS (Cetak Nota & Transaksi)';
+                roleInfoText.innerText = 'Email: kasir@stencu.com \u2022 Layar Kasir POS';
                 btnSubmit.style.background = 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)';
             } else if (role === 'dapur') {
                 btnDapur.className = 'role-btn active-dapur';
-                loginInput.value = 'dapur';
+                loginInput.value = 'dapur@stencu.com';
                 passwordInput.value = 'password';
                 roleInfoPill.style.backgroundColor = '#fff7ed';
                 roleInfoPill.style.color = '#c2410c';
                 roleInfoPill.style.borderColor = '#fed7aa';
-                roleInfoText.innerText = 'Layar Dapur & Barista (Antrean Pesanan & Stok)';
+                roleInfoText.innerText = 'Email: dapur@stencu.com \u2022 Layar Dapur & Stok';
                 btnSubmit.style.background = 'linear-gradient(135deg, #ea580c 0%, #c2410c 100%)';
             } else if (role === 'owner') {
                 btnOwner.className = 'role-btn active-owner';
-                loginInput.value = 'admin';
+                loginInput.value = 'admin@stencu.com';
                 passwordInput.value = 'password';
                 roleInfoPill.style.backgroundColor = '#f8fafc';
                 roleInfoPill.style.color = '#0f2b5c';
                 roleInfoPill.style.borderColor = '#cbd5e1';
-                roleInfoText.innerText = 'Dashboard Pemilik (Laba, Omset & Kelola Staf)';
+                roleInfoText.innerText = 'Email: admin@stencu.com \u2022 Dashboard Pemilik';
                 btnSubmit.style.background = 'linear-gradient(135deg, #0f2b5c 0%, #06152b 100%)';
             }
         }

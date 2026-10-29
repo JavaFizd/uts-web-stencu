@@ -44,13 +44,13 @@ class AuthController extends Controller
         $loginInput = strtolower(trim($input));
         $password = $request->password;
 
-        // Cari akun berdasarkan username pendek ("admin", "kasir", "dapur") atau email
+        // Cari akun berdasarkan email resmi atau username fleksibel
         $user = null;
-        if (in_array($loginInput, ['admin', 'owner'])) {
+        if (in_array($loginInput, ['admin', 'owner', 'admin@stencu.com', 'owner@stencu.com'])) {
             $user = User::where('role', 'owner')->first();
-        } elseif (in_array($loginInput, ['kasir', 'cashier'])) {
+        } elseif (in_array($loginInput, ['kasir', 'cashier', 'kasir@stencu.com', 'staff@stencu.com'])) {
             $user = User::where('email', 'kasir@stencu.com')->first() ?? User::where('role', 'staff')->first();
-        } elseif (in_array($loginInput, ['dapur', 'barista', 'kitchen'])) {
+        } elseif (in_array($loginInput, ['dapur', 'barista', 'kitchen', 'dapur@stencu.com', 'barista@stencu.com'])) {
             $user = User::where('email', 'dapur@stencu.com')->first();
         } elseif ($loginInput === 'staff') {
             $user = User::where('email', 'kasir@stencu.com')->first() ?? User::where('role', 'staff')->first();
@@ -85,8 +85,8 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'login' => 'Username atau password yang Anda masukkan salah.',
-            'email' => 'Username atau password yang Anda masukkan salah.',
+            'login' => 'Email atau password yang Anda masukkan salah.',
+            'email' => 'Email atau password yang Anda masukkan salah.',
         ])->withInput();
     }
 
