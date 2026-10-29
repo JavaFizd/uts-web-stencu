@@ -1,19 +1,25 @@
 @extends('layouts.app')
 
-@section('title', 'Detail Struk Penjualan - #' . $sale->sale_number)
+@section('title', (Auth::user()->isDapurStation() ? 'Tiket Dapur & Barista' : 'Detail Struk Penjualan') . ' - #' . $sale->sale_number)
 
 @section('content')
-<div class="mb-4 d-flex justify-content-between align-items-center">
+<div class="mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
     <div>
         <a href="{{ route('sales.index') }}" class="text-decoration-none small text-muted">
-            <i class="bi bi-arrow-left me-1"></i> Kembali ke Riwayat Penjualan
+            <i class="bi bi-arrow-left me-1"></i> {{ Auth::user()->isDapurStation() ? 'Kembali ke Antrean Dapur & Barista' : 'Kembali ke Riwayat Penjualan' }}
         </a>
-        <h3 class="fw-bold mt-2 mb-0">Struk Transaksi Penjualan</h3>
+        <h3 class="fw-bold mt-2 mb-0">
+            @if(Auth::user()->isDapurStation())
+                <i class="bi bi-fire text-warning me-1"></i> Tiket Pesanan Dapur &amp; Barista
+            @else
+                Struk Transaksi Penjualan
+            @endif
+        </h3>
         <span class="text-muted small">ID Transaksi: #{{ $sale->id }} • Dibuat pada {{ $sale->sold_at->format('d/m/Y H:i') }}</span>
     </div>
     <div class="d-flex gap-2">
         <button type="button" class="btn btn-outline-secondary" onclick="window.print()">
-            <i class="bi bi-printer me-1"></i> Cetak Struk
+            <i class="bi bi-printer me-1"></i> {{ Auth::user()->isDapurStation() ? 'Cetak Tiket Pesanan Dapur' : 'Cetak Struk Kasir' }}
         </button>
 
         <!-- Tombol Batalkan Transaksi (Hanya Role Owner - Slide 5 & 8) -->

@@ -1,22 +1,58 @@
 @extends('layouts.app')
 
-@section('title', 'Riwayat Transaksi Penjualan')
+@section('title', Auth::user()->isDapurStation() ? 'Antrean Pesanan Dapur & Barista' : 'Riwayat Transaksi Penjualan')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
-        <h3 class="fw-bold mb-1" style="color: #0f2b5c;">Riwayat Transaksi Penjualan (POS)</h3>
-        <p class="text-muted mb-0 small">Laporan kasir, pesanan pelanggan, dan mutasi stok keluar (Stock-out).</p>
+        @if(Auth::user()->isDapurStation())
+            <h3 class="fw-bold mb-1" style="color: #ea580c;">
+                <i class="bi bi-fire text-warning me-1"></i> Antrean Pesanan Dapur &amp; Barista
+            </h3>
+            <p class="text-muted mb-0 small">Monitor tiket pesanan masuk untuk diracik (Kopi Sanger, Es Milo, Mie Aceh, &amp; Aneka Gorengan).</p>
+        @else
+            <h3 class="fw-bold mb-1" style="color: #0f2b5c;">Riwayat Transaksi Penjualan (POS)</h3>
+            <p class="text-muted mb-0 small">Laporan kasir, pesanan pelanggan, dan mutasi stok keluar (Stock-out).</p>
+        @endif
     </div>
     <div class="d-flex gap-2 flex-wrap no-print">
-        <button type="button" class="btn btn-outline-secondary btn-sm fw-semibold rounded-pill px-3 shadow-sm" onclick="window.print()">
-            <i class="bi bi-printer me-1"></i> Cetak Rekap
-        </button>
-        <a href="{{ route('sales.create') }}" class="btn btn-primary btn-sm fw-bold rounded-pill px-3 shadow-sm" style="background-color: #2563eb; border: none;">
-            <i class="bi bi-cart-plus me-1"></i> Buka Kasir POS
-        </a>
+        @if(Auth::user()->isDapurStation())
+            <button type="button" class="btn btn-warning btn-sm fw-bold rounded-pill px-3 shadow-sm text-dark" onclick="location.reload()">
+                <i class="bi bi-arrow-clockwise me-1"></i> Segarkan Antrean
+            </button>
+            <a href="{{ route('staff.switch-station', 'kasir') }}" class="btn btn-outline-primary btn-sm fw-semibold rounded-pill px-3 shadow-sm">
+                <i class="bi bi-calculator me-1"></i> Buka Layar Kasir
+            </a>
+        @else
+            <button type="button" class="btn btn-outline-secondary btn-sm fw-semibold rounded-pill px-3 shadow-sm" onclick="window.print()">
+                <i class="bi bi-printer me-1"></i> Cetak Rekap
+            </button>
+            <a href="{{ route('sales.create') }}" class="btn btn-primary btn-sm fw-bold rounded-pill px-3 shadow-sm" style="background-color: #2563eb; border: none;">
+                <i class="bi bi-cart-plus me-1"></i> Buka Kasir POS
+            </a>
+        @endif
     </div>
 </div>
+
+@if(Auth::user()->isDapurStation())
+    <!-- Banner Khusus Stasiun Dapur & Barista -->
+    <div class="alert alert-warning border-0 rounded-4 shadow-sm p-3 mb-4 d-flex align-items-center justify-content-between flex-wrap gap-2 text-dark no-print" style="background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border-left: 5px solid #f97316 !important;">
+        <div class="d-flex align-items-center gap-3">
+            <div class="p-2 rounded-circle bg-warning bg-opacity-25 text-warning d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                <i class="bi bi-cup-hot-fill fs-4 text-warning"></i>
+            </div>
+            <div>
+                <div class="fw-bold mb-0" style="color: #9a3412;">STASIUN TUGAS AKTIF: DAPUR &amp; BARISTA</div>
+                <div class="small text-muted" style="font-size: 0.78rem;">Tampilan dioptimalkan untuk melihat tiket pesanan makanan dan racikan kopi secara langsung.</div>
+            </div>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold" style="font-size: 0.75rem;">
+                <i class="bi bi-broadcast me-1"></i> Live Kitchen Display
+            </span>
+        </div>
+    </div>
+@endif
 
 <!-- 1. Tombol Filter Preset Cepat (Quick Filter Pills) -->
 <div class="d-flex gap-1.5 flex-wrap align-items-center mb-3 no-print">
@@ -183,11 +219,14 @@
                     <th>Waktu / Tanggal</th>
                     <th>Hari</th>
                     <th>Nama Pelanggan / Meja</th>
+                    @if(Auth::user()->isDapurStation())
+                        <th style="min-width: 220px;">Menu yang Harus Diracik (Tiket Dapur)</th>
+                    @endif
                     <th>Kasir</th>
                     <th>Metode Bayar</th>
                     <th class="text-end">Total Tagihan</th>
                     <th class="text-center">Status</th>
-                    <th class="text-center no-print" style="width: 100px;">Aksi</th>
+                    <th class="text-center no-print" style="width: 110px;">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -212,6 +251,17 @@
                                 </div>
                             @endif
                         </td>
+                        @if(Auth::user()->isDapurStation())
+                            <td>
+                                <div class="d-flex flex-wrap gap-1">
+                                    @foreach($sale->items as $item)
+                                        <span class="badge bg-light text-dark border py-1 px-1.5 fw-normal text-start" style="font-size: 0.72rem;">
+                                            <strong class="text-primary">{{ $item->quantity }}x</strong> {{ $item->product->name ?? 'Menu' }}
+                                        </span>
+                                    @endforeach
+                                </div>
+                            </td>
+                        @endif
                         <td class="small text-muted">{{ $sale->user->name ?? 'Kasir' }}</td>
                         <td>
                             <span class="badge bg-light text-dark border text-uppercase">{{ $sale->payment_method }}</span>
@@ -231,14 +281,20 @@
                             @endif
                         </td>
                         <td class="text-center no-print">
-                            <a href="{{ route('sales.show', $sale) }}" class="btn btn-sm btn-outline-primary rounded-pill px-2.5 py-0.5 fw-semibold" style="font-size: 0.75rem;" title="Lihat Struk">
-                                <i class="bi bi-receipt"></i> Detail
-                            </a>
+                            @if(Auth::user()->isDapurStation())
+                                <a href="{{ route('sales.show', $sale) }}" class="btn btn-sm btn-warning rounded-pill px-2.5 py-0.5 fw-bold text-dark shadow-xs" style="font-size: 0.75rem;" title="Buka Tiket Dapur">
+                                    <i class="bi bi-receipt-cutoff me-1"></i> Tiket
+                                </a>
+                            @else
+                                <a href="{{ route('sales.show', $sale) }}" class="btn btn-sm btn-outline-primary rounded-pill px-2.5 py-0.5 fw-semibold" style="font-size: 0.75rem;" title="Lihat Struk">
+                                    <i class="bi bi-receipt"></i> Detail
+                                </a>
+                            @endif
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="9" class="text-center py-4 text-muted small">
+                        <td colspan="{{ Auth::user()->isDapurStation() ? '10' : '9' }}" class="text-center py-4 text-muted small">
                             <i class="bi bi-inbox fs-2 d-block mb-1 text-muted"></i>
                             Tidak ada transaksi penjualan yang cocok dengan filter yang dipilih.
                         </td>
