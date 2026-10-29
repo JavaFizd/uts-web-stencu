@@ -16,9 +16,23 @@ class Sale extends Model
         'payment_method', // 'cash', 'qris', 'transfer'
         'total',
         'status', // 'completed', 'cancelled'
+        'kitchen_status', // 'cooking', 'served'
         'notes',
         'sold_at',
     ];
+
+    /**
+     * Helper cek status racikan dapur
+     */
+    public function isCooking(): bool
+    {
+        return ($this->kitchen_status ?? 'cooking') === 'cooking';
+    }
+
+    public function isServed(): bool
+    {
+        return ($this->kitchen_status ?? 'cooking') === 'served';
+    }
 
     protected $casts = [
         'total' => 'decimal:2',

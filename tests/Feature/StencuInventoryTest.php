@@ -542,4 +542,36 @@ class StencuInventoryTest extends TestCase
         $this->assertEquals('Tamu Meja 09', $resPoll->json('orders.0.customer_name'));
         $this->assertTrue($resPoll->json('orders.0.is_online'));
     }
+
+    /**
+     * Skenario 16: Dapur & Kasir dapat menandai pesanan selesai diracik dan diantar ke meja pelanggan.
+     */
+    public function test_staff_can_mark_order_as_served_to_customer(): void
+    {
+        $staff = User::where('role', 'staff')->first() ?? User::factory()->create(['role' => 'staff']);
+
+        $sale = Sale::create([
+            'user_id' => $staff->id,
+            'customer_name' => 'Fajar [Meja 03]',
+            'sale_number' => 'NOTA-KITCHEN-TEST',
+            'payment_method' => 'cash',
+            'total' => 25000,
+            'status' => 'completed',
+            'kitchen_status' => 'cooking',
+            'notes' => 'Panas',
+            'sold_at' => now(),
+        ]);
+
+        $this->assertTrue($sale->isCooking());
+        $this->assertFalse($sale->isServed());
+
+        // Staf klik tombol "Tandai Selesai Diantar"
+        $res = $this->actingAs($staff)->post("/sales/{$sale->id}/mark-served");
+        $res->assertSessionHas('success');
+
+        $sale->refresh();
+        $this->assertTrue($sale->isServed());
+        $this->assertFalse($sale->isCooking());
+        $this->assertEquals('served', $sale->kitchen_status);
+    }
 }

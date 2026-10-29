@@ -22,6 +22,16 @@
             <i class="bi bi-printer me-1"></i> {{ Auth::user()->isDapurStation() ? 'Cetak Tiket Pesanan Dapur' : 'Cetak Struk Kasir' }}
         </button>
 
+        <!-- Tombol Tandai Selesai Diantar (Dapur / Kasir) -->
+        @if($sale->status === 'completed' && $sale->isCooking())
+            <form action="{{ route('sales.mark-served', $sale) }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-success fw-bold shadow-sm">
+                    <i class="bi bi-check2-circle me-1"></i> Tandai Selesai Diantar
+                </button>
+            </form>
+        @endif
+
         <!-- Tombol Batalkan Transaksi (Hanya Role Owner - Slide 5 & 8) -->
         @if(Auth::user()->isOwner() && $sale->status === 'completed')
             <form action="{{ route('sales.cancel', $sale) }}" method="POST" onsubmit="return confirm('PERINGATAN: Membatalkan transaksi ini akan mengembalikan seluruh stok produk ke database secara otomatis. Lanjutkan?');">
@@ -53,9 +63,14 @@
                 </div>
                 <div class="col-6 text-end">
                     <div class="text-muted">Status Transaksi:</div>
-                    <div>
+                    <div class="d-flex justify-content-end gap-1 flex-wrap mt-1">
                         @if($sale->status === 'completed')
                             <span class="badge bg-success-subtle text-success fs-6 fw-bold">SELESAI</span>
+                            @if($sale->isCooking())
+                                <span class="badge bg-warning text-dark fw-bold">SEDANG DIMASAK</span>
+                            @else
+                                <span class="badge bg-success text-white fw-bold">SUDAH DIANTAR</span>
+                            @endif
                         @else
                             <span class="badge bg-danger-subtle text-danger fs-6 fw-bold">DIBATALKAN</span>
                         @endif

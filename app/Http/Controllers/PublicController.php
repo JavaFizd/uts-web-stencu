@@ -94,6 +94,7 @@ class PublicController extends Controller
                     'payment_method' => $request->payment_method,
                     'total' => 0,
                     'status' => 'completed',
+                    'kitchen_status' => 'cooking',
                     'notes' => $request->notes,
                     'sold_at' => now(),
                 ]);

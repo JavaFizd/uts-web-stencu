@@ -76,17 +76,37 @@
     <!-- ========================================================================= -->
     <!-- TAMPILAN KHUSUS DAPUR & BARISTA: PAPAN TIKET PESANAN RACIKAN (KDS)        -->
     <!-- ========================================================================= -->
+    <!-- Filter Status Dapur: Sedang Dimasak vs Sudah Diantar -->
+    <div class="d-flex gap-2 align-items-center mb-3.5 flex-wrap">
+        <span class="text-muted small fw-bold"><i class="bi bi-funnel me-1"></i> Filter Dapur:</span>
+        <a href="{{ route('sales.index') }}" class="btn btn-sm rounded-pill {{ !request('kitchen_status') ? 'btn-dark fw-bold' : 'btn-outline-secondary' }}" style="font-size: 0.78rem;">
+            Semua Pesanan
+        </a>
+        <a href="{{ route('sales.index', ['kitchen_status' => 'cooking']) }}" class="btn btn-sm rounded-pill {{ request('kitchen_status') === 'cooking' ? 'btn-warning fw-bold text-dark' : 'btn-outline-warning text-dark' }}" style="font-size: 0.78rem;">
+            ⏳ Sedang Dimasak <span class="badge bg-danger text-white rounded-pill ms-1">{{ $countCooking }}</span>
+        </a>
+        <a href="{{ route('sales.index', ['kitchen_status' => 'served']) }}" class="btn btn-sm rounded-pill {{ request('kitchen_status') === 'served' ? 'btn-success fw-bold text-white' : 'btn-outline-success' }}" style="font-size: 0.78rem;">
+            ✅ Sudah Diantar <span class="badge bg-secondary text-white rounded-pill ms-1">{{ $countServed }}</span>
+        </a>
+    </div>
+
     <div class="row g-3 mb-4">
         @forelse($sales as $sale)
             <div class="col-md-6 col-lg-4">
-                <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden" style="border-top: 5px solid {{ $sale->status === 'completed' ? '#f59e0b' : '#dc2626' }} !important; background: #ffffff;">
+                <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden" style="border-top: 5px solid {{ $sale->status === 'cancelled' ? '#dc2626' : ($sale->isCooking() ? '#f59e0b' : '#10b981') }} !important; background: #ffffff;">
                     <div class="card-header bg-white py-3 px-3.5 border-bottom d-flex justify-content-between align-items-center">
                         <div>
-                            <span class="badge bg-warning text-dark fw-bold px-2.5 py-1 rounded-pill" style="font-size: 0.72rem;">
-                                <i class="bi bi-clock me-1"></i>{{ $sale->sold_at->format('H:i') }} WIB
-                            </span>
+                            @if($sale->isCooking())
+                                <span class="badge bg-warning text-dark fw-bold px-2.5 py-1 rounded-pill" style="font-size: 0.72rem;">
+                                    <i class="bi bi-fire me-1"></i>SEDANG DIMASAK
+                                </span>
+                            @else
+                                <span class="badge bg-success text-white fw-bold px-2.5 py-1 rounded-pill" style="font-size: 0.72rem;">
+                                    <i class="bi bi-check2-circle me-1"></i>SUDAH DIANTAR
+                                </span>
+                            @endif
                             <span class="text-muted small ms-1" style="font-size: 0.7rem;">
-                                {{ $sale->sold_at->diffForHumans() }}
+                                {{ $sale->sold_at->format('H:i') }} WIB ({{ $sale->sold_at->diffForHumans() }})
                             </span>
                         </div>
                         <span class="badge bg-light text-primary border fw-bold" style="font-size: 0.75rem;">
@@ -109,7 +129,7 @@
                         <!-- Daftar Racikan Menu -->
                         <div class="mb-2">
                             <div class="text-muted small fw-bold mb-2" style="font-size: 0.7rem; text-transform: uppercase;">
-                                <i class="bi bi-fire text-warning me-1"></i> Menu yang Harus Diracik ({{ $sale->items->sum('quantity') }} Item):
+                                <i class="bi bi-cup-hot-fill text-warning me-1"></i> Menu yang Harus Diracik ({{ $sale->items->sum('quantity') }} Item):
                             </div>
                             <ul class="list-group list-group-flush border rounded-3 overflow-hidden">
                                 @foreach($sale->items as $item)
@@ -130,11 +150,22 @@
                     </div>
 
                     <div class="card-footer bg-light p-2.5 d-flex justify-content-between align-items-center border-top">
-                        <span class="small text-muted" style="font-size: 0.72rem;">
-                            Metode: <strong class="text-dark">{{ strtoupper($sale->payment_method) }}</strong>
-                        </span>
-                        <a href="{{ route('sales.show', $sale) }}" class="btn btn-sm btn-warning rounded-pill px-3 fw-bold text-dark shadow-xs" style="font-size: 0.75rem;">
-                            <i class="bi bi-receipt-cutoff me-1"></i> Buka Tiket
+                        <div>
+                            @if($sale->isCooking())
+                                <form action="{{ route('sales.mark-served', $sale) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-success rounded-pill px-3 fw-bold shadow-sm" style="font-size: 0.76rem;">
+                                        <i class="bi bi-check2-circle me-1"></i> Tandai Selesai Diantar
+                                    </button>
+                                </form>
+                            @else
+                                <span class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1 rounded-pill fw-semibold" style="font-size: 0.72rem;">
+                                    <i class="bi bi-check-all me-1 fs-6"></i>Sudah di Meja
+                                </span>
+                            @endif
+                        </div>
+                        <a href="{{ route('sales.show', $sale) }}" class="btn btn-sm btn-outline-dark rounded-pill px-2.5 py-1 fw-semibold" style="font-size: 0.74rem;">
+                            <i class="bi bi-receipt me-1"></i> Detail
                         </a>
                     </div>
                 </div>
@@ -143,7 +174,7 @@
             <div class="col-12 text-center py-5">
                 <i class="bi bi-check2-circle text-success fs-1 d-block mb-2"></i>
                 <h5 class="fw-bold text-dark">Tidak Ada Antrean Masak Saat Ini</h5>
-                <p class="text-muted small">Semua pesanan pelanggan sudah selesai diracik.</p>
+                <p class="text-muted small">Semua pesanan pelanggan sudah selesai diracik dan diantar.</p>
             </div>
         @endforelse
     </div>

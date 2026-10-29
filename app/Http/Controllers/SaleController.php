@@ -94,11 +94,18 @@ class SaleController extends Controller
             $query->where('status', $request->status);
         }
 
+        // 10. Filter Status Dapur (cooking: sedang dimasak, served: sudah diantar)
+        if ($request->filled('kitchen_status')) {
+            $query->where('kitchen_status', $request->kitchen_status);
+        }
+
         // Hitung agregat hasil filter sebelum paginasi
         $aggregateQuery = clone $query;
         $totalOmset = (clone $aggregateQuery)->where('status', 'completed')->sum('total');
         $totalTransactions = (clone $aggregateQuery)->where('status', 'completed')->count();
         $totalCancelled = (clone $aggregateQuery)->where('status', 'cancelled')->count();
+        $countCooking = Sale::where('status', 'completed')->where('kitchen_status', 'cooking')->count();
+        $countServed = Sale::where('status', 'completed')->where('kitchen_status', 'served')->count();
 
         // Ambil daftar tahun yang ada di database untuk opsi dropdown
         $availableYears = Sale::selectRaw('YEAR(sold_at) as year')
@@ -113,6 +120,8 @@ class SaleController extends Controller
             'totalOmset',
             'totalTransactions',
             'totalCancelled',
+            'countCooking',
+            'countServed',
             'availableYears'
         ));
     }
@@ -166,6 +175,7 @@ class SaleController extends Controller
                     'payment_method' => $request->payment_method,
                     'total' => 0, // Akan dihitung dan diakumulasikan di bawah
                     'status' => 'completed',
+                    'kitchen_status' => 'cooking',
                     'notes' => $request->notes,
                     'sold_at' => $request->filled('sold_at') ? Carbon::parse($request->sold_at) : now(),
                 ]);
@@ -255,6 +265,16 @@ class SaleController extends Controller
 
         return redirect()->route('sales.show', $sale)
             ->with('success', "Transaksi #{$sale->sale_number} berhasil dibatalkan dan seluruh stok produk telah dipulihkan!");
+    }
+
+    /**
+     * Tandai pesanan sudah selesai diracik dan diantar ke meja pelanggan (Dapur & Kasir).
+     */
+    public function markServed(Sale $sale)
+    {
+        $sale->update(['kitchen_status' => 'served']);
+
+        return back()->with('success', "Pesanan #{$sale->sale_number} ({$sale->customer_name}) berhasil ditandai SUDAH DIANTAR ke meja pelanggan!");
     }
 
     /**

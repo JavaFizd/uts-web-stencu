@@ -83,13 +83,34 @@
                                 <span class="badge bg-light text-muted border ms-1">#{{ $singleSale->id }}</span>
                             </div>
                             <div>
-                                @if($singleSale->status === 'completed')
-                                    <span class="badge bg-success-subtle text-success fs-6 fw-bold">PESANAN DITERIMA</span>
-                                @else
+                                @if($singleSale->status === 'cancelled')
                                     <span class="badge bg-danger-subtle text-danger fs-6 fw-bold">DIBATALKAN</span>
+                                @elseif($singleSale->isServed())
+                                    <span class="badge bg-success text-white fs-6 fw-bold px-3 py-1.5 rounded-pill shadow-xs">
+                                        <i class="bi bi-check2-circle me-1"></i> SUDAH DIANTAR KE MEJA
+                                    </span>
+                                @else
+                                    <span class="badge bg-warning text-dark fs-6 fw-bold px-3 py-1.5 rounded-pill shadow-xs">
+                                        <i class="bi bi-fire me-1"></i> SEDANG DIRACIK DI DAPUR
+                                    </span>
                                 @endif
                             </div>
                         </div>
+
+                        <!-- Banner Info Status Realtime -->
+                        @if($singleSale->status === 'completed')
+                            @if($singleSale->isServed())
+                                <div class="alert alert-success py-2.5 px-3 rounded-3 small mb-3 border-0 d-flex align-items-center gap-2" style="background: #ecfdf5; color: #065f46;">
+                                    <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                                    <div><strong>Pesanan Selesai!</strong> Makanan &amp; minuman sudah siap dan telah diantar ke meja Anda. Selamat menikmati sajian Stencu Coffee!</div>
+                                </div>
+                            @else
+                                <div class="alert alert-warning py-2.5 px-3 rounded-3 small mb-3 border-0 d-flex align-items-center gap-2" style="background: #fffbeb; color: #92400e;">
+                                    <i class="bi bi-hourglass-split text-warning fs-5"></i>
+                                    <div><strong>Pesanan Sedang Diproses!</strong> Barista &amp; Dapur sedang meracik kopi dan memasak pesanan Anda. Mohon ditunggu di meja ya!</div>
+                                </div>
+                            @endif
+                        @endif
 
                         <div class="row g-2 small mb-3">
                             <div class="col-sm-6">
