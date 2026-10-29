@@ -140,8 +140,8 @@
             <div class="collapse navbar-collapse" id="publicNav">
                 <ul class="navbar-nav ms-auto align-items-center gap-1 my-2 my-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link px-3 {{ request()->routeIs('home') ? 'active-blue' : 'text-light' }}" href="{{ route('home') }}">
-                            <i class="bi bi-house me-1"></i> Beranda
+                        <a class="nav-link px-3 {{ request()->routeIs('home') || request()->routeIs('login') ? 'active-blue' : 'text-light' }}" href="{{ route('home') }}">
+                            <i class="bi bi-phone me-1"></i> Portal Masuk
                         </a>
                     </li>
                     <li class="nav-item">
@@ -179,8 +179,8 @@
                         </li>
                     @else
                         <li class="nav-item ms-lg-2">
-                            <a class="btn btn-outline-light btn-sm px-3 rounded-pill fw-semibold" href="{{ route('home') }}">
-                                <i class="bi bi-grid-fill me-1"></i> Portal Masuk
+                            <a class="btn btn-outline-light btn-sm px-3 rounded-pill fw-semibold" href="{{ route('login') }}">
+                                <i class="bi bi-phone me-1"></i> Masuk Akun
                             </a>
                         </li>
                     @endauth

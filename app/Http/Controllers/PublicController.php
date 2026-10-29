@@ -14,22 +14,11 @@ use Illuminate\Validation\ValidationException;
 class PublicController extends Controller
 {
     /**
-     * Halaman depan / Landing Page profil Stencu Coffee Batuphat Barat.
+     * Halaman depan / Portal Masuk Stencu Coffee (Bentukan Smartphone).
      */
     public function index()
     {
-        // Ambil produk unggulan untuk ditampilkan di hero section
-        $featuredProducts = Product::with('category')
-            ->where('is_active', true)
-            ->where('stock', '>', 0)
-            ->take(6)
-            ->get();
-
-        $categories = Category::withCount(['products' => function ($q) {
-            $q->where('is_active', true);
-        }])->get();
-
-        return view('public.landing', compact('featuredProducts', 'categories'));
+        return redirect()->route('login');
     }
 
     /**

@@ -365,8 +365,8 @@
             </div>
 
             <div class="text-center mt-2.5 pt-2 border-top">
-                <a href="{{ route('home') }}" class="text-decoration-none small text-muted" style="font-size: 0.75rem;">
-                    &larr; Halaman Utama
+                <a href="{{ route('public.menu') }}" class="text-decoration-none small text-primary fw-semibold" style="font-size: 0.76rem;">
+                    <i class="bi bi-shop me-1"></i> Buka Katalog Menu &rarr;
                 </a>
             </div>
 

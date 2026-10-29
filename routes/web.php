@@ -17,24 +17,24 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-// 1. Rute Publik (Tamu, Pelanggan, Umum)
-Route::get('/', [PublicController::class, 'index'])->name('home');
+// 1. Portal Masuk Utama (Tampilan Bentukan Smartphone Modern)
+Route::get('/', [AuthController::class, 'showLogin'])->name('home');
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+
+// 2. Katalog Menu & Pemesanan Publik (Tanpa Password)
 Route::get('/menu', [PublicController::class, 'menu'])->name('public.menu');
 Route::post('/order', [PublicController::class, 'storeOrder'])->name('public.order.store');
 Route::get('/order/success/{saleNumber}', [PublicController::class, 'orderSuccess'])->name('public.order.success');
 Route::get('/track-order', [PublicController::class, 'trackOrder'])->name('public.order.track');
 
-// 2. Akses Cepat / Switch Peran (1-Click Gateway untuk Evaluasi & Pengujian Dosen)
-Route::get('/masuk/{role}', [AuthController::class, 'quickLogin'])->name('quick.login');
-
-// 3. Rute Autentikasi Manual
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('login.post');
-
 Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 });
+
+// 3. Akses Cepat / Switch Peran (1-Click Gateway untuk Evaluasi & Pengujian Dosen)
+Route::get('/masuk/{role}', [AuthController::class, 'quickLogin'])->name('quick.login');
 
 // Logout (Mendukung POST dan GET agar fleksibel)
 Route::match(['get', 'post'], '/logout', [AuthController::class, 'logout'])->name('logout');
