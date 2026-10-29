@@ -40,8 +40,10 @@
                         <td class="text-center">
                             @if($user->role === 'owner')
                                 <span class="badge bg-danger">Owner</span>
+                            @elseif($user->email === 'dapur@stencu.com')
+                                <span class="badge bg-warning text-dark"><i class="bi bi-fire me-1"></i>Dapur &amp; Barista</span>
                             @elseif($user->role === 'staff')
-                                <span class="badge bg-primary">Staff / Barista</span>
+                                <span class="badge bg-primary"><i class="bi bi-calculator me-1"></i>Kasir</span>
                             @else
                                 <span class="badge bg-secondary">Pelanggan</span>
                             @endif

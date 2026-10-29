@@ -150,6 +150,27 @@
             <!-- Left Sidebar Navigation -->
             <nav class="col-md-3 col-lg-2 d-md-block sidebar py-3 px-3 collapse" id="navbarContent">
                 <div class="position-sticky">
+                    <!-- Chip Profil Akun Aktif (Membedakan Kasir vs Dapur vs Owner) -->
+                    <div class="p-2.5 mb-3 rounded-3 bg-light border text-center shadow-sm">
+                        @if(Auth::user()->isOwner())
+                            <span class="badge bg-danger mb-1" style="font-size: 0.7rem;"><i class="bi bi-shield-check me-1"></i>OWNER / ADMIN</span>
+                            <div class="fw-bold small text-dark">{{ Auth::user()->name }}</div>
+                            <div class="text-muted" style="font-size: 0.72rem;">admin@stencu.com</div>
+                        @elseif(Auth::user()->email === 'dapur@stencu.com')
+                            <span class="badge bg-warning text-dark mb-1 fw-bold" style="font-size: 0.7rem;"><i class="bi bi-fire me-1"></i>STAF DAPUR &amp; BARISTA</span>
+                            <div class="fw-bold small text-dark">{{ Auth::user()->name }}</div>
+                            <div class="text-muted" style="font-size: 0.72rem;">dapur@stencu.com</div>
+                        @elseif(Auth::user()->isStaff())
+                            <span class="badge bg-primary mb-1" style="font-size: 0.7rem; background-color: #2563eb !important;"><i class="bi bi-calculator me-1"></i>STAF KASIR</span>
+                            <div class="fw-bold small text-dark">{{ Auth::user()->name }}</div>
+                            <div class="text-muted" style="font-size: 0.72rem;">kasir@stencu.com</div>
+                        @else
+                            <span class="badge bg-secondary mb-1" style="font-size: 0.7rem;">PELANGGAN</span>
+                            <div class="fw-bold small text-dark">{{ Auth::user()->name }}</div>
+                            <div class="text-muted" style="font-size: 0.72rem;">{{ Auth::user()->email }}</div>
+                        @endif
+                    </div>
+
                     <div class="small fw-bold text-uppercase px-2 mb-2" style="font-size: 0.72rem; color: #1e40af; letter-spacing: 0.8px;">
                         Menu Utama
                     </div>
@@ -161,14 +182,17 @@
                                 </a>
                             </li>
                         @endif
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('sales.create') ? 'active-menu' : '' }}" href="{{ route('sales.create') }}">
-                                <i class="bi bi-cart-plus me-2 text-primary"></i> Kasir POS (Jual)
-                            </a>
-                        </li>
+                        @if(Auth::user()->email !== 'dapur@stencu.com')
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('sales.create') ? 'active-menu' : '' }}" href="{{ route('sales.create') }}">
+                                    <i class="bi bi-cart-plus me-2 text-primary"></i> Kasir POS (Jual)
+                                </a>
+                            </li>
+                        @endif
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('sales.index*') && !request()->routeIs('sales.create') ? 'active-menu' : '' }}" href="{{ route('sales.index') }}">
-                                <i class="bi bi-receipt me-2"></i> Riwayat Penjualan
+                                <i class="bi bi-receipt me-2 {{ Auth::user()->email === 'dapur@stencu.com' ? 'text-warning' : '' }}"></i>
+                                {{ Auth::user()->email === 'dapur@stencu.com' ? 'Antrean Pesanan Dapur' : 'Riwayat Penjualan' }}
                             </a>
                         </li>
                         <li class="nav-item">
