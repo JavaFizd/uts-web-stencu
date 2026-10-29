@@ -54,6 +54,24 @@
     </div>
 @endif
 
+<!-- Banner Realtime Pesanan Baru Masuk (Muncul saat Polling Mendeteksi Pesanan Baru) -->
+<div id="liveKdsOrderBanner" class="alert alert-success border-0 rounded-4 shadow p-3 mb-4 d-flex align-items-center justify-content-between flex-wrap gap-2 text-dark" style="display: none; background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-left: 5px solid #10b981 !important; animation: slideDown 0.3s ease;">
+    <div class="d-flex align-items-center gap-3">
+        <div class="p-2 rounded-circle bg-success bg-opacity-25 text-success d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+            <i class="bi bi-bell-fill fs-4 text-success"></i>
+        </div>
+        <div>
+            <div class="fw-bold mb-0 text-success fs-6">🔔 ADA PESANAN BARU MASUK DARI PELANGGAN!</div>
+            <div class="small text-muted" style="font-size: 0.78rem;">Antrean baru telah dicatat di sistem. Klik tombol di kanan untuk memuat tiket racikan terbaru.</div>
+        </div>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+        <button type="button" class="btn btn-success btn-sm rounded-pill px-3 fw-bold shadow-sm" onclick="location.reload()">
+            <i class="bi bi-arrow-clockwise me-1"></i> Segarkan Antrean Sekarang
+        </button>
+    </div>
+</div>
+
 <!-- 1. Tombol Filter Preset Cepat (Quick Filter Pills) -->
 <div class="d-flex gap-1.5 flex-wrap align-items-center mb-3 no-print">
     <span class="text-muted small fw-bold me-2"><i class="bi bi-clock-history me-1"></i> Periode Cepat:</span>

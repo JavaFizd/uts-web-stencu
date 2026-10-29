@@ -61,6 +61,7 @@ Route::middleware(['auth', 'role:owner,staff'])->group(function () {
     Route::get('/sales/create', [SaleController::class, 'create'])->name('sales.create');
     Route::post('/sales', [SaleController::class, 'store'])->name('sales.store');
     Route::get('/sales/{sale}', [SaleController::class, 'show'])->name('sales.show');
+    Route::get('/api/check-new-orders', [SaleController::class, 'checkNewOrders'])->name('sales.check-new-orders');
 
     // Transaksi Pembelian Stok (Stock-in)
     Route::get('/purchases', [PurchaseController::class, 'index'])->name('purchases.index');

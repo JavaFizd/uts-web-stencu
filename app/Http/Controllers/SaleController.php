@@ -258,6 +258,73 @@ class SaleController extends Controller
     }
 
     /**
+     * Endpoint API Pengecekan Pesanan Baru Realtime (Polling untuk Notifikasi Kasir & Dapur).
+     * Mengembalikan data pesanan terbaru jika ada pesanan baru setelah last_id.
+     */
+    public function checkNewOrders(Request $request)
+    {
+        $lastId = (int) $request->input('last_id', 0);
+        $currentMax = (int) (Sale::max('id') ?? 0);
+
+        // Jika inisialisasi awal (last_id <= 0), kirim latest_id dan daftar 5 pesanan terakhir
+        if ($lastId <= 0) {
+            $recentOrders = Sale::with(['items.product'])
+                ->where('status', 'completed')
+                ->latest('id')
+                ->take(5)
+                ->get()
+                ->map(fn($s) => $this->formatOrderSummary($s));
+
+            return response()->json([
+                'new_count' => 0,
+                'latest_id' => $currentMax,
+                'recent_orders' => $recentOrders,
+            ]);
+        }
+
+        // Ambil transaksi baru yang ID-nya lebih besar dari last_id
+        $newSales = Sale::with(['items.product'])
+            ->where('id', '>', $lastId)
+            ->where('status', 'completed')
+            ->orderBy('id', 'asc')
+            ->get();
+
+        $newCount = $newSales->count();
+        $formatted = $newSales->map(fn($s) => $this->formatOrderSummary($s));
+
+        return response()->json([
+            'new_count' => $newCount,
+            'latest_id' => $newCount > 0 ? (int) $newSales->max('id') : $lastId,
+            'orders' => $formatted,
+        ]);
+    }
+
+    /**
+     * Format ringkasan pesanan untuk notifikasi toast & dropdown
+     */
+    private function formatOrderSummary(Sale $sale): array
+    {
+        $itemsList = $sale->items->map(function ($it) {
+            return ($it->quantity ?? 1) . 'x ' . ($it->product->name ?? 'Menu');
+        })->implode(', ');
+
+        return [
+            'id' => $sale->id,
+            'sale_number' => $sale->sale_number,
+            'customer_name' => $sale->customer_name,
+            'is_online' => is_null($sale->user_id),
+            'total' => (float) $sale->total,
+            'total_formatted' => 'Rp ' . number_format($sale->total, 0, ',', '.'),
+            'payment_method' => strtoupper($sale->payment_method),
+            'items_count' => $sale->items->sum('quantity'),
+            'items_summary' => $itemsList,
+            'notes' => $sale->notes,
+            'time' => Carbon::parse($sale->sold_at)->format('H:i:s'),
+            'show_url' => route('sales.show', $sale->id),
+        ];
+    }
+
+    /**
      * Generator nomor faktur penjualan unik simpel (Contoh: NOTA-0001)
      */
     private function generateSaleNumber(): string

@@ -489,4 +489,57 @@ class StencuInventoryTest extends TestCase
             unlink(public_path($product->image)); // Bersihkan file dummy tes
         }
     }
+
+    /**
+     * Skenario 15: Polling Realtime Notifikasi Pesanan Masuk untuk Kasir & Dapur
+     */
+    public function test_realtime_order_notification_polling_returns_new_sales(): void
+    {
+        $staff = User::where('role', 'staff')->first() ?? User::factory()->create(['role' => 'staff']);
+        
+        // 1. Initial check dengan last_id = 0
+        $resInit = $this->actingAs($staff)->getJson('/api/check-new-orders?last_id=0');
+        $resInit->assertStatus(200);
+        $resInit->assertJsonStructure(['new_count', 'latest_id', 'recent_orders']);
+        $initialMaxId = $resInit->json('latest_id');
+
+        // 2. Buat pesanan baru
+        $cat = Category::firstOrCreate(['name' => 'Minuman'], ['slug' => 'minuman']);
+        $product = Product::create([
+            'category_id' => $cat->id,
+            'sku' => 'SKU-NOTIF-TEST',
+            'name' => 'Kopi Notif Live',
+            'unit' => 'cup',
+            'purchase_price' => 5000,
+            'selling_price' => 10000,
+            'stock' => 10,
+            'minimum_stock' => 2,
+        ]);
+
+        $sale = Sale::create([
+            'user_id' => null, // Order online dari pelanggan
+            'customer_name' => 'Tamu Meja 09',
+            'sale_number' => 'NOTA-NOTIF-01',
+            'payment_method' => 'qris',
+            'total' => 10000,
+            'status' => 'completed',
+            'notes' => 'Tanpa gula',
+            'sold_at' => now(),
+        ]);
+
+        \App\Models\SaleItem::create([
+            'sale_id' => $sale->id,
+            'product_id' => $product->id,
+            'quantity' => 1,
+            'unit_price' => 10000,
+            'subtotal' => 10000,
+        ]);
+
+        // 3. Polling dengan last_id = initialMaxId -> harus mendeteksi pesanan baru
+        $resPoll = $this->actingAs($staff)->getJson('/api/check-new-orders?last_id=' . $initialMaxId);
+        $resPoll->assertStatus(200);
+        $this->assertGreaterThanOrEqual(1, $resPoll->json('new_count'));
+        $this->assertEquals('Tamu Meja 09', $resPoll->json('orders.0.customer_name'));
+        $this->assertTrue($resPoll->json('orders.0.is_online'));
+    }
 }
