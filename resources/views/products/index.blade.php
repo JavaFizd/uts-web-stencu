@@ -8,11 +8,13 @@
         <h3 class="fw-bold mb-1" style="color: #0f2b5c;">Manajemen Produk &amp; Stok</h3>
         <p class="text-muted mb-0 small">Kelola katalog makanan, kopi, biji sangrai, foto menu, dan batas minimum stok.</p>
     </div>
-    <div class="d-flex gap-2">
-        <a href="{{ route('products.create') }}" class="btn btn-warning fw-bold text-dark rounded-pill px-3 shadow-sm">
-            <i class="bi bi-plus-lg me-1"></i> Tambah Menu / Produk Baru
-        </a>
-    </div>
+    @if(Auth::user()->isOwner())
+        <div class="d-flex gap-2">
+            <a href="{{ route('products.create') }}" class="btn btn-warning fw-bold text-dark rounded-pill px-3 shadow-sm">
+                <i class="bi bi-plus-lg me-1"></i> Tambah Menu / Produk Baru
+            </a>
+        </div>
+    @endif
 </div>
 
 <!-- Search & Filter Bar (Slide 18) -->

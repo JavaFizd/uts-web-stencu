@@ -62,7 +62,7 @@
                                     <span class="fw-bold text-dark">Rp {{ number_format($product->selling_price, 0, ',', '.') }}</span>
                                     @if($product->stock > 0)
                                         <button type="button" class="btn btn-sm btn-primary fw-bold shadow-sm" style="background-color: #2563eb; border: none;" onclick="addToCart({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->selling_price }}, {{ $product->stock }})">
-                                            + Tambah
+                                            + Ke Keranjang
                                         </button>
                                     @else
                                         <button type="button" class="btn btn-sm btn-secondary" disabled>Kosong</button>
