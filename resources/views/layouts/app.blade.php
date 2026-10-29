@@ -107,29 +107,27 @@
                 <ul class="navbar-nav ms-auto align-items-center gap-2">
                     <!-- Notifikasi Pesanan Masuk Realtime (Untuk Kasir & Dapur) -->
                     <li class="nav-item dropdown me-1">
-                        <a class="nav-link text-white position-relative px-2.5 py-1 rounded-pill bg-white bg-opacity-10 d-flex align-items-center gap-1.5 small fw-semibold" href="#" id="orderNotifDropdownToggle" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Notifikasi Pesanan Masuk Live">
+                        <a class="nav-link text-white position-relative px-2.5 py-1 rounded-pill bg-white bg-opacity-10 d-flex align-items-center gap-1.5 small" href="#" id="orderNotifDropdownToggle" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Notifikasi Pesanan">
                             <i class="bi bi-bell-fill text-warning fs-6"></i>
-                            <span class="d-none d-sm-inline">Pesanan Masuk</span>
+                            <span class="d-none d-sm-inline">Notifikasi</span>
                             <span id="orderNotifBadge" class="badge rounded-pill bg-danger border border-light" style="display: none; font-size: 0.65rem;">
                                 0
                             </span>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 mt-2 p-0 overflow-hidden" style="width: 340px; max-width: 92vw;">
-                            <li class="p-3 bg-light border-bottom d-flex justify-content-between align-items-center">
-                                <span class="fw-bold small text-dark"><i class="bi bi-bell-fill text-primary me-1"></i> Pesanan Pelanggan Live</span>
-                                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill small" id="livePollingStatus" style="font-size: 0.68rem;">
-                                    <i class="bi bi-circle-fill me-1" style="font-size: 0.5rem;"></i>Aktif (Live)
-                                </span>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-2 p-0 overflow-hidden" style="width: 320px; max-width: 92vw;">
+                            <li class="p-2.5 bg-light border-bottom d-flex justify-content-between align-items-center">
+                                <span class="fw-semibold small text-dark"><i class="bi bi-bell me-1 text-primary"></i> Notifikasi Pesanan</span>
+                                <span class="badge bg-success-subtle text-success small" id="livePollingStatus" style="font-size: 0.68rem;">Live</span>
                             </li>
-                            <div id="orderNotifList" style="max-height: 290px; overflow-y: auto;">
+                            <div id="orderNotifList" style="max-height: 280px; overflow-y: auto;">
                                 <li class="p-3 text-center text-muted small" id="orderNotifEmpty">
-                                    <i class="bi bi-inbox text-muted fs-4 d-block mb-1 opacity-50"></i>
+                                    <i class="bi bi-inbox text-muted fs-5 d-block mb-1 opacity-50"></i>
                                     Belum ada pesanan baru.
                                 </li>
                             </div>
                             <li class="p-2 border-top bg-light text-center">
                                 <a href="{{ route('sales.index') }}" class="small text-decoration-none fw-semibold text-primary">
-                                    Buka Antrean Pesanan Dapur &rarr;
+                                    Lihat Semua Pesanan &rarr;
                                 </a>
                             </li>
                         </ul>
@@ -137,7 +135,7 @@
 
                     <li class="nav-item">
                         <a class="nav-link text-light opacity-90 px-3 py-1 rounded-pill bg-white bg-opacity-10 small fw-semibold" href="{{ route('public.menu') }}" target="_blank">
-                            <i class="bi bi-shop me-1 text-info"></i> Buka Katalog Publik
+                            <i class="bi bi-shop me-1 text-info"></i> Menu Pelanggan
                         </a>
                     </li>
                     <li class="nav-item dropdown">
@@ -194,40 +192,30 @@
             <!-- Left Sidebar Navigation -->
             <nav class="col-md-3 col-lg-2 d-md-block sidebar py-3 px-3 collapse" id="navbarContent">
                 <div class="position-sticky">
-                    <!-- Chip Profil Akun Aktif (Membedakan Staf Kasir vs Dapur vs Owner) -->
-                    <div class="p-2.5 mb-3 rounded-3 bg-light border text-center shadow-sm">
+                    <!-- Profil Singkat Pengguna Aktif -->
+                    <div class="p-2 mb-3 rounded-3 bg-light border text-center">
                         @if(Auth::user()->isOwner())
-                            <span class="badge bg-danger mb-1" style="font-size: 0.7rem;"><i class="bi bi-shield-check me-1"></i>OWNER / ADMIN</span>
-                            <div class="fw-bold small text-dark">{{ Auth::user()->name }}</div>
-                            <div class="text-muted" style="font-size: 0.72rem;">admin@stencu.com</div>
+                            <span class="badge bg-danger mb-1" style="font-size: 0.7rem;">Owner</span>
+                            <div class="fw-semibold small text-dark">{{ Auth::user()->name }}</div>
                         @elseif(Auth::user()->isStaff())
-                            <span class="badge bg-dark mb-1" style="font-size: 0.68rem;"><i class="bi bi-building me-1"></i>AKUN PERUSAHAAN STAF</span>
-                            <div class="fw-bold small text-dark">{{ Auth::user()->name }}</div>
-                            <div class="text-muted mb-2" style="font-size: 0.72rem;">{{ Auth::user()->email }}</div>
-
-                            <!-- Indikator Tugas Stasiun & Tombol Cepat Pindah Stasiun -->
-                            <div class="p-2 rounded-2 bg-white border">
-                                <div class="text-muted mb-1" style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase;">Stasiun Tugas Aktif:</div>
+                            <span class="badge {{ Auth::user()->isDapurStation() ? 'bg-warning text-dark' : 'bg-primary' }} mb-1" style="font-size: 0.7rem;">
+                                {{ Auth::user()->isDapurStation() ? 'Dapur' : 'Kasir' }}
+                            </span>
+                            <div class="fw-semibold small text-dark">{{ Auth::user()->name }}</div>
+                            <div class="mt-1">
                                 @if(Auth::user()->isDapurStation())
-                                    <div class="badge bg-warning text-dark w-100 py-1.5 fw-bold mb-1.5" style="font-size: 0.74rem;">
-                                        <i class="bi bi-fire me-1"></i>Dapur &amp; Barista
-                                    </div>
-                                    <a href="{{ route('staff.switch-station', 'kasir') }}" class="btn btn-xs btn-outline-primary w-100 py-1 rounded-pill fw-semibold" style="font-size: 0.68rem;" title="Beralih ke Stasiun Kasir POS">
-                                        <i class="bi bi-arrow-repeat me-1"></i>Pindah ke Kasir
+                                    <a href="{{ route('staff.switch-station', 'kasir') }}" class="btn btn-sm btn-outline-primary py-0 px-2 rounded-pill" style="font-size: 0.68rem;">
+                                        Ganti ke Kasir
                                     </a>
                                 @else
-                                    <div class="badge bg-primary w-100 py-1.5 fw-bold mb-1.5" style="font-size: 0.74rem; background-color: #2563eb !important;">
-                                        <i class="bi bi-calculator me-1"></i>Kasir POS (Jual)
-                                    </div>
-                                    <a href="{{ route('staff.switch-station', 'dapur') }}" class="btn btn-xs btn-outline-warning text-dark w-100 py-1 rounded-pill fw-semibold" style="font-size: 0.68rem; border-color: #f59e0b;" title="Beralih ke Stasiun Dapur & Barista">
-                                        <i class="bi bi-arrow-repeat me-1"></i>Pindah ke Dapur
+                                    <a href="{{ route('staff.switch-station', 'dapur') }}" class="btn btn-sm btn-outline-warning text-dark py-0 px-2 rounded-pill" style="font-size: 0.68rem;">
+                                        Ganti ke Dapur
                                     </a>
                                 @endif
                             </div>
                         @else
-                            <span class="badge bg-secondary mb-1" style="font-size: 0.7rem;">PELANGGAN</span>
-                            <div class="fw-bold small text-dark">{{ Auth::user()->name }}</div>
-                            <div class="text-muted" style="font-size: 0.72rem;">{{ Auth::user()->email }}</div>
+                            <span class="badge bg-secondary mb-1" style="font-size: 0.7rem;">Pelanggan</span>
+                            <div class="fw-semibold small text-dark">{{ Auth::user()->name }}</div>
                         @endif
                     </div>
 
