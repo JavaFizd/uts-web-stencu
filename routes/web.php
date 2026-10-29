@@ -41,6 +41,9 @@ Route::match(['get', 'post'], '/logout', [AuthController::class, 'logout'])->nam
 
 // 3. Rute Internal Operasional (Owner & Staff Kasir)
 Route::middleware(['auth', 'role:owner,staff'])->group(function () {
+    // Beralih Stasiun Kerja Staf (Kasir <-> Dapur & Barista)
+    Route::get('/switch-station/{station}', [AuthController::class, 'switchStation'])->name('staff.switch-station');
+
     // Dashboard Operasional
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 

@@ -408,5 +408,34 @@ class StencuInventoryTest extends TestCase
         ]);
         $resEmailKasir->assertRedirect(route('sales.create'));
         $this->assertAuthenticated();
+
+        $this->post('/logout');
+
+        // 6. Login dengan Akun Perusahaan Staf (staff@stencu.com) memilih Stasiun Kasir
+        $resStaffKasir = $this->post('/login', [
+            'login' => 'staff@stencu.com',
+            'password' => 'password',
+            'station' => 'kasir',
+        ]);
+        $resStaffKasir->assertRedirect(route('sales.create'));
+        $this->assertEquals('kasir', session('staff_station'));
+        $this->assertAuthenticated();
+
+        // 7. Beralih Stasiun Kerja ke Dapur & Barista tanpa logout
+        $resSwitchDapur = $this->get('/switch-station/dapur');
+        $resSwitchDapur->assertRedirect(route('sales.index'));
+        $this->assertEquals('dapur', session('staff_station'));
+
+        $this->post('/logout');
+
+        // 8. Login dengan Akun Perusahaan Staf (staff@stencu.com) memilih Stasiun Dapur
+        $resStaffDapur = $this->post('/login', [
+            'login' => 'staff@stencu.com',
+            'password' => 'password',
+            'station' => 'dapur',
+        ]);
+        $resStaffDapur->assertRedirect(route('sales.index'));
+        $this->assertEquals('dapur', session('staff_station'));
+        $this->assertAuthenticated();
     }
 }

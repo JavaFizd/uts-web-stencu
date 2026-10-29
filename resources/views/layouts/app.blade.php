@@ -95,7 +95,7 @@
     <!-- Top Navbar (Deep Navy Blue) -->
     <nav class="navbar navbar-expand-lg navbar-dark navbar-stencu sticky-top py-2 shadow-sm">
         <div class="container-fluid px-3">
-            <a class="navbar-brand d-flex align-items-center" href="{{ Auth::user()->isOwner() ? route('dashboard') : (Auth::user()->email === 'dapur@stencu.com' ? route('sales.index') : route('sales.create')) }}">
+            <a class="navbar-brand d-flex align-items-center" href="{{ Auth::user()->isOwner() ? route('dashboard') : (Auth::user()->isDapurStation() ? route('sales.index') : route('sales.create')) }}">
                 <img src="{{ asset('images/logo-white.svg') }}" alt="Stencu Coffee" height="38">
             </a>
 
@@ -118,7 +118,7 @@
                             <span>{{ Auth::user()->name }}</span>
                             @if(Auth::user()->isOwner())
                                 <span class="badge bg-danger badge-role">Owner</span>
-                            @elseif(Auth::user()->email === 'dapur@stencu.com')
+                            @elseif(Auth::user()->isDapurStation())
                                 <span class="badge bg-warning text-dark badge-role fw-bold"><i class="bi bi-fire me-1"></i>Dapur</span>
                             @elseif(Auth::user()->isStaff())
                                 <span class="badge bg-primary badge-role" style="background-color: #2563eb !important;"><i class="bi bi-calculator me-1"></i>Kasir</span>
@@ -128,6 +128,20 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-2">
                             <li><span class="dropdown-item-text text-muted small">{{ Auth::user()->email }}</span></li>
+                            @if(Auth::user()->isStaff())
+                                <li><hr class="dropdown-divider"></li>
+                                <li><span class="dropdown-header py-0 text-uppercase small" style="font-size: 0.68rem;">Ganti Stasiun Tugas</span></li>
+                                <li>
+                                    <a class="dropdown-item small {{ Auth::user()->isKasirStation() ? 'active fw-bold' : '' }}" href="{{ route('staff.switch-station', 'kasir') }}">
+                                        <i class="bi bi-calculator me-2"></i> Stasiun Kasir POS
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item small {{ Auth::user()->isDapurStation() ? 'active fw-bold' : '' }}" href="{{ route('staff.switch-station', 'dapur') }}">
+                                        <i class="bi bi-fire me-2"></i> Stasiun Dapur & Barista
+                                    </a>
+                                </li>
+                            @endif
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form action="{{ route('logout') }}" method="POST">
@@ -150,20 +164,36 @@
             <!-- Left Sidebar Navigation -->
             <nav class="col-md-3 col-lg-2 d-md-block sidebar py-3 px-3 collapse" id="navbarContent">
                 <div class="position-sticky">
-                    <!-- Chip Profil Akun Aktif (Membedakan Kasir vs Dapur vs Owner) -->
+                    <!-- Chip Profil Akun Aktif (Membedakan Staf Kasir vs Dapur vs Owner) -->
                     <div class="p-2.5 mb-3 rounded-3 bg-light border text-center shadow-sm">
                         @if(Auth::user()->isOwner())
                             <span class="badge bg-danger mb-1" style="font-size: 0.7rem;"><i class="bi bi-shield-check me-1"></i>OWNER / ADMIN</span>
                             <div class="fw-bold small text-dark">{{ Auth::user()->name }}</div>
                             <div class="text-muted" style="font-size: 0.72rem;">admin@stencu.com</div>
-                        @elseif(Auth::user()->email === 'dapur@stencu.com')
-                            <span class="badge bg-warning text-dark mb-1 fw-bold" style="font-size: 0.7rem;"><i class="bi bi-fire me-1"></i>STAF DAPUR &amp; BARISTA</span>
-                            <div class="fw-bold small text-dark">{{ Auth::user()->name }}</div>
-                            <div class="text-muted" style="font-size: 0.72rem;">dapur@stencu.com</div>
                         @elseif(Auth::user()->isStaff())
-                            <span class="badge bg-primary mb-1" style="font-size: 0.7rem; background-color: #2563eb !important;"><i class="bi bi-calculator me-1"></i>STAF KASIR</span>
+                            <span class="badge bg-dark mb-1" style="font-size: 0.68rem;"><i class="bi bi-building me-1"></i>AKUN PERUSAHAAN STAF</span>
                             <div class="fw-bold small text-dark">{{ Auth::user()->name }}</div>
-                            <div class="text-muted" style="font-size: 0.72rem;">kasir@stencu.com</div>
+                            <div class="text-muted mb-2" style="font-size: 0.72rem;">{{ Auth::user()->email }}</div>
+
+                            <!-- Indikator Tugas Stasiun & Tombol Cepat Pindah Stasiun -->
+                            <div class="p-2 rounded-2 bg-white border">
+                                <div class="text-muted mb-1" style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase;">Stasiun Tugas Aktif:</div>
+                                @if(Auth::user()->isDapurStation())
+                                    <div class="badge bg-warning text-dark w-100 py-1.5 fw-bold mb-1.5" style="font-size: 0.74rem;">
+                                        <i class="bi bi-fire me-1"></i>Dapur &amp; Barista
+                                    </div>
+                                    <a href="{{ route('staff.switch-station', 'kasir') }}" class="btn btn-xs btn-outline-primary w-100 py-1 rounded-pill fw-semibold" style="font-size: 0.68rem;" title="Beralih ke Stasiun Kasir POS">
+                                        <i class="bi bi-arrow-repeat me-1"></i>Pindah ke Kasir
+                                    </a>
+                                @else
+                                    <div class="badge bg-primary w-100 py-1.5 fw-bold mb-1.5" style="font-size: 0.74rem; background-color: #2563eb !important;">
+                                        <i class="bi bi-calculator me-1"></i>Kasir POS (Jual)
+                                    </div>
+                                    <a href="{{ route('staff.switch-station', 'dapur') }}" class="btn btn-xs btn-outline-warning text-dark w-100 py-1 rounded-pill fw-semibold" style="font-size: 0.68rem; border-color: #f59e0b;" title="Beralih ke Stasiun Dapur & Barista">
+                                        <i class="bi bi-arrow-repeat me-1"></i>Pindah ke Dapur
+                                    </a>
+                                @endif
+                            </div>
                         @else
                             <span class="badge bg-secondary mb-1" style="font-size: 0.7rem;">PELANGGAN</span>
                             <div class="fw-bold small text-dark">{{ Auth::user()->name }}</div>
@@ -182,7 +212,7 @@
                                 </a>
                             </li>
                         @endif
-                        @if(Auth::user()->email !== 'dapur@stencu.com')
+                        @if(!Auth::user()->isDapurStation())
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('sales.create') ? 'active-menu' : '' }}" href="{{ route('sales.create') }}">
                                     <i class="bi bi-cart-plus me-2 text-primary"></i> Kasir POS (Jual)
@@ -191,8 +221,8 @@
                         @endif
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('sales.index*') && !request()->routeIs('sales.create') ? 'active-menu' : '' }}" href="{{ route('sales.index') }}">
-                                <i class="bi bi-receipt me-2 {{ Auth::user()->email === 'dapur@stencu.com' ? 'text-warning' : '' }}"></i>
-                                {{ Auth::user()->email === 'dapur@stencu.com' ? 'Antrean Pesanan Dapur' : 'Riwayat Penjualan' }}
+                                <i class="bi bi-receipt me-2 {{ Auth::user()->isDapurStation() ? 'text-warning' : '' }}"></i>
+                                {{ Auth::user()->isDapurStation() ? 'Antrean Pesanan Dapur' : 'Riwayat Penjualan' }}
                             </a>
                         </li>
                         <li class="nav-item">

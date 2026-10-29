@@ -26,13 +26,13 @@ class AuthController extends Controller
     }
 
     /**
-     * Proses autentikasi login pengguna (Bisa pakai Username "admin", "kasir", "dapur" atau Email).
+     * Proses autentikasi login pengguna (Bisa pakai Akun Perusahaan "staff@stencu.com", Username "admin", "kasir", "dapur" atau Email).
      */
     public function login(Request $request)
     {
         $input = $request->input('login') ?? $request->input('email');
         if (empty($input)) {
-            return back()->withErrors(['login' => 'Username wajib diisi.'])->withInput();
+            return back()->withErrors(['login' => 'Email atau Username wajib diisi.'])->withInput();
         }
 
         $request->validate([
@@ -43,17 +43,31 @@ class AuthController extends Controller
 
         $loginInput = strtolower(trim($input));
         $password = $request->password;
+        $requestedStation = strtolower(trim((string) $request->input('station', '')));
 
-        // Cari akun berdasarkan email resmi atau username fleksibel
+        // Cari akun berdasarkan email resmi perusahaan atau username fleksibel
         $user = null;
         if (in_array($loginInput, ['admin', 'owner', 'admin@stencu.com', 'owner@stencu.com'])) {
             $user = User::where('role', 'owner')->first();
-        } elseif (in_array($loginInput, ['kasir', 'cashier', 'kasir@stencu.com', 'staff@stencu.com'])) {
-            $user = User::where('email', 'kasir@stencu.com')->first() ?? User::where('role', 'staff')->first();
+        } elseif (in_array($loginInput, ['staff', 'staff@stencu.com', 'crew', 'operasional', 'karyawan'])) {
+            // Akun Perusahaan Utama untuk Staf Operasional
+            $user = User::where('email', 'staff@stencu.com')->first() 
+                ?? User::where('email', 'kasir@stencu.com')->first() 
+                ?? User::where('role', 'staff')->first();
+        } elseif (in_array($loginInput, ['kasir', 'cashier', 'kasir@stencu.com'])) {
+            $user = User::where('email', 'staff@stencu.com')->first() 
+                ?? User::where('email', 'kasir@stencu.com')->first() 
+                ?? User::where('role', 'staff')->first();
+            if (empty($requestedStation)) {
+                $requestedStation = 'kasir';
+            }
         } elseif (in_array($loginInput, ['dapur', 'barista', 'kitchen', 'dapur@stencu.com', 'barista@stencu.com'])) {
-            $user = User::where('email', 'dapur@stencu.com')->first();
-        } elseif ($loginInput === 'staff') {
-            $user = User::where('email', 'kasir@stencu.com')->first() ?? User::where('role', 'staff')->first();
+            $user = User::where('email', 'staff@stencu.com')->first() 
+                ?? User::where('email', 'dapur@stencu.com')->first() 
+                ?? User::where('role', 'staff')->first();
+            if (empty($requestedStation)) {
+                $requestedStation = 'dapur';
+            }
         } else {
             $user = User::where('email', $loginInput)->first();
         }
@@ -72,12 +86,22 @@ class AuthController extends Controller
 
             if ($user->role === 'staff') {
                 $request->session()->forget('url.intended');
-                if ($user->email === 'dapur@stencu.com') {
-                    return redirect()->route('sales.index')
-                        ->with('success', 'Selamat bekerja, Staf Dapur & Barista! Antrean pesanan siap diracik.');
+
+                // Tentukan stasiun kerja (Job Desk) yang dipilih oleh staf
+                $station = 'kasir';
+                if (in_array($requestedStation, ['dapur', 'barista', 'kitchen']) || in_array($loginInput, ['dapur', 'barista', 'dapur@stencu.com'])) {
+                    $station = 'dapur';
                 }
+
+                $request->session()->put('staff_station', $station);
+
+                if ($station === 'dapur') {
+                    return redirect()->route('sales.index')
+                        ->with('success', 'Selamat bertugas di Stasiun Dapur & Barista! Antrean pesanan siap diracik.');
+                }
+
                 return redirect()->route('sales.create')
-                    ->with('success', 'Selamat bekerja, Kasir. Layar Kasir POS aktif.');
+                    ->with('success', 'Selamat bertugas di Stasiun Kasir POS! Layar siap melayani transaksi.');
             }
 
             return redirect()->intended(route('dashboard'))
@@ -151,15 +175,25 @@ class AuthController extends Controller
     {
         $role = strtolower(trim($role));
         $user = null;
+        $targetStation = 'kasir';
 
         if (in_array($role, ['owner', 'admin'])) {
             $user = User::where('role', 'owner')->first();
         } elseif (in_array($role, ['kasir', 'cashier'])) {
-            $user = User::where('email', 'kasir@stencu.com')->first() ?? User::where('role', 'staff')->first();
+            $user = User::where('email', 'staff@stencu.com')->first() 
+                ?? User::where('email', 'kasir@stencu.com')->first() 
+                ?? User::where('role', 'staff')->first();
+            $targetStation = 'kasir';
         } elseif (in_array($role, ['dapur', 'barista', 'kitchen'])) {
-            $user = User::where('email', 'dapur@stencu.com')->first();
+            $user = User::where('email', 'staff@stencu.com')->first() 
+                ?? User::where('email', 'dapur@stencu.com')->first() 
+                ?? User::where('role', 'staff')->first();
+            $targetStation = 'dapur';
         } elseif ($role === 'staff') {
-            $user = User::where('email', 'kasir@stencu.com')->first() ?? User::where('role', 'staff')->first();
+            $user = User::where('email', 'staff@stencu.com')->first() 
+                ?? User::where('email', 'kasir@stencu.com')->first() 
+                ?? User::where('role', 'staff')->first();
+            $targetStation = 'kasir';
         } else {
             $user = User::where('role', 'customer')->first();
         }
@@ -172,12 +206,13 @@ class AuthController extends Controller
                 return redirect()->route('dashboard')
                     ->with('success', 'Berhasil masuk sebagai Owner.');
             } elseif ($user->role === 'staff') {
-                if ($user->email === 'dapur@stencu.com') {
+                $request->session()->put('staff_station', $targetStation);
+                if ($targetStation === 'dapur') {
                     return redirect()->route('sales.index')
-                        ->with('success', 'Berhasil masuk sebagai Staf Dapur & Barista. Antrean pesanan siap diracik.');
+                        ->with('success', 'Berhasil masuk sebagai Staf di Stasiun Dapur & Barista. Antrean pesanan siap diracik.');
                 }
                 return redirect()->route('sales.create')
-                    ->with('success', 'Berhasil masuk sebagai Kasir. Layar Kasir POS aktif.');
+                    ->with('success', 'Berhasil masuk sebagai Staf di Stasiun Kasir POS. Layar Kasir POS aktif.');
             } else {
                 return redirect()->route('public.menu')
                     ->with('success', 'Berhasil masuk sebagai Pelanggan.');
@@ -185,5 +220,22 @@ class AuthController extends Controller
         }
 
         return redirect()->route('login')->withErrors(['error' => 'Akun peran ini belum tersedia.']);
+    }
+
+    /**
+     * Beralih Stasiun Kerja Staf secara Cepat (Kasir <-> Dapur & Barista) tanpa logout.
+     */
+    public function switchStation(string $station, Request $request)
+    {
+        $station = in_array(strtolower(trim($station)), ['dapur', 'barista', 'kitchen']) ? 'dapur' : 'kasir';
+        $request->session()->put('staff_station', $station);
+
+        if ($station === 'dapur') {
+            return redirect()->route('sales.index')
+                ->with('success', 'Berhasil beralih ke Stasiun Dapur & Barista. Monitor antrean pesanan aktif.');
+        }
+
+        return redirect()->route('sales.create')
+            ->with('success', 'Berhasil beralih ke Stasiun Kasir POS. Layar siap melayani transaksi.');
     }
 }

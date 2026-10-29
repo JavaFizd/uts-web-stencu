@@ -36,6 +36,17 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        // Akun Perusahaan Staf Operasional Utama (Bisa memilih stasiun Kasir / Dapur saat bertugas)
+        $staffCompany = User::firstOrCreate(
+            ['email' => 'staff@stencu.com'],
+            [
+                'name' => 'Staf Operasional',
+                'phone' => '085277889900',
+                'role' => 'staff',
+                'password' => Hash::make('password'),
+            ]
+        );
+
         $staffKasir = User::firstOrCreate(
             ['email' => 'kasir@stencu.com'],
             [

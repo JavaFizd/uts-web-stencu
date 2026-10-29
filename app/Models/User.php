@@ -54,6 +54,30 @@ class User extends Authenticatable
     }
 
     /**
+     * Stasiun penugasan aktif untuk staf (Kasir vs Dapur & Barista).
+     */
+    public function getActiveStationAttribute(): string
+    {
+        if (session()->has('staff_station')) {
+            return session('staff_station');
+        }
+        if ($this->email === 'dapur@stencu.com') {
+            return 'dapur';
+        }
+        return 'kasir';
+    }
+
+    public function isDapurStation(): bool
+    {
+        return $this->isStaff() && $this->active_station === 'dapur';
+    }
+
+    public function isKasirStation(): bool
+    {
+        return $this->isStaff() && $this->active_station === 'kasir';
+    }
+
+    /**
      * Relasi: Satu User dapat mencatat banyak transaksi penjualan.
      */
     public function sales()
