@@ -438,4 +438,55 @@ class StencuInventoryTest extends TestCase
         $this->assertEquals('dapur', session('staff_station'));
         $this->assertAuthenticated();
     }
+
+    /**
+     * Skenario 14: Fitur Bebas Tambah / Ubah Foto Makanan & Minuman
+     * Memverifikasi produk dapat disimpan dengan upload foto, link URL, atau galeri preset.
+     */
+    public function test_product_image_upload_and_custom_image_support(): void
+    {
+        $staff = User::where('role', 'staff')->first() ?? User::factory()->create(['role' => 'staff']);
+        $cat = Category::firstOrCreate(['name' => 'Makanan'], ['slug' => 'makanan']);
+
+        // 1. Tambah produk baru dengan link URL foto kustom
+        $resStore = $this->actingAs($staff)->post('/products', [
+            'sku' => 'SKU-FOTO-TEST-01',
+            'name' => 'Kopi Sanger Custom Foto',
+            'category_id' => $cat->id,
+            'unit' => 'cup',
+            'purchase_price' => 6000,
+            'selling_price' => 12000,
+            'stock' => 20,
+            'minimum_stock' => 5,
+            'image_url' => 'https://images.unsplash.com/photo-test-coffee.jpg',
+        ]);
+        $resStore->assertRedirect(route('products.index'));
+
+        $product = Product::where('sku', 'SKU-FOTO-TEST-01')->first();
+        $this->assertNotNull($product);
+        $this->assertEquals('https://images.unsplash.com/photo-test-coffee.jpg', $product->image);
+        $this->assertEquals('https://images.unsplash.com/photo-test-coffee.jpg', $product->image_url);
+
+        // 2. Ubah foto produk via updateImage modal
+        $resUpdateImage = $this->actingAs($staff)->post("/products/{$product->id}/image", [
+            'image_preset' => 'images/products/mie_aceh_goreng_telur.jpg',
+        ]);
+        $resUpdateImage->assertSessionHas('success');
+
+        $product->refresh();
+        $this->assertEquals('images/products/mie_aceh_goreng_telur.jpg', $product->image);
+
+        // 3. Upload file foto fisik dari komputer/HP
+        $fakeFile = \Illuminate\Http\UploadedFile::fake()->image('makanan_baru.jpg', 600, 600);
+        $resUpload = $this->actingAs($staff)->post("/products/{$product->id}/image", [
+            'image_file' => $fakeFile,
+        ]);
+        $resUpload->assertSessionHas('success');
+
+        $product->refresh();
+        $this->assertStringStartsWith('images/products/prod_', $product->image);
+        if (file_exists(public_path($product->image))) {
+            unlink(public_path($product->image)); // Bersihkan file dummy tes
+        }
+    }
 }

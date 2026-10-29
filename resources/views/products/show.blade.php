@@ -11,25 +11,29 @@
         <h3 class="fw-bold mt-2 mb-0">{{ $product->name }}</h3>
         <span class="badge bg-light text-dark border font-monospace">{{ $product->sku }}</span>
     </div>
-    @if(Auth::user()->isOwner())
-        <a href="{{ route('products.edit', $product) }}" class="btn btn-warning fw-bold text-dark">
-            <i class="bi bi-pencil me-1"></i> Edit Produk
+    <div class="d-flex gap-2">
+        <a href="{{ route('products.edit', $product) }}" class="btn btn-warning fw-bold text-dark rounded-pill px-3 shadow-sm">
+            <i class="bi bi-camera me-1"></i> Ubah Data &amp; Foto Menu
         </a>
-    @endif
+    </div>
 </div>
 
 <div class="row g-4">
     <!-- Card Info Produk -->
     <div class="col-md-5 col-lg-4">
         <div class="card card-custom p-3 bg-white mb-4">
-            @if($product->image)
-                <div class="mb-3 rounded-3 overflow-hidden border" style="height: 180px; background-color: #f8f9fa;">
-                    <img src="{{ Str::startsWith($product->image, 'http') ? $product->image : asset($product->image) }}" 
-                         alt="{{ $product->name }}" 
-                         class="w-100 h-100 object-fit-cover"
-                         onerror="this.onerror=null; this.src='{{ asset('images/products/sanger_dingin.jpg') }}';">
-                </div>
-            @endif
+            <div class="mb-3 rounded-3 overflow-hidden border position-relative" style="height: 190px; background-color: #f8f9fa;">
+                @php
+                    $imgShow = $product->image ? (Str::startsWith($product->image, 'http') ? $product->image : asset($product->image) . '?v=3') : asset('images/products/sanger_dingin.jpg?v=3');
+                @endphp
+                <img src="{{ $imgShow }}" 
+                     alt="{{ $product->name }}" 
+                     class="w-100 h-100 object-fit-cover"
+                     onerror="this.onerror=null; this.src='{{ asset('images/products/sanger_dingin.jpg') }}';">
+                <a href="{{ route('products.edit', $product) }}" class="btn btn-sm btn-dark bg-opacity-75 position-absolute bottom-0 end-0 m-2 rounded-pill py-0.5 px-2.5 text-white" style="font-size: 0.72rem;">
+                    <i class="bi bi-camera me-1"></i> Ganti Foto
+                </a>
+            </div>
             <h6 class="fw-bold text-muted small text-uppercase mb-3">Informasi Utama</h6>
             
             <div class="mb-3">

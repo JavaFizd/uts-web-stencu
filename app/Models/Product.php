@@ -63,4 +63,18 @@ class Product extends Model
     {
         return $this->stock <= $this->minimum_stock;
     }
+
+    /**
+     * URL gambar produk yang valid (mendukung upload lokal maupun URL eksternal).
+     */
+    public function getImageUrlAttribute(): string
+    {
+        if (empty($this->image)) {
+            return asset('images/products/sanger_dingin.jpg');
+        }
+        if (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://')) {
+            return $this->image;
+        }
+        return asset($this->image);
+    }
 }

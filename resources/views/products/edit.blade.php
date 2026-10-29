@@ -10,12 +10,84 @@
     <h3 class="fw-bold mt-2">Edit Data Produk: {{ $product->name }}</h3>
 </div>
 
-<div class="card card-custom bg-white p-4" style="max-width: 800px;">
-    <form action="{{ route('products.update', $product) }}" method="POST">
+<div class="card card-custom bg-white p-4" style="max-width: 850px;">
+    <form action="{{ route('products.update', $product) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         
         <div class="row g-3">
+            <!-- 1. SEKSI FOTO PRODUK / MAKANAN (BEBAS UBAH / UNGGAH / URL) -->
+            <div class="col-12">
+                <div class="p-3.5 rounded-3 border bg-light">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <label class="form-label fw-bold small text-dark mb-0">
+                            <i class="bi bi-image text-primary me-1"></i> Foto Menu Makanan / Minuman
+                        </label>
+                        <span class="badge bg-primary bg-opacity-10 text-primary small" style="font-size: 0.7rem;">Maks 5 MB &bull; JPG, PNG, WEBP</span>
+                    </div>
+
+                    <div class="row g-3 align-items-center">
+                        <!-- Kotak Pratinjau Gambar Real-Time -->
+                        <div class="col-sm-4 text-center">
+                            @php
+                                $currentImg = $product->image ? (Str::startsWith($product->image, 'http') ? $product->image : asset($product->image)) : asset('images/products/sanger_dingin.jpg');
+                            @endphp
+                            <div class="position-relative mx-auto rounded-3 border overflow-hidden shadow-xs bg-white" style="width: 140px; height: 140px;">
+                                <img id="previewImg" src="{{ $currentImg }}" alt="{{ $product->name }}" class="w-100 h-100 object-fit-cover" onerror="this.src='{{ asset('images/products/sanger_dingin.jpg') }}';">
+                                <span class="position-absolute bottom-0 start-0 end-0 bg-dark bg-opacity-75 text-white py-0.5 text-center" style="font-size: 0.65rem;">
+                                    Foto Saat Ini
+                                </span>
+                            </div>
+                            <div class="mt-2">
+                                <div class="form-check form-check-inline small">
+                                    <input class="form-check-input" type="checkbox" name="remove_image" id="removeImageCheck" value="1" onchange="toggleRemoveImage(this)">
+                                    <label class="form-check-label text-danger" for="removeImageCheck" style="font-size: 0.72rem;">
+                                        Hapus Foto
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kontrol Pilihan Gambar (Upload File / URL / Preset) -->
+                        <div class="col-sm-8">
+                            <!-- Opsi A: Upload File Langsung dari Komputer / HP -->
+                            <div class="mb-2.5">
+                                <label class="small text-muted fw-bold d-block mb-1" style="font-size: 0.72rem;">1. UNGGAH FOTO BARU DARI PERANGKAT:</label>
+                                <input type="file" name="image_file" id="imageFileInput" class="form-control form-control-sm @error('image_file') is-invalid @enderror" accept="image/*" onchange="previewUploadFile(this)">
+                                @error('image_file') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
+
+                            <!-- Opsi B: Input Link URL Gambar -->
+                            <div class="mb-2.5">
+                                <label class="small text-muted fw-bold d-block mb-1" style="font-size: 0.72rem;">2. ATAU INPUT LINK GAMBAR (URL WEB / GOOGLE):</label>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text"><i class="bi bi-link-45deg"></i></span>
+                                    <input type="url" name="image_url" id="imageUrlInput" class="form-control" placeholder="https://contoh.com/foto-makanan.jpg" value="{{ old('image_url', Str::startsWith($product->image, 'http') ? $product->image : '') }}" oninput="previewUrlInput(this.value)">
+                                </div>
+                            </div>
+
+                            <!-- Opsi C: Pilihan Galeri Preset Cepat -->
+                            <div>
+                                <label class="small text-muted fw-bold d-block mb-1" style="font-size: 0.72rem;">3. ATAU PILIH DARI FOTO GALERI KHAS STENCU:</label>
+                                <input type="hidden" name="image_preset" id="imagePresetInput" value="{{ old('image_preset') }}">
+                                <div class="d-flex flex-wrap gap-1">
+                                    <button type="button" class="btn btn-xs btn-outline-secondary py-0.5 px-2 rounded-pill" onclick="pickPreset('images/products/sanger_dingin.jpg', 'Sanger Dingin')" style="font-size: 0.7rem;">☕ Sanger Dingin</button>
+                                    <button type="button" class="btn btn-xs btn-outline-secondary py-0.5 px-2 rounded-pill" onclick="pickPreset('images/products/sanger_panas.jpg', 'Sanger Panas')" style="font-size: 0.7rem;">☕ Sanger Panas</button>
+                                    <button type="button" class="btn btn-xs btn-outline-secondary py-0.5 px-2 rounded-pill" onclick="pickPreset('images/products/kopi_hitam.jpg', 'Kopi Hitam')" style="font-size: 0.7rem;">☕ Kopi Hitam</button>
+                                    <button type="button" class="btn btn-xs btn-outline-secondary py-0.5 px-2 rounded-pill" onclick="pickPreset('images/products/teh_tarik.jpg', 'Teh Tarik')" style="font-size: 0.7rem;">🍵 Teh Tarik</button>
+                                    <button type="button" class="btn btn-xs btn-outline-secondary py-0.5 px-2 rounded-pill" onclick="pickPreset('images/products/milo.jpg', 'Milo Dingin')" style="font-size: 0.7rem;">🍫 Milo Dingin</button>
+                                    <button type="button" class="btn btn-xs btn-outline-secondary py-0.5 px-2 rounded-pill" onclick="pickPreset('images/products/mie_aceh_goreng_telur.jpg', 'Mie Aceh Telur')" style="font-size: 0.7rem;">🍜 Mie Telur</button>
+                                    <button type="button" class="btn btn-xs btn-outline-secondary py-0.5 px-2 rounded-pill" onclick="pickPreset('images/products/mie_aceh_kosong.jpg', 'Mie Aceh Polos')" style="font-size: 0.7rem;">🍜 Mie Polos</button>
+                                    <button type="button" class="btn btn-xs btn-outline-secondary py-0.5 px-2 rounded-pill" onclick="pickPreset('images/products/bakwan_tahu_goreng.jpg', 'Bakwan Tahu')" style="font-size: 0.7rem;">🥟 Bakwan Tahu</button>
+                                    <button type="button" class="btn btn-xs btn-outline-secondary py-0.5 px-2 rounded-pill" onclick="pickPreset('images/products/pisang_goreng.jpg', 'Pisang Goreng')" style="font-size: 0.7rem;">🍌 Pisang Crispy</button>
+                                    <button type="button" class="btn btn-xs btn-outline-secondary py-0.5 px-2 rounded-pill" onclick="pickPreset('images/products/roti_bakar.jpg', 'Roti Bakar')" style="font-size: 0.7rem;">🍞 Roti Bakar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="col-md-6">
                 <label class="form-label fw-bold small">Kode SKU <span class="text-danger">*</span></label>
                 <input type="text" name="sku" class="form-control @error('sku') is-invalid @enderror" value="{{ old('sku', $product->sku) }}" required>
@@ -91,4 +163,53 @@
         </div>
     </form>
 </div>
+
+@push('scripts')
+<script>
+    const initialProductImage = "{{ $currentImg }}";
+    const defaultPlaceholder = "{{ asset('images/products/sanger_dingin.jpg') }}";
+
+    function previewUploadFile(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImg').src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+            document.getElementById('imageUrlInput').value = '';
+            document.getElementById('imagePresetInput').value = '';
+            document.getElementById('removeImageCheck').checked = false;
+        }
+    }
+
+    function previewUrlInput(url) {
+        if (url.trim() !== '') {
+            document.getElementById('previewImg').src = url;
+            document.getElementById('imageFileInput').value = '';
+            document.getElementById('imagePresetInput').value = '';
+            document.getElementById('removeImageCheck').checked = false;
+        }
+    }
+
+    function pickPreset(path, label) {
+        const fullUrl = "{{ asset('') }}" + path;
+        document.getElementById('previewImg').src = fullUrl;
+        document.getElementById('imagePresetInput').value = path;
+        document.getElementById('imageFileInput').value = '';
+        document.getElementById('imageUrlInput').value = '';
+        document.getElementById('removeImageCheck').checked = false;
+    }
+
+    function toggleRemoveImage(checkbox) {
+        if (checkbox.checked) {
+            document.getElementById('previewImg').src = defaultPlaceholder;
+            document.getElementById('imageFileInput').value = '';
+            document.getElementById('imageUrlInput').value = '';
+            document.getElementById('imagePresetInput').value = '';
+        } else {
+            document.getElementById('previewImg').src = initialProductImage;
+        }
+    }
+</script>
+@endpush
 @endsection

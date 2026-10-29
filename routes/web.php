@@ -47,9 +47,14 @@ Route::middleware(['auth', 'role:owner,staff'])->group(function () {
     // Dashboard Operasional
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Katalog Produk & Detail (Staff & Owner)
+    // Katalog Produk & Kelola Gambar Menu (Staff & Owner)
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/products-create', [ProductController::class, 'create'])->name('products.create');
+    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
     Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+    Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+    Route::post('/products/{product}/image', [ProductController::class, 'updateImage'])->name('products.update-image');
 
     // Transaksi Penjualan / POS Kasir (Stock-out)
     Route::get('/sales', [SaleController::class, 'index'])->name('sales.index');
@@ -70,11 +75,7 @@ Route::middleware(['auth', 'role:owner,staff'])->group(function () {
 
 // 4. Rute Khusus Owner / Superadmin (Aksi Sensitif & Hak Eksklusif)
 Route::middleware(['auth', 'role:owner'])->group(function () {
-    // CRUD Modifikasi Produk
-    Route::get('/products-create', [ProductController::class, 'create'])->name('products.create');
-    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
-    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
-    Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+    // Hapus Produk Permanen / Soft Delete (Hanya Owner)
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
 
     // CRUD Kategori
