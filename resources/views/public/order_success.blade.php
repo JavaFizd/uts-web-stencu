@@ -30,8 +30,8 @@
 
                     <!-- Gambar QRIS Resmi Stencu Coffee -->
                     <div class="d-flex justify-content-center mb-3">
-                        <div class="p-2 bg-white rounded-4 shadow-sm border text-center" style="max-width: 260px;">
-                            <img src="{{ asset('images/qris_stencu.svg') }}" alt="QRIS Stencu Coffee" class="img-fluid rounded" style="max-height: 310px;">
+                        <div class="p-2 bg-white rounded-4 shadow-sm border text-center" style="max-width: 280px;">
+                            <img src="{{ asset('images/qris_stencu.png') }}?v=4" alt="QRIS Stencu Coffee" class="img-fluid rounded" style="max-height: 340px;">
                         </div>
                     </div>
 
@@ -39,7 +39,7 @@
                     <div class="alert alert-light border small text-muted text-start mb-0 rounded-3">
                         <div class="fw-bold text-dark mb-1"><i class="bi bi-phone-fill text-danger me-1"></i> Cara Bayar:</div>
                         <ol class="ps-3 mb-0" style="line-height: 1.6;">
-                            <li>Buka aplikasi m-Banking (BSI, BCA, Mandiri) atau e-Wallet (GoPay, OVO, Dana).</li>
+                            <li>Buka aplikasi m-Banking (BCA, Mandiri, Bank Aceh) atau e-Wallet (GoPay, OVO, Dana).</li>
                             <li>Pilih menu <strong>Scan QR / Bayar</strong> &rarr; arahkan kamera ke barcode di atas.</li>
                             <li>Masukkan nominal <strong>Rp {{ number_format($sale->total, 0, ',', '.') }}</strong> lalu konfirmasi bayar.</li>
                             <li>Saat ke kasir atau pesanan tiba, tinggal tunjukkan bukti transaksi sukses kepada barista.</li>
@@ -114,8 +114,14 @@
                     </div>
                 @endif
 
+                <!-- Barcode QR Verifikasi Struk -->
+                <div class="text-center pt-2 mt-2 border-top">
+                    <img src="{{ asset('images/real_qr.png') }}" alt="QR Struk" style="width: 70px; height: 70px; image-rendering: pixelated;" class="d-block mx-auto mb-1">
+                    <div class="font-monospace text-muted" style="font-size: 0.65rem;">* SCAN NOTA UNTUK VERIFIKASI *</div>
+                </div>
+
                 <!-- Struk Footer -->
-                <div class="text-center pt-3 mt-3 border-top text-muted small" style="font-size: 0.74rem;">
+                <div class="text-center pt-2 mt-2 border-top text-muted small" style="font-size: 0.74rem;">
                     <div>Terima Kasih Atas Kunjungan Anda!</div>
                     <div class="fst-italic text-secondary">Racikan Kopi Saring &amp; Rempah Asli Aceh</div>
                 </div>

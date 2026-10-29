@@ -119,7 +119,13 @@
                 </div>
             @endif
 
-            <div class="text-center pt-3 border-top text-muted small">
+            <!-- Barcode QR Verifikasi Struk Kasir -->
+            <div class="text-center pt-2 mt-2 border-top">
+                <img src="{{ asset('images/real_qr.png') }}" alt="QR Struk" style="width: 70px; height: 70px; image-rendering: pixelated;" class="d-block mx-auto mb-1">
+                <div class="font-monospace text-muted" style="font-size: 0.65rem;">* SCAN NOTA UNTUK VERIFIKASI TRANSAKSI *</div>
+            </div>
+
+            <div class="text-center pt-2 border-top text-muted small">
                 Terima kasih atas kunjungan Anda ke Stencu Coffee Batuphat!<br>
                 <em>~ Secangkir Kopi Gayo untuk Inspirasi Hari Anda ~</em>
             </div>
