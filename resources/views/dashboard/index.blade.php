@@ -7,23 +7,21 @@
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
         <h3 class="fw-bold mb-1" style="color: #0f2b5c;">Dashboard Stencu Coffee</h3>
-        <p class="text-muted mb-0 small">Ringkasan penjualan, pergerakan stok, dan estimasi laba warkop.</p>
+        <p class="text-muted mb-0 small">Ringkasan pemasukan penjualan, pengeluaran kas, pergerakan stok, dan laba warkop.</p>
     </div>
     <div class="d-flex gap-2 flex-wrap no-print">
         <button type="button" class="btn btn-outline-secondary btn-sm fw-semibold rounded-pill px-3 shadow-sm" onclick="window.print()">
             <i class="bi bi-printer me-1"></i> Cetak Laporan
         </button>
-        <a href="{{ route('sales.create') }}" class="btn btn-success btn-sm fw-semibold rounded-pill px-3 shadow-sm">
+        <a href="{{ route('sales.create') }}" class="btn btn-primary btn-sm fw-semibold rounded-pill px-3 shadow-sm" style="background-color: #2563eb; border: none;">
             <i class="bi bi-cart-plus me-1"></i> Kasir POS
         </a>
-        <a href="{{ route('purchases.create') }}" class="btn btn-primary btn-sm fw-semibold rounded-pill px-3 shadow-sm" style="background-color: #2563eb; border: none;">
-            <i class="bi bi-box-arrow-in-down me-1"></i> Beli Stok
+        <a href="{{ route('expenses.create') }}" class="btn btn-danger btn-sm fw-semibold rounded-pill px-3 shadow-sm">
+            <i class="bi bi-wallet2 me-1"></i> + Catat Pengeluaran
         </a>
-        @if(Auth::user()->isOwner())
-            <a href="{{ route('users.index') }}" class="btn btn-outline-dark btn-sm fw-semibold rounded-pill px-3 shadow-sm">
-                <i class="bi bi-people me-1"></i> Kelola Staf
-            </a>
-        @endif
+        <a href="{{ route('purchases.create') }}" class="btn btn-outline-primary btn-sm fw-semibold rounded-pill px-3 shadow-sm">
+            <i class="bi bi-box-arrow-in-down me-1"></i> Belanja Stok
+        </a>
     </div>
 </div>
 
@@ -34,7 +32,7 @@
             <i class="bi bi-exclamation-triangle-fill fs-4"></i>
         </div>
         <div class="flex-grow-1">
-            <div class="fw-bold text-dark mb-1">Peringatan: {{ $lowStockProducts->count() }} Bahan / Menu Mendekati Batas Minimum</div>
+            <div class="fw-bold text-dark mb-1">Peringatan: {{ $lowStockProducts->count() }} Menu / Bahan Mendekati Batas Minimum</div>
             <div class="d-flex flex-wrap gap-1">
                 @foreach($lowStockProducts as $low)
                     <span class="badge bg-danger text-white rounded-pill px-2.5 py-1" style="font-size: 0.75rem;">
@@ -49,57 +47,57 @@
     </div>
 @endif
 
-<!-- Ringkasan 4 Kartu Utama (Simpel & Mudah Dijelaskan ke Dosen) -->
+<!-- Ringkasan 4 Kartu Utama: Pemasukan vs Pengeluaran vs Laba vs Stok -->
 <div class="row g-3 mb-4">
-    <!-- 1. Penjualan Hari Ini -->
+    <!-- 1. Pemasukan (Penjualan) -->
     <div class="col-sm-6 col-lg-3">
         <div class="card card-custom p-3 bg-white h-100 border-0 shadow-sm" style="border-left: 4px solid #10b981 !important;">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <span class="text-muted small fw-bold">PENJUALAN HARI INI</span>
-                <span class="badge bg-success-subtle text-success small">{{ $salesTodayCount }} Nota</span>
+                <span class="text-muted small fw-bold">PEMASUKAN BULAN INI</span>
+                <span class="badge bg-success-subtle text-success small">{{ date('M Y') }}</span>
             </div>
-            <h4 class="fw-bold text-success mt-1 mb-1">Rp {{ number_format($salesTodayTotal, 0, ',', '.') }}</h4>
+            <h4 class="fw-bold text-success mt-1 mb-1">Rp {{ number_format($salesMonthTotal, 0, ',', '.') }}</h4>
             <div class="small text-muted" style="font-size: 0.75rem;">
-                Tanggal: {{ date('d M Y') }}
+                Hari Ini: <strong class="text-dark">Rp {{ number_format($salesTodayTotal, 0, ',', '.') }}</strong> ({{ $salesTodayCount }} Nota)
             </div>
         </div>
     </div>
 
-    <!-- 2. Penjualan Bulan Ini -->
+    <!-- 2. Pengeluaran (Belanja Bahan & Biaya Operasional) -->
     <div class="col-sm-6 col-lg-3">
-        <div class="card card-custom p-3 bg-white h-100 border-0 shadow-sm" style="border-left: 4px solid #2563eb !important;">
+        <div class="card card-custom p-3 bg-white h-100 border-0 shadow-sm" style="border-left: 4px solid #ef4444 !important;">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <span class="text-muted small fw-bold">PENJUALAN BULAN INI</span>
-                <span class="badge bg-primary-subtle text-primary small">{{ date('M Y') }}</span>
+                <span class="text-muted small fw-bold">PENGELUARAN BULAN INI</span>
+                <span class="badge bg-danger-subtle text-danger small">Biaya &amp; Belanja</span>
             </div>
-            <h4 class="fw-bold text-primary mt-1 mb-1">Rp {{ number_format($salesMonthTotal, 0, ',', '.') }}</h4>
+            <h4 class="fw-bold text-danger mt-1 mb-1">Rp {{ number_format($totalPengeluaranMonth, 0, ',', '.') }}</h4>
             <div class="small text-muted" style="font-size: 0.75rem;">
-                Total 1 Tahun: <strong>Rp {{ number_format($salesYearTotal, 0, ',', '.') }}</strong>
+                Belanja Stok: <strong>Rp {{ number_format($purchasesMonthTotal, 0, ',', '.') }}</strong> • Kas: <strong>Rp {{ number_format($expensesMonthTotal, 0, ',', '.') }}</strong>
             </div>
         </div>
     </div>
 
-    <!-- 3. Belanja Bahan & Laba -->
+    <!-- 3. Estimasi Laba Bersih -->
     <div class="col-sm-6 col-lg-3">
-        <div class="card card-custom p-3 bg-white h-100 border-0 shadow-sm" style="border-left: 4px solid #8b5cf6 !important;">
+        <div class="card card-custom p-3 bg-white h-100 border-0 shadow-sm" style="border-left: 4px solid #6366f1 !important;">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <span class="text-muted small fw-bold">ESTIMASI LABA KOTOR</span>
-                <span class="badge bg-purple-subtle text-purple small" style="background-color: #ede9fe; color: #6d28d9;">Bulan Ini</span>
+                <span class="text-muted small fw-bold">ESTIMASI LABA BERSIH</span>
+                <span class="badge bg-indigo-subtle text-indigo small" style="background-color: #e0e7ff; color: #4338ca;">Bulan Ini</span>
             </div>
-            <h4 class="fw-bold mt-1 mb-1" style="color: #6d28d9;">Rp {{ number_format($profitMonth, 0, ',', '.') }}</h4>
+            <h4 class="fw-bold mt-1 mb-1" style="color: #4f46e5;">Rp {{ number_format($profitMonth, 0, ',', '.') }}</h4>
             <div class="small text-muted" style="font-size: 0.75rem;">
-                Belanja Bahan: <strong class="text-danger">Rp {{ number_format($purchasesMonthTotal, 0, ',', '.') }}</strong>
+                Total Laba Bersih: <strong class="text-dark">Rp {{ number_format($profitAllTime, 0, ',', '.') }}</strong>
             </div>
         </div>
     </div>
 
-    <!-- 4. Inventaris & Stok -->
+    <!-- 4. Inventaris & Status Stok -->
     <div class="col-sm-6 col-lg-3">
         <div class="card card-custom p-3 bg-white h-100 border-0 shadow-sm" style="border-left: 4px solid #0f2b5c !important;">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <span class="text-muted small fw-bold">INVENTARIS STOK</span>
+                <span class="text-muted small fw-bold">INVENTARIS &amp; STOK</span>
                 @if($lowStockProducts->count() > 0)
-                    <span class="badge bg-danger-subtle text-danger small">{{ $lowStockProducts->count() }} Menipis</span>
+                    <span class="badge bg-danger-subtle text-danger small">{{ $lowStockProducts->count() }} Kritis</span>
                 @else
                     <span class="badge bg-success-subtle text-success small">Stok Aman</span>
                 @endif
@@ -112,17 +110,17 @@
     </div>
 </div>
 
-<!-- Baris 3: Grafik Keuangan Visual & Menu Terlaris (Slide 18) -->
+<!-- Baris 3: Grafik Arus Kas Visual & Menu Terlaris -->
 <div class="row g-4 mb-4">
-    <!-- Kolom Kiri: Grafik Tren Penjualan & Pembelian (Chart.js) -->
+    <!-- Kolom Kiri: Grafik Tren Pemasukan vs Pengeluaran (Chart.js) -->
     <div class="col-lg-7">
         <div class="card card-custom p-4 bg-white h-100 shadow-sm border">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
                     <h6 class="fw-bold mb-0 text-dark">
-                        <i class="bi bi-bar-chart-line-fill text-primary me-1"></i> Grafik Arus Kas: Omset vs Belanja (7 Hari Terakhir)
+                        <i class="bi bi-bar-chart-line-fill text-primary me-1"></i> Grafik Arus Kas: Pemasukan vs Pengeluaran (7 Hari Terakhir)
                     </h6>
-                    <span class="text-muted" style="font-size: 0.75rem;">Visualisasi harian pendapatan penjualan dan pengeluaran pasokan warkop</span>
+                    <span class="text-muted" style="font-size: 0.75rem;">Perbandingan harian omset penjualan dan uang keluar warkop</span>
                 </div>
             </div>
             <div style="height: 280px; position: relative;">
@@ -172,14 +170,14 @@
     </div>
 </div>
 
-<!-- Baris 4: Tabel 5 Transaksi Terakhir -->
+<!-- Baris 4: Transaksi Pemasukan & Pengeluaran Terakhir -->
 <div class="row g-4">
-    <!-- Tabel Penjualan Terakhir -->
-    <div class="col-lg-7">
+    <!-- Tabel Pemasukan: 5 Penjualan Terakhir -->
+    <div class="col-lg-6">
         <div class="card card-custom p-3 bg-white h-100 shadow-sm border">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-clock-history me-1 text-primary"></i> 5 Penjualan Kasir Terakhir</h6>
-                <a href="{{ route('sales.index') }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">Lihat Semua Nota &rarr;</a>
+                <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-receipt me-1 text-primary"></i> 5 Penjualan Kasir Terakhir (Pemasukan)</h6>
+                <a href="{{ route('sales.index') }}" class="btn btn-sm btn-outline-primary rounded-pill px-3">Lihat Semua &rarr;</a>
             </div>
 
             <div class="table-responsive">
@@ -188,7 +186,6 @@
                         <tr>
                             <th>No. Nota</th>
                             <th>Pelanggan</th>
-                            <th>Kasir</th>
                             <th>Total Tagihan</th>
                             <th>Status</th>
                         </tr>
@@ -197,18 +194,14 @@
                         @forelse($recentSales as $sale)
                             <tr>
                                 <td>
-                                    <a href="{{ route('sales.show', $sale) }}" class="fw-bold text-decoration-none text-primary">
+                                    <a href="{{ route('sales.show', $sale) }}" class="fw-bold text-decoration-none text-primary small">
                                         {{ $sale->sale_number }}
                                     </a>
                                 </td>
                                 <td>
                                     <div class="small fw-semibold text-dark">{{ $sale->customer_name }}</div>
-                                    @if($sale->notes)
-                                        <div class="text-muted fst-italic" style="font-size: 0.72rem;">"{{ $sale->notes }}"</div>
-                                    @endif
                                 </td>
-                                <td class="small text-muted">{{ $sale->user->name ?? 'Kasir' }}</td>
-                                <td class="fw-semibold small">Rp {{ number_format($sale->total, 0, ',', '.') }}</td>
+                                <td class="fw-semibold small text-success">Rp {{ number_format($sale->total, 0, ',', '.') }}</td>
                                 <td>
                                     @if($sale->status === 'completed')
                                         <span class="badge bg-success-subtle text-success small">Sukses</span>
@@ -219,7 +212,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center py-3 text-muted">Belum ada transaksi penjualan.</td>
+                                <td colspan="4" class="text-center py-3 text-muted small">Belum ada transaksi penjualan.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -228,37 +221,41 @@
         </div>
     </div>
 
-    <!-- Tabel Pembelian Terakhir -->
-    <div class="col-lg-5">
+    <!-- Tabel Pengeluaran: 5 Pengeluaran Kas Terakhir -->
+    <div class="col-lg-6">
         <div class="card card-custom p-3 bg-white h-100 shadow-sm border">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-box-seam me-1 text-success"></i> 5 Pembelian Stok Terakhir</h6>
-                <a href="{{ route('purchases.index') }}" class="btn btn-sm btn-outline-success rounded-pill px-3">Lihat Semua PO &rarr;</a>
+                <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-wallet2 me-1 text-danger"></i> 5 Pengeluaran Kas Terakhir (Pengeluaran)</h6>
+                <a href="{{ route('expenses.index') }}" class="btn btn-sm btn-outline-danger rounded-pill px-3">Lihat Semua &rarr;</a>
             </div>
 
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light small">
                         <tr>
-                            <th>No. PO</th>
-                            <th>Pemasok</th>
-                            <th>Total</th>
+                            <th>No. Nota</th>
+                            <th>Keperluan</th>
+                            <th>Kategori</th>
+                            <th class="text-end">Nominal</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($recentPurchases as $purchase)
+                        @forelse($recentExpenses as $exp)
                             <tr>
                                 <td>
-                                    <a href="{{ route('purchases.show', $purchase) }}" class="fw-bold text-decoration-none text-dark">
-                                        {{ $purchase->purchase_number }}
-                                    </a>
+                                    <span class="badge bg-light text-dark border font-monospace small">{{ $exp->expense_number }}</span>
                                 </td>
-                                <td class="small">{{ $purchase->supplier->name ?? '-' }}</td>
-                                <td class="fw-semibold text-end small">Rp {{ number_format($purchase->total, 0, ',', '.') }}</td>
+                                <td>
+                                    <div class="small fw-semibold text-dark">{{ $exp->title }}</div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary-subtle text-secondary small">{{ $exp->category }}</span>
+                                </td>
+                                <td class="fw-semibold text-end small text-danger">Rp {{ number_format($exp->amount, 0, ',', '.') }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" class="text-center py-3 text-muted">Belum ada data pembelian stok.</td>
+                                <td colspan="4" class="text-center py-3 text-muted small">Belum ada catatan pengeluaran kas.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -286,15 +283,15 @@
                 labels: labels,
                 datasets: [
                     {
-                        label: 'Pemasukan Penjualan (Omset)',
+                        label: 'Pemasukan (Omset Penjualan)',
                         data: salesData,
-                        backgroundColor: 'rgba(37, 99, 235, 0.85)', // Royal Blue
-                        borderColor: '#1d4ed8',
+                        backgroundColor: 'rgba(16, 185, 129, 0.85)', // Green
+                        borderColor: '#059669',
                         borderWidth: 1.5,
                         borderRadius: 6,
                     },
                     {
-                        label: 'Pengeluaran Belanja Bahan (Restok)',
+                        label: 'Total Pengeluaran (Belanja + Operasional)',
                         data: purchasesData,
                         backgroundColor: 'rgba(239, 68, 68, 0.8)', // Red
                         borderColor: '#dc2626',

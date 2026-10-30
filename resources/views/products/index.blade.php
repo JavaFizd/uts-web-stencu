@@ -115,17 +115,16 @@
                         <td class="text-center text-muted small">{{ $product->minimum_stock }}</td>
                         <td class="text-center">
                             <div class="btn-group btn-group-sm">
-                                <a href="{{ route('products.show', $product) }}" class="btn btn-outline-info" title="Detail Produk">
+                                <a href="{{ route('products.show', $product) }}" class="btn btn-outline-secondary" title="Detail Produk">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <!-- Tombol Cepat Ubah / Unggah Foto -->
-                                <button type="button" class="btn btn-outline-warning text-dark" data-bs-toggle="modal" data-bs-target="#modalPhoto{{ $product->id }}" title="Ubah / Unggah Foto Makanan">
-                                    <i class="bi bi-camera-fill"></i>
-                                </button>
-                                <a href="{{ route('products.edit', $product) }}" class="btn btn-outline-primary" title="Edit Produk">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
                                 @if(Auth::user()->isOwner())
+                                    <button type="button" class="btn btn-outline-warning text-dark" data-bs-toggle="modal" data-bs-target="#modalPhoto{{ $product->id }}" title="Ubah / Unggah Foto Makanan">
+                                        <i class="bi bi-camera-fill"></i>
+                                    </button>
+                                    <a href="{{ route('products.edit', $product) }}" class="btn btn-outline-primary" title="Edit Produk">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
                                     <form action="{{ route('products.destroy', $product) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus/menonaktifkan produk {{ $product->name }}?');">
                                         @csrf
                                         @method('DELETE')

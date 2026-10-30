@@ -212,70 +212,19 @@
         </a>
     </div>
 
-    <!-- 2. Form Filter Rinci (Tahun, Bulan, Minggu Ke-, Hari, Status, Keyword) -->
+    <!-- 2. Form Filter Sederhana -->
     <div class="card card-custom p-3 bg-white mb-4 shadow-sm border no-print">
         <form action="{{ route('sales.index') }}" method="GET" class="row g-2 align-items-center">
-            <!-- Filter Tahun -->
-            <div class="col-sm-6 col-md-2">
-                <label class="form-label small fw-bold text-muted mb-1" style="font-size: 0.72rem;">TAHUN</label>
-                <select name="year" class="form-select form-select-sm fw-semibold">
-                    <option value="">-- Semua Tahun --</option>
-                    @foreach($availableYears as $yr)
-                        <option value="{{ $yr }}" {{ request('year') == $yr ? 'selected' : '' }}>Tahun {{ $yr }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <!-- Filter Bulan -->
-            <div class="col-sm-6 col-md-2">
-                <label class="form-label small fw-bold text-muted mb-1" style="font-size: 0.72rem;">BULAN</label>
-                <select name="month" class="form-select form-select-sm fw-semibold">
-                    <option value="">-- Semua Bulan --</option>
-                    @php
-                        $months = [
-                            1 => '01 - Januari', 2 => '02 - Februari', 3 => '03 - Maret',
-                            4 => '04 - April', 5 => '05 - Mei', 6 => '06 - Juni',
-                            7 => '07 - Juli', 8 => '08 - Agustus', 9 => '09 - September',
-                            10 => '10 - Oktober', 11 => '11 - November', 12 => '12 - Desember'
-                        ];
-                    @endphp
-                    @foreach($months as $num => $name)
-                        <option value="{{ $num }}" {{ request('month') == $num ? 'selected' : '' }}>{{ $name }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <!-- Filter Minggu ke- dalam Bulan -->
-            <div class="col-sm-6 col-md-2">
-                <label class="form-label small fw-bold text-muted mb-1" style="font-size: 0.72rem;">MINGGU KE-</label>
-                <select name="week" class="form-select form-select-sm">
-                    <option value="">-- Semua Minggu --</option>
-                    <option value="1" {{ request('week') == '1' ? 'selected' : '' }}>Minggu 1 (Tgl 1-7)</option>
-                    <option value="2" {{ request('week') == '2' ? 'selected' : '' }}>Minggu 2 (Tgl 8-14)</option>
-                    <option value="3" {{ request('week') == '3' ? 'selected' : '' }}>Minggu 3 (Tgl 15-21)</option>
-                    <option value="4" {{ request('week') == '4' ? 'selected' : '' }}>Minggu 4 (Tgl 22-28)</option>
-                    <option value="5" {{ request('week') == '5' ? 'selected' : '' }}>Minggu 5 (Tgl 29-Akhir)</option>
-                </select>
-            </div>
-
-            <!-- Filter Hari (Senin s/d Minggu) -->
-            <div class="col-sm-6 col-md-2">
-                <label class="form-label small fw-bold text-muted mb-1" style="font-size: 0.72rem;">HARI APA</label>
-                <select name="day_of_week" class="form-select form-select-sm">
-                    <option value="">-- Semua Hari --</option>
-                    <option value="0" {{ request('day_of_week') === '0' ? 'selected' : '' }}>Senin</option>
-                    <option value="1" {{ request('day_of_week') === '1' ? 'selected' : '' }}>Selasa</option>
-                    <option value="2" {{ request('day_of_week') === '2' ? 'selected' : '' }}>Rabu</option>
-                    <option value="3" {{ request('day_of_week') === '3' ? 'selected' : '' }}>Kamis</option>
-                    <option value="4" {{ request('day_of_week') === '4' ? 'selected' : '' }}>Jumat</option>
-                    <option value="5" {{ request('day_of_week') === '5' ? 'selected' : '' }}>Sabtu</option>
-                    <option value="6" {{ request('day_of_week') === '6' ? 'selected' : '' }}>Minggu</option>
-                </select>
+            <!-- Search Keyword -->
+            <div class="col-md-4">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                    <input type="text" name="search" class="form-control" placeholder="Cari No. Nota / Nama Pelanggan..." value="{{ request('search') }}">
+                </div>
             </div>
 
             <!-- Filter Status Transaksi -->
-            <div class="col-sm-6 col-md-2">
-                <label class="form-label small fw-bold text-muted mb-1" style="font-size: 0.72rem;">STATUS NOTA</label>
+            <div class="col-md-3">
                 <select name="status" class="form-select form-select-sm">
                     <option value="">-- Semua Status --</option>
                     <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Selesai</option>
@@ -283,20 +232,21 @@
                 </select>
             </div>
 
-            <!-- Search Keyword & Tombol Aksi -->
-            <div class="col-sm-6 col-md-2">
-                <label class="form-label small fw-bold text-muted mb-1" style="font-size: 0.72rem;">CARI NOTA / NAMA</label>
-                <div class="input-group input-group-sm">
-                    <input type="text" name="search" class="form-control" placeholder="No. Nota / Nama..." value="{{ request('search') }}">
-                    <button type="submit" class="btn btn-primary" title="Terapkan Filter" style="background-color: #2563eb; border: none;">
-                        <i class="bi bi-search"></i>
-                    </button>
-                    @if(request()->hasAny(['preset', 'year', 'month', 'week', 'day_of_week', 'day', 'date_from', 'date_to', 'search', 'status']))
-                        <a href="{{ route('sales.index') }}" class="btn btn-outline-danger" title="Reset Filter">
-                            <i class="bi bi-x"></i>
-                        </a>
-                    @endif
-                </div>
+            <!-- Filter Tanggal -->
+            <div class="col-md-3">
+                <input type="date" name="date_from" class="form-control form-control-sm" value="{{ request('date_from') }}" title="Mulai Tanggal">
+            </div>
+
+            <!-- Tombol Aksi -->
+            <div class="col-md-2 d-flex gap-1">
+                <button type="submit" class="btn btn-sm btn-primary w-100 rounded-pill fw-semibold" style="background-color: #2563eb; border: none;">
+                    <i class="bi bi-funnel me-1"></i> Filter
+                </button>
+                @if(request()->hasAny(['preset', 'year', 'month', 'date_from', 'date_to', 'search', 'status']))
+                    <a href="{{ route('sales.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill" title="Reset Filter">
+                        <i class="bi bi-x-circle"></i>
+                    </a>
+                @endif
             </div>
         </form>
     </div>

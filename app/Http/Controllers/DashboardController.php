@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Expense;
 use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\Sale;
@@ -51,18 +52,30 @@ class DashboardController extends Controller
         $salesAllTimeTotal = Sale::where('status', 'completed')->sum('total');
         $totalSalesCount = Sale::where('status', 'completed')->count();
 
-        // 3. Rekap Pengeluaran Pembelian Stok (Bahan Baku)
+        // 3. Rekap Pengeluaran (Pembelian Stok Bahan + Biaya Operasional Kas)
         $purchasesTodayTotal = Purchase::where('status', 'completed')->whereDate('purchased_at', $today)->sum('total');
         $purchasesWeekTotal = Purchase::where('status', 'completed')->where('purchased_at', '>=', $startOfWeek)->sum('total');
         $purchasesMonthTotal = Purchase::where('status', 'completed')->where('purchased_at', '>=', $startOfMonth)->sum('total');
         $purchasesYearTotal = Purchase::where('status', 'completed')->where('purchased_at', '>=', $startOfYear)->sum('total');
         $purchasesAllTimeTotal = Purchase::where('status', 'completed')->sum('total');
 
-        // 4. Perhitungan Laba Kotor (Gross Profit = Pemasukan - Pengeluaran)
-        $profitToday = $salesTodayTotal - $purchasesTodayTotal;
-        $profitMonth = $salesMonthTotal - $purchasesMonthTotal;
-        $profitYear = $salesYearTotal - $purchasesYearTotal;
-        $profitAllTime = $salesAllTimeTotal - $purchasesAllTimeTotal;
+        $expensesTodayTotal = Expense::whereDate('expense_date', $today)->sum('amount');
+        $expensesWeekTotal = Expense::where('expense_date', '>=', $startOfWeek)->sum('amount');
+        $expensesMonthTotal = Expense::where('expense_date', '>=', $startOfMonth)->sum('amount');
+        $expensesYearTotal = Expense::where('expense_date', '>=', $startOfYear)->sum('amount');
+        $expensesAllTimeTotal = Expense::sum('amount');
+
+        // Total Gabungan Pengeluaran (Bahan Baku + Biaya Operasional)
+        $totalPengeluaranToday = $purchasesTodayTotal + $expensesTodayTotal;
+        $totalPengeluaranMonth = $purchasesMonthTotal + $expensesMonthTotal;
+        $totalPengeluaranYear = $purchasesYearTotal + $expensesYearTotal;
+        $totalPengeluaranAllTime = $purchasesAllTimeTotal + $expensesAllTimeTotal;
+
+        // 4. Perhitungan Laba Bersih (Net Profit = Pemasukan - Seluruh Pengeluaran)
+        $profitToday = $salesTodayTotal - $totalPengeluaranToday;
+        $profitMonth = $salesMonthTotal - $totalPengeluaranMonth;
+        $profitYear = $salesYearTotal - $totalPengeluaranYear;
+        $profitAllTime = $salesAllTimeTotal - $totalPengeluaranAllTime;
 
         // 5. Produk dengan Stok Menipis (Stok <= Minimum Stock)
         $lowStockProducts = Product::with('category')
@@ -87,14 +100,15 @@ class DashboardController extends Controller
         for ($i = 6; $i >= 0; $i--) {
             $date = Carbon::today()->subDays($i);
             $dateStr = $date->format('Y-m-d');
-            $label = $date->format('d M'); // misal: 22 Oct, 23 Oct
+            $label = $date->format('d M');
 
             $daySale = Sale::where('status', 'completed')->whereDate('sold_at', $dateStr)->sum('total');
             $dayPurchase = Purchase::where('status', 'completed')->whereDate('purchased_at', $dateStr)->sum('total');
+            $dayExpense = Expense::whereDate('expense_date', $dateStr)->sum('amount');
 
             $chartLabels[] = $label;
             $chartSalesData[] = (int) $daySale;
-            $chartPurchasesData[] = (int) $dayPurchase;
+            $chartPurchasesData[] = (int) ($dayPurchase + $dayExpense);
         }
 
         // 8. 5 Transaksi Penjualan Terakhir
@@ -103,9 +117,15 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        // 9. 5 Transaksi Pembelian Stok Terakhir
+        // 9. 5 Pengeluaran & Pembelian Terakhir
         $recentPurchases = Purchase::with(['supplier', 'user'])
             ->latest('purchased_at')
+            ->take(5)
+            ->get();
+
+        $recentExpenses = Expense::with('user')
+            ->latest('expense_date')
+            ->latest('id')
             ->take(5)
             ->get();
 
@@ -120,10 +140,15 @@ class DashboardController extends Controller
             'salesYearTotal',
             'salesAllTimeTotal',
             'purchasesTodayTotal',
-            'purchasesWeekTotal',
             'purchasesMonthTotal',
-            'purchasesYearTotal',
             'purchasesAllTimeTotal',
+            'expensesTodayTotal',
+            'expensesMonthTotal',
+            'expensesAllTimeTotal',
+            'totalPengeluaranToday',
+            'totalPengeluaranMonth',
+            'totalPengeluaranYear',
+            'totalPengeluaranAllTime',
             'profitToday',
             'profitMonth',
             'profitYear',
@@ -135,7 +160,8 @@ class DashboardController extends Controller
             'chartSalesData',
             'chartPurchasesData',
             'recentSales',
-            'recentPurchases'
+            'recentPurchases',
+            'recentExpenses'
         ));
     }
 }

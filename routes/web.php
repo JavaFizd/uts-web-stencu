@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\PurchaseController;
@@ -70,6 +71,11 @@ Route::middleware(['auth', 'role:owner,staff'])->group(function () {
     Route::post('/purchases', [PurchaseController::class, 'store'])->name('purchases.store');
     Route::get('/purchases/{purchase}', [PurchaseController::class, 'show'])->name('purchases.show');
 
+    // Pengeluaran Kas & Biaya Operasional
+    Route::get('/expenses', [ExpenseController::class, 'index'])->name('expenses.index');
+    Route::get('/expenses/create', [ExpenseController::class, 'create'])->name('expenses.create');
+    Route::post('/expenses', [ExpenseController::class, 'store'])->name('expenses.store');
+
     // Melihat Daftar Pemasok & Kategori
     Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
@@ -79,6 +85,7 @@ Route::middleware(['auth', 'role:owner,staff'])->group(function () {
 Route::middleware(['auth', 'role:owner'])->group(function () {
     // Hapus Produk Permanen / Soft Delete (Hanya Owner)
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+    Route::delete('/expenses/{expense}', [ExpenseController::class, 'destroy'])->name('expenses.destroy');
 
     // CRUD Kategori
     Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');

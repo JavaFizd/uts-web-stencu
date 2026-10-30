@@ -239,20 +239,24 @@
                         @endif
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('sales.index*') && !request()->routeIs('sales.create') ? 'active-menu' : '' }}" href="{{ route('sales.index') }}">
-                                <i class="bi bi-receipt me-2 {{ Auth::user()->isDapurStation() ? 'text-warning' : '' }}"></i>
+                                <i class="bi bi-receipt me-2 {{ Auth::user()->isDapurStation() ? 'text-warning' : 'text-success' }}"></i>
                                 {{ Auth::user()->isDapurStation() ? 'Antrean Pesanan Dapur' : 'Riwayat Penjualan' }}
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('purchases.create') ? 'active-menu' : '' }}" href="{{ route('purchases.create') }}">
-                                <i class="bi bi-box-arrow-in-down me-2 text-success"></i> Input Beli Stok
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('purchases.index*') && !request()->routeIs('purchases.create') ? 'active-menu' : '' }}" href="{{ route('purchases.index') }}">
-                                <i class="bi bi-truck me-2"></i> Riwayat Pembelian
-                            </a>
-                        </li>
+                        @if(!Auth::user()->isDapurStation())
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('expenses.*') ? 'active-menu' : '' }}" href="{{ route('expenses.index') }}">
+                                    <i class="bi bi-wallet2 me-2 text-danger"></i> Pengeluaran Kas
+                                </a>
+                            </li>
+                        @endif
+                        @if(Auth::user()->isOwner())
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('purchases.*') ? 'active-menu' : '' }}" href="{{ route('purchases.index') }}">
+                                    <i class="bi bi-box-arrow-in-down me-2 text-info"></i> Belanja Stok (Supplier)
+                                </a>
+                            </li>
+                        @endif
                     </ul>
 
                     <div class="small fw-bold text-uppercase px-2 mb-2" style="font-size: 0.72rem; color: #1e40af; letter-spacing: 0.8px;">

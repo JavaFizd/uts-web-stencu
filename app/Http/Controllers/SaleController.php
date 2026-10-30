@@ -286,22 +286,6 @@ class SaleController extends Controller
         $lastId = (int) $request->input('last_id', 0);
         $currentMax = (int) (Sale::max('id') ?? 0);
 
-        // Jika inisialisasi awal (last_id <= 0), kirim latest_id dan daftar 5 pesanan terakhir
-        if ($lastId <= 0) {
-            $recentOrders = Sale::with(['items.product'])
-                ->where('status', 'completed')
-                ->latest('id')
-                ->take(5)
-                ->get()
-                ->map(fn($s) => $this->formatOrderSummary($s));
-
-            return response()->json([
-                'new_count' => 0,
-                'latest_id' => $currentMax,
-                'recent_orders' => $recentOrders,
-            ]);
-        }
-
         // Ambil transaksi baru yang ID-nya lebih besar dari last_id
         $newSales = Sale::with(['items.product'])
             ->where('id', '>', $lastId)
@@ -312,10 +296,19 @@ class SaleController extends Controller
         $newCount = $newSales->count();
         $formatted = $newSales->map(fn($s) => $this->formatOrderSummary($s));
 
+        // 5 pesanan terakhir untuk baseline dropdown
+        $recentOrders = Sale::with(['items.product'])
+            ->where('status', 'completed')
+            ->latest('id')
+            ->take(5)
+            ->get()
+            ->map(fn($s) => $this->formatOrderSummary($s));
+
         return response()->json([
             'new_count' => $newCount,
-            'latest_id' => $newCount > 0 ? (int) $newSales->max('id') : $lastId,
+            'latest_id' => $currentMax,
             'orders' => $formatted,
+            'recent_orders' => $recentOrders,
         ]);
     }
 

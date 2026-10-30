@@ -32,7 +32,7 @@
             </form>
         @endif
 
-        <!-- Tombol Batalkan Transaksi (Hanya Role Owner - Slide 5 & 8) -->
+        <!-- Tombol Batalkan Transaksi (Hanya Role Owner) -->
         @if(Auth::user()->isOwner() && $sale->status === 'completed')
             <form action="{{ route('sales.cancel', $sale) }}" method="POST" onsubmit="return confirm('PERINGATAN: Membatalkan transaksi ini akan mengembalikan seluruh stok produk ke database secara otomatis. Lanjutkan?');">
                 @csrf
@@ -92,9 +92,9 @@
                     <div class="text-muted">Waktu Transaksi:</div>
                     <div class="text-dark">{{ $sale->sold_at ? $sale->sold_at->timezone('Asia/Jakarta')->format('d/m/Y H:i') : date('d/m/Y H:i') }} WIB</div>
                 </div>
-                <div class="col-12 mt-2 pt-2 border-top d-flex justify-content-between align-items-center">
-                    <span class="text-muted"><i class="bi bi-clock-history me-1"></i> Waktu Cetak Struk:</span>
-                    <strong class="font-monospace text-dark realtime-clock">Memuat waktu...</strong>
+                <div class="col-12 mt-2 pt-2 border-top d-flex justify-content-between align-items-center text-muted" style="font-size: 0.75rem;">
+                    <span><i class="bi bi-printer me-1"></i> Waktu Cetak Struk:</span>
+                    <span class="font-monospace text-dark fw-semibold">{{ now()->timezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB</span>
                 </div>
             </div>
 
@@ -192,26 +192,4 @@
 </style>
 @endsection
 
-@section('scripts')
-<script>
-    function updateRealtimeClock() {
-        const now = new Date();
-        const day = String(now.getDate()).padStart(2, '0');
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const year = now.getFullYear();
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        const seconds = String(now.getSeconds()).padStart(2, '0');
-        
-        const formatted = `${day}/${month}/${year} ${hours}:${minutes}:${seconds} WIB`;
-        document.querySelectorAll('.realtime-clock').forEach(el => el.textContent = formatted);
-    }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        updateRealtimeClock();
-        setInterval(updateRealtimeClock, 1000);
-    });
-
-    window.addEventListener('beforeprint', updateRealtimeClock);
-</script>
-@endsection

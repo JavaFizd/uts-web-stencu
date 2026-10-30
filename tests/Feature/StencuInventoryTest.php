@@ -574,4 +574,57 @@ class StencuInventoryTest extends TestCase
         $this->assertFalse($sale->isCooking());
         $this->assertEquals('served', $sale->kitchen_status);
     }
+
+    /**
+     * Skenario 17: Pencatatan Pengeluaran Kas Operasional Warkop.
+     */
+    public function test_staff_or_owner_can_record_operational_expense(): void
+    {
+        $staff = User::where('role', 'staff')->first() ?? User::factory()->create(['role' => 'staff']);
+
+        $response = $this->actingAs($staff)->post('/expenses', [
+            'title' => 'Beli Es Batu Kristal 2 Karung',
+            'category' => 'Operasional Harian',
+            'amount' => 25000,
+            'expense_date' => now()->format('Y-m-d'),
+            'notes' => 'Beli di warung sebelah',
+        ]);
+
+        $response->assertRedirect('/expenses');
+        $response->assertSessionHas('success');
+
+        $this->assertDatabaseHas('expenses', [
+            'title' => 'Beli Es Batu Kristal 2 Karung',
+            'category' => 'Operasional Harian',
+            'amount' => 25000.00,
+        ]);
+    }
+
+    /**
+     * Skenario 18: Hanya Owner yang dapat menghapus catatan pengeluaran kas.
+     */
+    public function test_only_owner_can_delete_expense(): void
+    {
+        $owner = User::where('role', 'owner')->first() ?? User::factory()->create(['role' => 'owner']);
+        $staff = User::where('role', 'staff')->first() ?? User::factory()->create(['role' => 'staff']);
+
+        $expense = \App\Models\Expense::create([
+            'expense_number' => 'EXP-TEST-0001',
+            'user_id' => $owner->id,
+            'title' => 'Token Listrik PLN',
+            'category' => 'Gas & Listrik',
+            'amount' => 100000,
+            'expense_date' => now()->format('Y-m-d'),
+        ]);
+
+        // Staff coba hapus -> ditolak 403
+        $resStaff = $this->actingAs($staff)->delete("/expenses/{$expense->id}");
+        $resStaff->assertStatus(403);
+        $this->assertDatabaseHas('expenses', ['id' => $expense->id]);
+
+        // Owner hapus -> berhasil
+        $resOwner = $this->actingAs($owner)->delete("/expenses/{$expense->id}");
+        $resOwner->assertRedirect('/expenses');
+        $this->assertDatabaseMissing('expenses', ['id' => $expense->id]);
+    }
 }

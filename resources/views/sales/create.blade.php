@@ -130,7 +130,7 @@
                         <h4 class="fw-bold text-success mb-0" id="grandTotalDisplay">Rp 0</h4>
                     </div>
                     <div class="small text-muted mt-1" style="font-size: 0.75rem;">
-                        *Total final dihitung dan divalidasi langsung oleh server database (Slide 8).
+                        *Total pembayaran dihitung otomatis sesuai harga dan kuantitas menu.
                     </div>
                 </div>
 
