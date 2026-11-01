@@ -12,18 +12,13 @@ Sistem menerapkan arsitektur standar **Laravel MVC, Eloquent ORM, MySQL Transact
 ---
 
 ## 📸 2. Tangkapan Layar Sistem (Screenshots)
-> *Semua screenshot disimpan di dalam direktori `docs/screenshots/`.*
+> *Cukup simpan 3 screenshot utama ini di dalam folder `docs/screenshots/`:*
 
-| Fitur / Halaman | Tangkapan Layar |
-| :--- | :--- |
-| **1. Portal Login & Gateway Peran** | ![Halaman Login](docs/screenshots/01_login.png) |
-| **2. Dashboard Owner & Arus Kas** | ![Dashboard Owner](docs/screenshots/02_dashboard_owner.png) |
-| **3. Kasir POS (Penjualan / Stock-Out)** | ![Kasir POS](docs/screenshots/03_pos_kasir.png) |
-| **4. Papan Antrean Dapur & Barista (KDS)** | ![Antrean Dapur](docs/screenshots/04_antrean_dapur.png) |
-| **5. Pengeluaran Kas Operasional** | ![Pengeluaran Kas](docs/screenshots/05_pengeluaran_kas.png) |
-| **6. Belanja Stok Bahan (Stock-In)** | ![Belanja Stok](docs/screenshots/06_beli_stok_supplier.png) |
-| **7. Menu Pelanggan (Scan QR Meja)** | ![Menu Pelanggan](docs/screenshots/07_menu_pelanggan_qr.png) |
-| **8. Cetak Struk / Nota Transaksi** | ![Cetak Struk Nota](docs/screenshots/08_cetak_struk_nota.png) |
+| Fitur Utama | Tangkapan Layar | URL di Browser |
+| :--- | :--- | :--- |
+| **1. Dashboard Owner & Laporan Laba** | ![Dashboard Owner](docs/screenshots/dashboard.png) | `http://localhost/Stencu/public/dashboard` |
+| **2. Mesin Kasir POS (Penjualan)** | ![Kasir POS](docs/screenshots/pos.png) | `http://localhost/Stencu/public/sales/create` |
+| **3. Papan Antrean Dapur & Barista** | ![Antrean Dapur](docs/screenshots/dapur.png) | `http://localhost/Stencu/public/sales` *(Login Dapur)* |
 
 ---
 
